@@ -1,0 +1,8 @@
+<div id="filter-body">
+</div>
+<div id="no-filters" class="inactive" {{#if hasFilters}}style="display: none;"{{/if}}>None</div>
+{{#if canFilter}}
+  <input type="button" onclick="htmlapi.filterAdd()" value="+">&nbsp;
+  <input type="button" value="Clear" onclick="htmlapi.filterClear(); return false;"/>&nbsp;
+  <input type="submit" value="Apply"/>
+{{/if}}

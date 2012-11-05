@@ -1,0 +1,44 @@
+<div class="filter" data-prefix="filter_{{cur.id}}">
+  <input type="button" onclick="htmlapi.filterRemove(this)" value="-">&nbsp;
+
+  <select id="filter_{{cur.id}}_name" onchange="htmlapi.filterChange(this)">
+  {{#eachProperty allFilterSchema}}
+    <option value="{{key}}" {{#ifEqual key ../cur.name}} SELECTED{{/ifEqual}}>{{key}}</option>
+  {{/eachProperty}}
+  </select>
+
+  {{#if thisFilterSchema.modifiers}}
+    <select id="filter_{{cur.id}}_modifier" onchange="htmlapi.modifierChange(this);">
+      {{#each thisFilterSchema.modifiers}}
+        <option value="{{.}}" {{#ifEqual ../cur.modifier .}} SELECTED{{/ifEqual}}>
+          {{#ifEqual . "eq"     }}={{/ifEqual}}
+          {{#ifEqual . "ne"     }}&ne;{{/ifEqual}}
+          {{#ifEqual . "lt"     }}&lt;{{/ifEqual}}
+          {{#ifEqual . "lte"    }}&lte;{{/ifEqual}}
+          {{#ifEqual . "gt"     }}&gt;{{/ifEqual}}
+          {{#ifEqual . "gte"    }}&gte;{{/ifEqual}}
+          {{#ifEqual . "null"   }}NULL{{/ifEqual}}
+          {{#ifEqual . "notnull"}}Not NULL{{/ifEqual}}
+          {{#ifEqual . "like"   }}Like{{/ifEqual}}
+          {{#ifEqual . "notlike"}}Not Like{{/ifEqual}}
+          {{#ifEqual . "prefix" }}starts with{{/ifEqual}}
+          {{#ifEqual . "suffix" }}ends with{{/ifEqual}}
+        </option>
+      {{/each}}
+    </select>
+  {{else}}
+    <input type="hidden" id="filter_{{cur.id}}_modifier" value=""/>
+    =
+  {{/if}}
+
+  {{#if thisFilterSchema.options}}
+    <select id="filter_{{cur.id}}_value">
+      <option value=""></option>
+      {{#eachProperty thisFilterSchema.options}}
+        <option value="{{key}}" {{#ifEqual key cur.value}} SELECTED{{/ifEqual}}>{{key}}</option>
+      {{/eachProperty}}
+    </select>
+  {{else}}
+    <input type="text" id="filter_{{cur.id}}_value" value="{{cur.value}}" />
+  {{/if}}
+</div>

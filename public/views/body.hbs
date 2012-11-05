@@ -1,0 +1,99 @@
+<div id="header">
+  <table id="header-body" style="visibility: hidden;" width="100%">
+  <tr>
+    <th>Operations</th>
+    <th>Actions</th>
+    <th>Filter</th>
+    <th width="200">Sort</th>
+    <th width="150">Pagination</th>
+    <th width="120" style="text-align:right; font-weight: normal;"><a href="#" onclick="htmlapi.logout(); return false">Log Out</a></th>
+  </tr>
+  <tr>
+    <td>
+      <form>
+        <div id="operations">{{! Set based on schema }}</div>
+      </form>
+    </td>
+
+    <td>
+      <form onsubmit="htmlapi.actionLoad($('actions').val(),undefined,{}); return false;">
+        <div id="actions">{{! Set based on schema }}</div>
+      </form>
+    </td>
+
+    <td>
+      <form onsubmit="htmlapi.filterApply(); return false;">
+        <div id="filters">{{! Set based on schema/data }}</div>
+      </form>
+    </td>
+
+    <td><div id="sort">
+      {{#if data.sortLinks }}
+        <form>
+          <select id="sortBy" onchange="htmlapi.sortChange(this)">
+              <option value="">(None)</option>
+              {{#eachProperty data.sortLinks}}
+                <option value="{{key}}"{{#ifEqual ../../data.sort.name key}} SELECTED{{/ifEqual}}>{{key}}</option>
+              {{/eachProperty}}
+          </select>
+          {{#if data.sort.name }}
+            <input type="button" value="{{#ifEqual data.sort.order "desc"}}&uarr;{{else}}&darr;{{/ifEqual}}" onclick="htmlapi.sortOrderChange();"/>
+          {{/if}}
+        </form>
+        <span class="inactive">
+          {{#if data.sort.name}}
+            {{data.sort.name}}&nbsp;{{#ifEqual data.sort.order "desc"}}&uarr;{{else}}&darr;{{/ifEqual}}
+          {{else}}
+            Not Sorted
+          {{/if}}
+        </span>
+      {{else}}
+        <span class="inactive">None</span>
+      {{/if}}
+    </div></td>
+
+    <td><div id="pagination">
+      {{#if data.pagination}}
+        <div>
+          <form>
+            <input type="number" min="0" step="100" id="limit" name="limit" style="width: 50px" value="{{data.pagination.limit}}"/>/page
+            <input type="submit" value="Set" onclick="htmlapi.changeLimit($('limit').val())">
+          </form>
+        </div>
+        <div>
+          {{#if data.pagination.partial}}
+            {{#if data.pagination.first}}
+              {{ifEqual data.links.self data.pagination.first}}
+                {{! Nothing }}
+              {{else}}
+                <a href="{{data.pagination.first}}">First</a>&nbsp;
+              {{/if}}
+            {{#if data.pagination.prev}}
+              <a href="{{data.pagination.prev}}">Prev</a>&nbsp;
+            {{/if}}
+            {{#if data.pagination.next}}
+              <a href="{{data.pagination.next}}">Next</a>&nbsp;
+            {{/if}}
+            {{#if data.pagination.last}}
+              <a href="{{data.pagination.last}}">Last</a>
+            {{/if}}
+          {{else}}
+            <span class="inactive">Full result</span>
+          {{/if}}
+        </div>
+      {{else}}
+        <span class="inactive">Not Supported</span>
+      {{/if}}
+    </div></td>
+      <td>
+        <div style="text-align: right;">
+          {{#if docs}}
+            <a href="{{docs}}" target="cloudapidocs">Documentation</a><br/>
+          {{/if}}
+        </div>
+      </td>
+  </tr>
+  </table>
+</div>
+
+<div id="json"></div>
