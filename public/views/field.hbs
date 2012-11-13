@@ -1,0 +1,86 @@
+{{#ifInList type 'array,map'}}
+  <div>
+  {{#each children}}
+    {{>field.hbs}}
+  {{/each}}
+{{/ifInList}}
+
+{{#if field.required}}
+  <span class="required">
+{{/if}}
+
+{{#if parentIsMap}}
+  {{#if formFieldName2}}
+    <input type="text" name="{{formFieldName2}}" value="{{value2}}" />:&nbsp;
+  {{/if}}
+{{/if}}
+
+{{#ifInList type 'string,date'}}
+  <input type="text" name="{{formFieldName}}" value="{{value}}" />
+{{/ifInList}}
+
+{{#ifEqual type 'password'}}
+  <input type="password" name="{{formFieldName}}" value="{{value}}" />
+{{/ifEqual}}
+
+{{#ifInList type 'number,int,float'}}
+  <input 
+    type="number"
+    name="{{formFieldName}}" 
+    value="{{value}}"
+    {{#ifEqual field.min undefined}} {{else}} min="{{field.min}}"{{/ifEqual}}
+    {{#ifEqual field.max undefined}} {{else}} max="{{field.max}}"{{/ifEqual}}
+    {{#if field.step}} step="{{field.step}}"{{/if}}
+  />
+{{/ifInList}}
+
+{{#ifEqual type "blob"}}
+  <input type="file" name="{{formFieldName}}" />
+{{/ifEqual}}
+
+{{#ifEqual type "boolean"}}
+  <input type="checkbox" name="{{formFieldName}}" value="1" {{#if value}} CHECKED{{/if}} />
+{{/ifEqual}}
+
+{{#ifEqual type "__type__"}}
+  <select name="{{formFieldName}}" onchange="htmlapi.createTypeChanged($(this).val());">
+    {{#each field.options}}
+      <option value="{{this}}" {{#ifEqual this ../value}} SELECTED{{/ifEqual}}>{{this}}</option>
+    {{/each}}
+  </select>
+{{/ifEqual}}
+
+{{#ifEqual type "enum"}}
+  <select name="{{formFieldName}}">
+    {{#if $field.nullable}}
+      <option value="">NULL</option>
+    {{/if}}
+    {{#each field.options}}
+      <option value="{{this}}" {{#ifEqual this ../value}} SELECTED{{/ifEqual}}>{{this}}</option>
+    {{/each}}
+  </select>
+{{/ifEqual}}
+
+{{#ifEqual type "reference"}}
+  {{#if field.options}}
+    <select name="{{formFieldName}}">
+      {{#if field.nullable}}
+        <option value="">NULL</option>
+      {{/if}}
+      {{#eachProperty field.options}}
+        <option value="{{key}}" {{#ifEqual key ../value}} SELECTED{{/ifEqual}}>{{value}}</option>
+      {{/eachProperty}}
+    </select>
+  {{else}}
+    <input type="text" name="{formFieldName}}" value="{{value}}">{{! ({$subType|escape} ID) }}
+  {{/if}}
+{{/ifEqual}}
+
+{{#if field.required}}
+  </span>
+{{/if}}
+
+{{#ifInList type 'array,map'}}
+    <input type="button" onclick="htmlapi.subAdd(this,'{{name}}');" value="+"/>
+  </div>
+{{/ifInList}}

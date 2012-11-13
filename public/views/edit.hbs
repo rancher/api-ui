@@ -1,0 +1,53 @@
+<form id="edit-form">
+<div id="request-input">
+  <table class="attributes" width="100%">
+  <tr>
+    <th>Field Name</th>
+    <th>Type</th>
+    <th>Value</th>
+  </tr>
+  {{#if hasFields}}
+    {{#each fields}}
+      <tr>
+        <td>
+          {{#if required}}<span class="required">*</span>{{/if}}
+          {{name}}:
+        </td>
+        <td>
+          <span class="inactive">{{{displayType}}}</span>
+        </td>
+        <td>
+          {{#if writable}}
+            {{>field.hbs}}
+          {{else}}
+            <span class="inactive">
+              {{#if value}}
+                {{value}}
+              {{else}}
+                &ndash;
+              {{/if}}
+          {{/if}}
+        </td>
+    {{/each}}
+  {{else}}
+    <tr>
+      <td colspan="3" style="text-align: center;">
+        <br/>
+        {{#ifEqual mode "action"}}
+          <i>This action has no inputs</i>
+        {{else}}
+          {{#ifEqual mode "update"}}
+            <i>This resource has no fields that can be edited</i>
+          {{else}}
+            <i>This resource has no fields that can be set</i>
+          {{/ifEqual}}
+        {{/ifEqual}}
+      </td>
+    </tr>
+  {{/if}}
+  </table>
+</div>
+
+<div id="request-output">
+</div>
+</form>

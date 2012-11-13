@@ -51,7 +51,8 @@ BODY, TD, DIV {
 
 TEXTAREA, 
 INPUT[type=text],
-INPUT[type=password]{
+INPUT[type=number],
+INPUT[type=password] {
   background-color: white;
   border: 1px solid #C0C0C0;
 }
@@ -111,67 +112,6 @@ TABLE.fixed {
   white-space: nowrap;
 }
 
-.popin_wrapper {
-  border: 1px solid #ccc;
-  background-color: white;
-}
-
-.popin_wrapper_shadow {
-}
-
-.popin_title {
-  height: 30px;
-  line-height: 30px;
-  font-weight: bold;
-  padding-left: 10px;
-  background-image: url('image/popin_title_bg.gif');
-  background-repeat: repeat-x;
-  color: white;
-  white-space: nowrap;
-}
-
-.popin_close {
-  width: 31px;
-  height: 27px;
-  float: right;
-  background-image: url('image/popin_close.gif');
-  background-position: center center;
-  background-repeat: no-repeat;
-}
-
-.popin_body {
-  padding: 20px;
-  overflow: auto;
-}
-
-.popin_notitle .popin_body {
-  top: -1px;
-}
-
-.popin_hasactions .popin_body {
-  bottom: 35px;
-  padding-bottom: 5px;
-}
-
-.popin_actions {
-  height: 26px;
-  padding: 5px 20px 20px 20px;
-  text-align: center;
-  vertical-align: middle;
-  line-height: 26px;
-}
-
-.popin_loading {
-  background-image: url('image/loading.gif');
-  background-position: center center;
-  background-repeat: no-repeat;
-  position: absolute;
-  top: 30px;
-  left: 0;
-  right: 0;
-  bottom: 0;
-}
-
 .loading {
   background-image: url('image/loading.gif');
   background-position: center center;
@@ -208,6 +148,7 @@ TABLE.fixed {
 .string {
   color: green;
   white-space: pre-wrap;
+  word-wrap: break-word;
 }
 
 A.keylink {
@@ -320,6 +261,6 @@ INPUT {
   word-wrap: break-word;
 }
 
-.popin_hasactions .popin_body {
-  padding-bottom: 0;
+.response-header-name {
+  font-weight: bold;
 }

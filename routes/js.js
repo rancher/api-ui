@@ -4,6 +4,7 @@ var viewDir  = __dirname + '/../public/views';
 var files = [
   'async.js',
   'json2.js',
+  'polyfill.js',
   'JSONFormatter.js',
   'URLParse.js',
   'handlebars.js',
@@ -11,7 +12,13 @@ var files = [
   'view:body.hbs',
   'view:filters.hbs',
   'view:filter.hbs',
+  'view:actions.hbs',
+  'view:request.hbs',
+  'view:response.hbs',
+  'view:edit.hbs',
+  'view:field.hbs',
   'HTMLApi.js',
+  'Explorer.js',
 ];
 
 var async = require('async');
@@ -84,10 +91,12 @@ function compileView(name, source, cb)
   process.nextTick(function() {
     var compiled = handlebars.precompile(source.toString(),{});
     var out = [];
+    var safeName = name.replace(/'/g,"\\'");
     out.push("(function() {")
-    out.push("Handlebars.templates['" + name.replace(/'/g, "\\'") + "'] = Handlebars.template(");
+    out.push("Handlebars.templates['" + safeName + "'] = Handlebars.template(");
     out.push(compiled);
     out.push(",{});");
+    out.push("Handlebars.registerPartial('"+ safeName + "', Handlebars.templates['"+ safeName +"']);");
     out.push("})();");
 
     cb(null, out.join("\n"));

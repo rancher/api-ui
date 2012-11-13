@@ -1,0 +1,17 @@
+{{#if res}}
+  <div class="response-status">
+    HTTP/1.1 {{res.status}} {{$res.statusText}}
+  </div>
+  <div class="response-headers">
+  {{#each responseHeaders}}
+    <div class="response-header">
+      <span class="response-header-name">{{this.name}}:</span>
+      <span class="response-header-value">{{this.value}}</span>
+    </div>
+  {{/each}}
+  </div>
+{{else}}
+  <i>Response headers not available.</i><br/>
+{{/if}}
+<br/>
+<div id="response-body" class="response-body"></div>

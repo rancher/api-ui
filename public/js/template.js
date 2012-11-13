@@ -21,3 +21,15 @@ Handlebars.registerHelper('eachProperty', function(context, options) {
 
   return ret.join("");
 });
+
+Handlebars.registerHelper('ifInList', function(a, b, options) {
+  var c = b.split(/,/);
+  if ( b.indexOf(a) >= 0 )
+  {
+    return options.fn(this);
+  }
+  else
+  {
+    return options.inverse(this);
+  }
+});
