@@ -17,6 +17,8 @@ var files = [
   'view:response.hbs',
   'view:edit.hbs',
   'view:field.hbs',
+  'Cookie.js',
+  'init.js',
   'HTMLApi.js',
   'Explorer.js',
 ];

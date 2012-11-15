@@ -1,8 +1,12 @@
-function Explorer(schema)
+function Explorer(htmlapi)
 {
-  this._schema = schema;
+  this._api = htmlapi;
   this._columns = [];
 
+}
+
+Explorer.prototype.show = function()
+{
   this.rootColumn();
 }
 

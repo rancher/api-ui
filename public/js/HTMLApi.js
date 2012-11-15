@@ -1,34 +1,9 @@
 "use strict";
 
-var htmlapi;
-(function()
-{
-  async.series([
-    function(cb) { addScript("https://img4.wsimg.com/starfield/jquery/v1.7.1/jquery.js", cb); },
-    function(cb) { addScript("https://img3.wsimg.com/starfield/curl/v1.8.1/curl.js", cb); }
-  ], duelLoaded);
-
-  function addScript(url,onload) {
-    var head = document.getElementsByTagName('HEAD')[0];
-    var script = document.createElement('script');
-    script.src = url
-    script.onload = function() { onload() };
-    head.appendChild(script);
-  }
-
-  function duelLoaded() {
-    jQuery(window).load(ready);
-  }
-
-  function ready() {
-    htmlapi = new HTMLApi(window.data, window.docs);
-  }
-})();
-
-function HTMLApi(data, docs)
+function HTMLApi(data, docs, cb)
 {
   this._schemas     = null;
-  this._data        = null;
+  this._data        = data;
   this._docs        = docs;
   this._filterId    = 0;
 
@@ -45,7 +20,43 @@ function HTMLApi(data, docs)
     valueFormatter: this.valueFormatter.bind(this)
   });
 
-  this.loadData(data);
+  async.auto({
+    title:                      this.titleUpdate.bind(this),
+    rawSchema:                  this.schemasLoad.bind(this),
+    schema:     ['rawSchema',   this.schemasMunge.bind(this)  ],
+  }, initDone);
+
+  function initDone(err, results)
+  {
+    if ( err )
+      alert('Error loading UI: ' + err);
+    else
+      cb();
+  }
+}
+
+HTMLApi.prototype.show = function(cb)
+{
+  async.auto({
+    render:                     this.render.bind(this)         ,
+    operations: ['render',      this.operationInit.bind(this) ],
+    actions:    ['render',      this.actionInit.bind(this)    ],
+    filters:    ['render',      this.filterInit.bind(this)    ],
+  }, showDone);
+
+  function showDone(err, results)
+  {
+    if ( err )
+    {
+      alert('Error loading UI: ' + err);
+      return;
+    }
+
+    $('#header-body').css('visibility','visible');
+    $('#json').css('padding-top', $('#header')[0].offsetHeight + 'px');
+    if ( cb )
+      cb();
+  }
 }
 
 HTMLApi.prototype._setupModal = function(html)
@@ -57,24 +68,43 @@ HTMLApi.prototype._setupModal = function(html)
     this._reqModal = null;
   }
 
+  if ( !html )
+  {
+    html = '<div class="loading"></div>';
+  }
+
   this._reqModal = $('<div style="width: 700px;"/>').html(html);
   return this._reqModal;
 }
 
-HTMLApi.prototype.loadData = function(data)
+HTMLApi.prototype.showModal = function(html,in_opt,cb)
 {
-  this._schemas = null;
-  this._data = data;
+  var self = this;
 
-  async.auto({
-    title:                      this.titleUpdate.bind(this),
-    rawSchema:                  this.schemasLoad.bind(this),
-    schema:     ['rawSchema',   this.schemasMunge.bind(this)  ],
-    render:     ['schema',      this.render.bind(this)        ],
-    operations: ['render',      this.operationInit.bind(this) ],
-    actions:    ['render',      this.actionInit.bind(this)    ],
-    filters:    ['render',      this.filterInit.bind(this)    ],
-  }, this.initDone.bind(this));
+  var opt = {
+    destroyOnClose: false,
+    dialogHeightMin: 100,
+    buttons: [
+      {id: 'cancel',  text: 'Cancel', cancel: true }
+    ]
+  };
+  
+  var k = Object.keys(in_opt);
+  for ( var i = 0 ; i < k.length ; i++ )
+  {
+    opt[ k[i] ] = in_opt[ k[i] ];
+  }
+
+  self._setupModal(html);
+  require('starfield/sf.dialog', function() {
+    self._reqModal.sfDialog(opt);
+    cb(self._reqModal);
+  });
+}
+
+HTMLApi.prototype.replaceModal = function(html)
+{
+  this._reqModal.html(html);
 }
 
 HTMLApi.prototype.titleUpdate = function(cb)
@@ -213,18 +243,6 @@ HTMLApi.prototype._addCollapser = function(item)
   item.insertBefore(collapser, item.firstChild);
 }
 
-HTMLApi.prototype.initDone = function(err, results)
-{
-  if ( err )
-  {
-    alert('Error loading UI: ' + err);
-    return;
-  }
-
-  $('#header-body').css('visibility','visible');
-  $('#json').css('padding-top', $('#header')[0].offsetHeight + 'px');
-}
-
 HTMLApi.prototype.getSchema = function(type, obj)
 {
   if ( !obj )
@@ -327,7 +345,7 @@ HTMLApi.prototype.actionLoad = function(name, obj, body)
   this._lastBody = body||this._lastBody||{};
 
   if ( !obj )
-    obj = this.data;
+    obj = this._data;
 
   var isCollection = (obj.type == 'collection');
 
@@ -343,34 +361,41 @@ HTMLApi.prototype.actionLoad = function(name, obj, body)
     actionInput = this.getSchema(actionSchema.input);
 
   var url = obj.actions[name];
+  var title = 'Action: ' + name;
 
-  var popin = self.getPopin(name+' action','',[]);
-  popin.setLoading();
-  popin.show();
-
-  self.loadReferenceOptions(actionSchema, display);
-
-  function display()
+  self.showModal(null, {title: title}, shown);
+  
+  function shown(modal) 
   {
-    var tpl = new Template();
-    tpl.assign('fields', actionInput.resourceFields);
-    tpl.assign('action', name);
-    tpl.assign('data', self._lastBody);
+    self.loadReferenceOptions(actionSchema, ready);
 
-    var retry = function()
+    function ready()
     {
-      self.actionLoad(name,obj);
+      var rows = [];
+      
+      var tpl = {};
+      var mode = 'action';
+      tpl.fields = self._flattenFields(mode, actionInput, self._lastBody);
+      tpl.hasFields = tpl.fields.length > 0;
+      tpl.mode = mode;
+      tpl.createTypes = {};
+
+      var retry = function()
+      {
+        self.actionLoad(name, obj);
+      }
+
+      var html = Handlebars.templates['edit.hbs'](tpl);
+      var popinActions = [
+        {id: 'ok',      text: 'Show Request', /*on_enter: true, */ onClick: function() { self.showRequest('POST',actionInput,retry,url); }.bind(self) },
+        {id: 'cancel',  text: 'Cancel', cancel: true }
+      ];
+
+      
+      self.replaceModal(html);
+      modal.sfDialog('setButtons',popinActions);
+      modal.sfDialog('resize');
     }
-
-    var html = tpl.fetch('htmlapi/edit');
-    var method = 'POST';
-    var popinActions = [
-      {name: 'ok',      label: 'Show Request', on_enter: true, action: function() { self.showRequest(method,actionInput,retry,url); }.bind(self) },
-      {name: 'cancel',  label: 'Cancel', display_as: 'link', on_escape: true, action: function() { self.popin.hide(); }.bind(self) }
-    ];
-
-    popin.setBody(html);
-    popin.setActions(popinActions);
   }
 }
 
@@ -556,7 +581,7 @@ HTMLApi.prototype.keyFormatter = function(key,obj, path)
   }
   else if ( parentKey == 'actions' )
   {
-    var dataVar = 'htmlapi.data';
+    var dataVar = 'htmlapi._data';
     for ( var i = 0 ; i < path.length-1 ; i++ )
     {
       dataVar += "['"+ path[i] + "']";
@@ -612,7 +637,10 @@ HTMLApi.prototype.ajax = function(method, url, body, cb)
     type: method||'GET',
     data: body,
     contentType: 'application/json',
-    url: URLParse.updateQuery(url,{_format: 'json'}),
+    headers: {
+      'Accept' : 'application/json'
+    },
+    url: url,
     dataType: 'json',
     success: function(data, msg, jqxhr) { cb(null,data, jqxhr); },
     error: function(jqxhr, msg, exception) { 
@@ -1092,7 +1120,7 @@ HTMLApi.prototype._flattenField = function(mode, name, field, data, depth)
       }
 
       if ( link )
-        displayType = '<a href="' + escape(link) + '">' + displayType + '</a>';
+        displayType = '<a href="' + link + '">' + displayType + '</a>';
     }
 
     for ( var i = field._typeList.length - 2 ; i >= depth ; i-- )
