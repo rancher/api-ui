@@ -1,0 +1,15 @@
+<div class="column-header">
+  Resource
+</div>
+
+{{>column-links.hbs}}
+
+<table class="resource-fields">
+{{#eachProperty data}}
+<tr>
+  <td class="key">{{key}}</td>
+  <td class="value">{{displayValue value}}</td>
+</tr>
+{{/eachProperty}}
+</table>
+

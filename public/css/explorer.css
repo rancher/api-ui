@@ -1,0 +1,64 @@
+#explorer {
+  overflow: hidden;
+  overflow-x: auto;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  white-space: nowrap;
+}
+
+#explorer .column {
+  overflow: auto;
+  width: 250px;
+  height: 100%;
+  border-right: 1px solid #555;
+  margin: 0;
+  padding: 0;
+  float: left;
+}
+
+#explorer .column-header {
+  background-color: #ddd;
+  border-bottom: 1px solid black;
+  font-weight: bold;
+}
+
+#explorer .column-links {
+  background-color: #ddd;
+  border-bottom: 1px solid black;
+}
+
+#explorer .row {
+  margin: 0;
+  padding: 2px;
+  padding-right: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -o-text-overflow: ellipsis;
+  -webkit-text-overflow: ellipsis;
+  cursor: pointer;
+  cursor: hand;
+}
+
+#explorer .row:hover {
+  background-color: #ffc;
+}
+
+#explorer TABLE.resource-fields {
+  width: 100%;
+  table-layout: fixed;
+  background-color: #ddd;
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+#explorer .resource-fields TD {
+  border: 1px solid white;
+}
+
+#explorer .resource-fields .value {
+  word-wrap: break-word;
+}

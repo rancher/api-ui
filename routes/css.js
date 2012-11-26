@@ -1,6 +1,7 @@
 var dir = __dirname + '/../public/css';
 var files = [
-  'main.css'
+  'main.css',
+  'explorer.css'
 ];
 
 var async = require('async');

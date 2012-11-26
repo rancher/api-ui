@@ -33,3 +33,12 @@ Handlebars.registerHelper('ifInList', function(a, b, options) {
     return options.inverse(this);
   }
 });
+
+Handlebars.registerHelper('displayName', function(context, options) {
+  return context.displayName || context.name || context.id || '';
+});
+
+Handlebars.registerHelper('displayValue', function(context, options) {
+  var html = htmlapi._formatter.valueToHTML(context);
+  return new Handlebars.SafeString(html);
+});

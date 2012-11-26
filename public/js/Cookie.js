@@ -61,6 +61,9 @@ Cookie.getAll = function()
     tmp = cookies[i].split(/=/);
     name = tmp[0].trim();
 
+    if ( !name )
+      continue;
+
     if ( tmp.length > 1 )
       val = unescape(tmp[1].trim());
     else

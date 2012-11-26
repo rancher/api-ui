@@ -1,0 +1,13 @@
+<div class="column-header">
+  Collection
+</div>
+
+{{>column-links.hbs}}
+
+<div class="collection-rows">
+  <ul>
+  {{#each data}}
+    <li class="row" data-self="{{this.links.self}}">{{displayName this}}</li>
+  {{/each}}
+  </ul>
+</div>

@@ -2,7 +2,7 @@
 
 var fs  = require('fs');
 var css = require('./routes/css');
-//`var  js = require('./routes/js');
+var js = require('./routes/js');
 
 var dir = __dirname + "/compiled";
 if ( !fs.existsSync(dir) )

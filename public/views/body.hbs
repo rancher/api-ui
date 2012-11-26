@@ -6,7 +6,13 @@
     <th>Filter</th>
     <th width="200">Sort</th>
     <th width="150">Pagination</th>
-    <th width="120" style="text-align:right; font-weight: normal;"><a href="#" onclick="htmlapi.logout(); return false">Log Out</a></th>
+    <th width="120" rowspan="2" style="vertical-align: top; text-align: right; font-weight: normal;">
+      {{! <a href="#" onclick="explorer.show(); return false">Explorer View</a><br/> }}
+      {{#if docs}}
+        <a href="{{docs}}" target="cloudapidocs">Documentation</a><br/>
+      {{/if}}
+      <a href="#" onclick="htmlapi.logout(); return false">Log Out</a>
+    </th>
   </tr>
   <tr>
     <td>
@@ -85,13 +91,6 @@
         <span class="inactive">Not Supported</span>
       {{/if}}
     </div></td>
-      <td>
-        <div style="text-align: right;">
-          {{#if docs}}
-            <a href="{{docs}}" target="cloudapidocs">Documentation</a><br/>
-          {{/if}}
-        </div>
-      </td>
   </tr>
   </table>
 </div>
