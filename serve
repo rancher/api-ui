@@ -1,0 +1,8 @@
+#!/usr/bin/env node
+
+var assets = require('gd-assets');
+
+var groups    = assets.groups(__dirname+'/groups.json');
+var pkg       = require('./package.json');
+
+assets.server(groups, pkg, 3000);

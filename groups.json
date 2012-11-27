@@ -1,0 +1,35 @@
+{
+  "ui": {
+    "css": [
+      "main.css",
+      "explorer.css"
+    ],
+
+    "js": [
+      "async.js",
+      "json2.js",
+      "polyfill.js",
+      "JSONFormatter.js",
+      "URLParse.js",
+      "Cookie.js",
+      "handlebars.runtime.js",
+      "template.js",
+      "view:body.hbs",
+      "view:filters.hbs",
+      "view:filter.hbs",
+      "view:actions.hbs",
+      "view:request.hbs",
+      "view:response.hbs",
+      "view:edit.hbs",
+      "view:field.hbs",
+      "view:explorer.hbs",
+      "view:column.hbs",
+      "view:column-links.hbs",
+      "view:column-collection.hbs",
+      "view:column-resource.hbs",
+      "init.js",
+      "HTMLApi.js",
+      "Explorer.js"
+    ]
+  }
+}
