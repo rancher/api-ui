@@ -2,7 +2,7 @@
 <br/>
 <div id="curl">
   curl 
-    -u <i>$GDAPI_AUTH</i> \<br/>
+    -u <i>"${GDAPI_ACCESS_KEY}:${GDAPI_SECRET_KEY}"</i> \<br/>
     -X {{method}} \<br/>
     -H 'Accept: application/json'  \<br/>
     {{#if rawBody}}

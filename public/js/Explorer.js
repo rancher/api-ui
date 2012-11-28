@@ -35,7 +35,7 @@ Explorer.prototype.rootColumn = function()
         id:           schema.id,
         displayName:  schema.displayName || schema.name || schema.id,
         links: {
-          'self': schema.links.collection +'/index.json'  // @TODO remove static site hack
+          'self': schema.links.collection
         }
       });
     }
@@ -165,11 +165,6 @@ Explorer.prototype.followLink = function(event)
   var $tgt = $(event.target);
   var $col = this._findColumnByChild($tgt);
   var link = $tgt.data('self');
-
-  if ( link.indexOf('.json') === -1 )
-    link += '.json';
-
-  console.log('followLink:', link);
 
   this.removeColumns($col);
   var $newColumn = this.addPlaceholder();
