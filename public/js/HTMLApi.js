@@ -208,7 +208,7 @@ HTMLApi.prototype.render = function(cb)
     docs: this._docs
   };
 
-  document.body.innerHTML = Handlebars.templates['body.hbs'](tpl);
+  document.body.innerHTML = Handlebars.templates['body'](tpl);
   $('#json').html(jsonHtml);
 
   this._addCollapsers();
@@ -330,7 +330,7 @@ HTMLApi.prototype.actionInit = function(cb)
   if ( !data.actions )
     return async.nextTick(cb);
     
-  var html = Handlebars.templates['actions.hbs']({
+  var html = Handlebars.templates['actions']({
     actions: data.actions
   });
   $('#actions').html(html);
@@ -385,7 +385,7 @@ HTMLApi.prototype.actionLoad = function(name, obj, body)
         self.actionLoad(name, obj);
       }
 
-      var html = Handlebars.templates['edit.hbs'](tpl);
+      var html = Handlebars.templates['edit'](tpl);
       var popinActions = [
         {id: 'ok',      text: 'Show Request', /*on_enter: true, */ onClick: function() { self.showRequest('POST',actionInput,retry,url); }.bind(self) },
         {id: 'cancel',  text: 'Cancel', cancel: true }
@@ -437,7 +437,7 @@ HTMLApi.prototype.filterInit = function(cb)
     }
   }
 
-  var html = Handlebars.templates['filters.hbs']({
+  var html = Handlebars.templates['filters']({
     canFilter: canFilter,
     hasFilters: (filters.length > 0)
   });
@@ -447,7 +447,7 @@ HTMLApi.prototype.filterInit = function(cb)
   {
     v = filters[i];
 
-    html = Handlebars.templates['filter.hbs']({
+    html = Handlebars.templates['filter']({
       allFilterSchema: schema.collectionFilters,
       thisFilterSchema: schema.collectionFilters[v.name],
       cur: v
@@ -475,7 +475,7 @@ HTMLApi.prototype.filterAdd = function(name, modifier, value, before)
     value:    value || ''
   };
 
-  html = Handlebars.templates['filter.hbs']({
+  html = Handlebars.templates['filter']({
     allFilterSchema: schemaFilters,
     thisFilterSchema: schemaFilters[name],
     cur: cur
@@ -773,7 +773,7 @@ HTMLApi.prototype.request = function(method,body,opt,really)
     tpl.contentType = 'application/json';
   }
 
-  var html = Handlebars.templates['request.hbs'](tpl);
+  var html = Handlebars.templates['request'](tpl);
 
   self._setupModal(html);
 
@@ -823,7 +823,7 @@ HTMLApi.prototype.requestDone = function(err, body, res)
     tpl.responseHeaders = headers;
   }
 
-  var html = Handlebars.templates['response.hbs'](tpl);
+  var html = Handlebars.templates['response'](tpl);
 
   var out = '';
   var selfUrl = false;
@@ -1026,7 +1026,7 @@ HTMLApi.prototype.showEdit = function(data,update,schema,url)
     }
 
     var title = (update ? 'Edit' : 'Create') +' '+ schema.id;
-    var html = Handlebars.templates['edit.hbs'](tpl);
+    var html = Handlebars.templates['edit'](tpl);
     var method = (update ? 'PUT' : 'POST');
     var popinActions = [
       {id: 'ok',      text: 'Show Request', /*on_enter: true, */ onClick: function() { self.showRequest(method,schema,retry,url); }.bind(self) },
@@ -1389,7 +1389,7 @@ HTMLApi.prototype.subAdd = function(button, name)
   var field = this._flattenField('update',name,schemaField,'',1);
   field.parentIsMap = parentField.type == 'map';
 
-  var html = Handlebars.templates['field.hbs'](field);
+  var html = Handlebars.templates['field'](field);
 
   html = '<div><input type="button" onclick="htmlapi.subRemove(this);" value="-">' + html + '</div>';
   $(button).before(html);

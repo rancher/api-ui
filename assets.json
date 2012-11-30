@@ -1,0 +1,42 @@
+{
+  "base": {
+    "css": [
+      "main"
+    ],
+
+    "js": [
+      "async", "json2", "polyfill",
+      "JSONFormatter", "URLParse", "Cookie",
+      "handlebars.runtime", "template"
+    ]
+  },
+
+  "ui": {
+    "group": [
+      "base"
+    ],
+
+    "css": [
+      "explorer"
+    ],
+
+    "view": [
+      "body",
+      "filters", "filter", "actions",
+      "request", "response",
+      "edit", "field",
+
+      "explorer",
+      "column",
+      "column-links",
+      "column-collection",
+      "column-resource"
+    ],
+
+    "js": [
+      "HTMLApi",
+      "Explorer",
+      "init"
+    ]
+  }
+}

@@ -2,7 +2,7 @@
 
 var assets = require('gd-assets');
 
-var groups    = assets.groups(__dirname+'/groups.json');
+var groups    = assets.groups.load(__dirname+'/assets.json');
 var pkg       = require('./package.json');
 var outputDir = __dirname+'/compiled';
 
