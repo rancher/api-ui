@@ -360,6 +360,7 @@ HTMLApi.prototype.actionLoad = function(name, obj, body)
   if ( actionSchema.input )
     actionInput = this.getSchema(actionSchema.input);
 
+  this._editSchema = actionInput;
   var url = obj.actions[name];
   var title = 'Action: ' + name;
 
@@ -1066,7 +1067,7 @@ HTMLApi.prototype._flattenField = function(mode, name, field, data, depth)
 
   var type = field._typeList[depth];
 
-  if ( mode == 'update' || (mode == 'create' && field.create) || (mode == 'action' && field.create) )
+  if ( mode == 'update' || (mode == 'create' && field.create) || (mode == 'action') )
   {
     // The value input's name
     var formFieldName = name;
@@ -1094,7 +1095,7 @@ HTMLApi.prototype._flattenField = function(mode, name, field, data, depth)
       formFieldName: formFieldName,
       formFieldName2: formFieldName2,
       required: field.required || false,
-      writable: (mode == 'update' && field.update) || (mode != 'update' && field.create),
+      writable: (mode == 'action') || (mode == 'update' && field.update) || (mode != 'update' && field.create),
       type: type,
       field: field,
       children: null,
@@ -1148,7 +1149,7 @@ HTMLApi.prototype._flattenField = function(mode, name, field, data, depth)
       row.children = [];
       for ( var i = 0 ; i < (data||[]).length ; i++ )
       {
-        row.children.push( this._flattenFields(mode, field, data[i], depth+1) );
+        row.children.push( this._flattenField(mode, name, field, data[i], depth+1) );
       }
     }
     else

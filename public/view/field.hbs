@@ -1,7 +1,9 @@
 {{#ifInList type 'array,map'}}
-  <div>
   {{#each children}}
-    {{>field}}
+    <div>
+      <input type="button" onclick="htmlapi.subRemove(this);" value="-">
+      {{>field}}
+    </div>
   {{/each}}
 {{/ifInList}}
 

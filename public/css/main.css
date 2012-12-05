@@ -221,6 +221,10 @@ INPUT {
   margin: 2px;
 }
 
+INPUT[type="button"] {
+  min-width: 20px;
+}
+
 #filters INPUT[type="text"] {
   width: 100px;
 }
