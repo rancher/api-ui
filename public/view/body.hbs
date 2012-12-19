@@ -71,11 +71,12 @@
         <div>
           {{#if data.pagination.partial}}
             {{#if data.pagination.first}}
-              {{ifEqual data.links.self data.pagination.first}}
+              {{#ifEqual data.links.self data.pagination.first}}
                 {{! Nothing }}
               {{else}}
                 <a href="{{data.pagination.first}}">First</a>&nbsp;
-              {{/if}}
+              {{/ifEqual}}
+            {{/if}}
             {{#if data.pagination.prev}}
               <a href="{{data.pagination.prev}}">Prev</a>&nbsp;
             {{/if}}
