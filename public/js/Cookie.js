@@ -77,5 +77,5 @@ Cookie.getAll = function()
 
 Cookie.remove = function(name)
 {
-  document.cookie = name+'=null; expires=Wed, 24 Feb 1982 18:42:00 UTC; path=/';
+  document.cookie = name+'=null; expires=Wed, 24 Feb 1982 18:42:00 UTC';
 }

@@ -205,7 +205,8 @@ HTMLApi.prototype.render = function(cb)
 
   var tpl = {
     data: this._data,
-    docs: this._docs
+    docs: this._docs,
+    explorer: Cookie.get('debug')
   };
 
   document.body.innerHTML = Handlebars.templates['body'](tpl);
