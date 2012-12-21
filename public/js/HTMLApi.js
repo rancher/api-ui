@@ -9,6 +9,7 @@ function HTMLApi(data, docs, cb)
 
   this._reqModal    = null;
   this._editSchema  = null;
+  this._lastMethod  = null;
   this._lastBody    = null;
   this._lastOpt     = null;
 
@@ -81,12 +82,39 @@ HTMLApi.prototype.showModal = function(html,in_opt,cb)
 {
   var self = this;
 
+  function onMoreKeys(e)
+  {
+    if ( e.keyCode == 13 )
+    {
+      // Find the first primary button and click it
+      var buttons = self._reqModal.sfDialog('getButtons');
+      var button;
+      for (var i = 0 ; i < buttons.length ; i++ )
+      {
+        button = buttons[i].button;
+        if ( button.hasClass('sf-btn-primary') )
+        {
+          button.trigger('click');
+          break;
+        }
+      }
+    }
+
+    return true;
+  }
+
   var opt = {
     destroyOnClose: false,
     dialogHeightMin: 100,
     buttons: [
       {id: 'cancel',  text: 'Cancel', cancel: true }
-    ]
+    ],
+    onOpen: function() {
+      $(this.context.document).bind('keydown', onMoreKeys);
+    },
+    onClose: function() {
+      $(this.context.document).unbind('keydown', onMoreKeys);
+    }
   };
   
   var k = Object.keys(in_opt);
@@ -98,7 +126,8 @@ HTMLApi.prototype.showModal = function(html,in_opt,cb)
   self._setupModal(html);
   require('starfield/sf.dialog', function() {
     self._reqModal.sfDialog(opt);
-    cb(self._reqModal);
+    if ( cb )
+      cb(self._reqModal);
   });
 }
 
@@ -685,6 +714,7 @@ HTMLApi.prototype.request = function(method,body,opt,really)
 
   this._lastOpt = opt;
   this._lastBody = body;
+  this._lastMethod = method;
 
   var url = opt.url || this._data.links.self || window.location.href;
   var urlParts = URLParse.parse(url);
@@ -778,19 +808,15 @@ HTMLApi.prototype.request = function(method,body,opt,really)
 
   var html = Handlebars.templates['request'](tpl);
 
-  self._setupModal(html);
-
-  require('starfield/sf.dialog', function() {
-    self._reqModal.sfDialog({
-      destroyOnClose: false,
-      title: 'API Request',
-      buttons: [
-        {id: 'ok',      text: 'Send Request', onClick: function() { self.request(method,body,opt,true); } },
-        {id: 'cancel',  text: 'Cancel', cancel: true}
-      ],
-    });
-    self._reqModal.sfDialog('resize');
+  self.showModal(html, {
+    destroyOnClose: false,
+    title: 'API Request',
+    buttons: [
+      {id: 'ok',      text: 'Send Request', onClick: function() { self.request(method,body,opt,true); } },
+      {id: 'cancel',  text: 'Cancel', cancel: true}
+    ]
   });
+  self._reqModal.sfDialog('resize');
 }
 
 HTMLApi.prototype.postDone = function()
@@ -853,26 +879,44 @@ HTMLApi.prototype.requestDone = function(err, body, res)
 
   var retry = (typeof body != 'object' || (body.type && body.type == 'error') ) && this._lastOpt.retry;
 
+  var primary = 'reload';
   var popinActions = [
-      {id: 'reload',  text: 'Reload', /*on_enter: (loc ? false : true),*/     onClick: this.reload.bind(this)},
-      {id: 'up',      text: 'Go Up',                                      onClick: function() { this.up(); }.bind(this) },
-      {id: 'cancel',  text: 'Close', cancel: true}
+      {id: 'reload',  text: 'Reload', onClick: this.reload.bind(this)},
+      {id: 'up',      text: 'Go Up',  onClick: function() { this.up(); }.bind(this) },
+      {id: 'cancel',  text: 'Close',  cancel: true}
   ];
 
   if ( loc )
   {
+    primary = 'follow';
     popinActions.unshift({id: 'follow', text: 'Follow Location', /*on_enter: !retry,*/ onClick: function() { window.location.href = loc }});
   }
   else if ( selfUrl )
   {
+    primary = 'followSelf';
     popinActions.unshift({id: 'followSelf', text: 'Follow Self Link', /*on_enter: !retry,*/ onClick: function() { window.location.href = selfUrl }});
   }
 
   if ( retry )
   {
+    primary = 'edit';
     popinActions.unshift({id: 'edit', text: 'Edit & Retry', /*on_enter: true,*/ onClick: this._lastOpt.retry.bind(this) });
   }
 
+  // Default to "Go Up" on successful delete
+  if ( (this._lastMethod||"").toUpperCase() == 'DELETE' && res.status >= 200 && res.status <= 299)
+  {
+    primary = 'up';
+  }
+
+  for ( var i = 0 ; i < popinActions.length ; i++ )
+  {
+    if ( popinActions[i].id != primary && !popinActions[i].cancel )
+    {
+      popinActions[i].enabledClasses = "sf-btn-secondary";
+      popinActions[i].disabledClasses = "sf-btn-secondary sf-btn-dsabld";
+    }
+  }
   
   this._reqModal.sfDialog('setButtons', popinActions);
   $('#notsent').hide();
@@ -1036,12 +1080,13 @@ HTMLApi.prototype.showEdit = function(data,update,schema,url)
       {id: 'cancel',  text: 'Cancel', cancel: true }
     ];
 
-    self._setupModal(html);
-    require('starfield/sf.dialog', function() {
-      self._reqModal.sfDialog({
+    self.showModal(html, {
         title: title,
         buttons: popinActions
-      });
+    }, function() {
+      var input = $(":input:not(input[type=button],input[type=submit],button):visible:first", htmlapi._reqModal);
+      if ( input )
+        input.focus();
     });
   }
 }

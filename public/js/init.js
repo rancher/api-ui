@@ -22,6 +22,12 @@ var explorer;
   }
 
   function jQueryReady() {
+    require('starfield/sf.dialog', function() {
+      dialogReady();
+    });
+  }
+
+  function dialogReady() {
     htmlapi = new HTMLApi(window.data, window.docs, apiReady);
   }
 
