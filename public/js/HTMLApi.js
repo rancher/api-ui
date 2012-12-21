@@ -226,7 +226,7 @@ HTMLApi.prototype._addCollapsers = function()
   var items = $('UL.collapsible');
   for( var i = 0; i < items.length; i++)
   {
-    this._addCollapser($(items[i]).parent());
+    this._addCollapser($(items[i]).parent()[0]);
   }
 }
 
@@ -241,7 +241,8 @@ HTMLApi.prototype._addCollapser = function(item)
     text: '-',
     click: JSONFormatter.prototype.collapse
   });
-  item.insertBefore(collapser, item.firstChild);
+
+  collapser.insertBefore(item.firstChild);
 }
 
 HTMLApi.prototype.getSchema = function(type, obj)
