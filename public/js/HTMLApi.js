@@ -11,6 +11,7 @@ function HTMLApi(data, docs, cb)
   this._editSchema  = null;
   this._lastMethod  = null;
   this._lastBody    = null;
+  this._lastType    = null;
   this._lastOpt     = null;
 
   this.referenceDropdownLimit = 100;
@@ -410,7 +411,7 @@ HTMLApi.prototype.actionLoad = function(name, obj, body)
       tpl.fields = self._flattenFields(mode, actionInput, self._lastBody);
       tpl.hasFields = tpl.fields.length > 0;
       tpl.mode = mode;
-      tpl.createTypes = {};
+      tpl.createTypes = false;
 
       var retry = function()
       {
@@ -954,19 +955,16 @@ HTMLApi.prototype.create = function()
     }
   }
 
-  if ( this._data.createTypes && schema.resourceFields.type && schema.resourceFields.type.create )
+  if ( this._data.createTypes )
   {
-    var type = data.type;
-
-    schema.resourceFields.type._typeList = ['__type__'];
-    schema.resourceFields.type.options = Object.keys(this._data.createTypes);
-
     // Make sure the selected type exists in the createTypes list
+    var type = data.type;
     if ( !type || !this._data.createTypes[type] )
       type = Object.keys(this._data.createTypes)[0];
 
-    this.createTypeChanged(type,true);
+    this._lastType = type;
     this._lastBody = data;
+    this.createTypeChanged(type,true);
   }
   else
   {
@@ -1065,11 +1063,24 @@ HTMLApi.prototype.showEdit = function(data,update,schema,url)
     tpl.fields = self._flattenFields(mode, schema, data);
     tpl.hasFields = tpl.fields.length > 0;
     tpl.mode = mode;
-    tpl.createTypes = self._data.createTypes || {};
+    tpl.createTypes = self._data.createTypes || false;
+
+    if ( self._data.createTypes && Object.keys(self._data.createTypes).length > 1 )
+    {
+      var typeField = {
+        required: true,
+        create: true,
+        type: '__type__',
+        _typeList: ['__type__'],
+        options: Object.keys(self._data.createTypes)
+      };
+
+      tpl.typeField = self._flattenField('create', 'type', typeField, self._lastType, 0);
+    }
 
     var retry = function()
     {
-      self.showEdit(self._lastBody||data, update, schema);
+      self.showEdit(self._lastBody||data, update, schema, url);
     }
 
     var title = (update ? 'Edit' : 'Create') +' '+ schema.id;
@@ -1100,6 +1111,10 @@ HTMLApi.prototype._flattenFields = function(mode,schema,data)
   {
     name = keys[i];
     field = schema.resourceFields[name];
+
+    if ( name == "type" )
+      continue;
+
     row = this._flattenField(mode, name, field, data[name]);
     if ( row )
       rows.push(row);
@@ -1240,9 +1255,9 @@ HTMLApi.prototype.createTypeChanged = function(type,first)
   {
     var values = self.getEditValues(null, schema);
     self._lastBody = values.body;
-    self._lastBody.type = type;
   }
 
+  self._lastType = type;
   self.showEdit(self._lastBody, false, schema, this._data.createTypes[type] );
 }
 

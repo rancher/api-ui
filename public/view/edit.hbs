@@ -6,6 +6,22 @@
     <th>Type</th>
     <th width="50%">Value</th>
   </tr>
+  {{#if typeField}}
+    {{#with typeField}}
+      <tr>
+        <td>
+          {{#if required}}<span class="required">*</span>{{/if}}
+          {{name}}:
+        </td>
+        <td>
+          <span class="inactive">schema name</span>
+        </td>
+        <td>
+          {{>field}}
+        </td>
+      </tr>
+    {{/with}}
+  {{/if}}
   {{#if hasFields}}
     {{#each fields}}
       <tr>
