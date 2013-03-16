@@ -41,21 +41,21 @@
 {{/ifEqual}}
 
 {{#ifEqual type "boolean"}}
-  <input type="checkbox" name="{{formFieldName}}" value="1" {{#if value}} CHECKED{{/if}} />
-{{/ifEqual}}
-
-{{#ifEqual type "__type__"}}
-  <select name="{{formFieldName}}" onchange="htmlapi.createTypeChanged($(this).val());">
-    {{#each field.options}}
-      <option value="{{this}}" {{#ifEqual this ../value}} SELECTED{{/ifEqual}}>{{this}}</option>
-    {{/each}}
-  </select>
+  {{#if field.nullable}}
+    <select name="{{formFieldName}}">
+      <option value="__-*NULL*-__" {{#ifEqual null ../value}} SELECTED{{/ifEqual}}>NULL</option>
+      <option value="" {{#ifEqual false ../value}} SELECTED{{/ifEqual}}>false</option>
+      <option value="1" {{#ifEqual true ../value}} SELECTED{{/ifEqual}}>true</option>
+    </select>
+  {{else}}
+    <input type="checkbox" name="{{formFieldName}}" value="1" {{#if value}} CHECKED{{/if}} />
+  {{/if}}
 {{/ifEqual}}
 
 {{#ifEqual type "enum"}}
   <select name="{{formFieldName}}">
-    {{#if $field.nullable}}
-      <option value="">NULL</option>
+    {{#if field.nullable}}
+      <option value="__-*NULL*-__">NULL</option>
     {{/if}}
     {{#each field.options}}
       <option value="{{this}}" {{#ifEqual this ../value}} SELECTED{{/ifEqual}}>{{this}}</option>
@@ -67,15 +67,33 @@
   {{#if field.options}}
     <select name="{{formFieldName}}">
       {{#if field.nullable}}
-        <option value="">NULL</option>
+        <option value="__-*NULL*-__">NULL</option>
       {{/if}}
       {{#eachProperty field.options}}
         <option value="{{key}}" {{#ifEqual key ../value}} SELECTED{{/ifEqual}}>{{value}}</option>
       {{/eachProperty}}
     </select>
   {{else}}
-    <input type="text" name="{formFieldName}}" value="{{value}}">{{! ({$subType|escape} ID) }}
+    <input type="text" name="{formFieldName}}" value="{{value}}">
   {{/if}}
+{{/ifEqual}}
+
+{{#if field.nullable}}
+  {{#unless field.options}}
+    {{#ifInList type 'string,date,password,number,int,float,reference'}}
+      <label>
+        <input type="checkbox" name="{{formFieldNameNull}}" value="1" {{#ifEqual null value}} CHECKED{{/ifEqual}}>NULL
+      </label> 
+    {{/ifInList}}
+  {{/unless}}
+{{/if}}
+
+{{#ifEqual type "__type__"}}
+  <select name="{{formFieldName}}" onchange="htmlapi.createTypeChanged($(this).val());">
+    {{#each field.options}}
+      <option value="{{this}}" {{#ifEqual this ../value}} SELECTED{{/ifEqual}}>{{this}}</option>
+    {{/each}}
+  </select>
 {{/ifEqual}}
 
 {{#if field.required}}

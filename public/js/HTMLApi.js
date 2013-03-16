@@ -14,7 +14,9 @@ function HTMLApi(data, docs, cb)
   this._lastType    = null;
   this._lastOpt     = null;
 
-  this.referenceDropdownLimit = 100;
+  this._referenceDropdownLimit = 100;
+  this._magicNull = "__-*NULL*-__";
+  this._magicNullRegex= new RegExp(this._escapeRegex(this._magicNull)+'$');
 
   this._formatter = new JSONFormatter({
     baseUrl: window.location.protocol +"//" + window.location.host,
@@ -139,7 +141,11 @@ HTMLApi.prototype.replaceModal = function(html)
 
 HTMLApi.prototype.titleUpdate = function(cb)
 {
-  document.title = "API: " + (this._data.displayName || this._data.name || this._data.id || this._data.type);
+  var title = "API";
+  if ( this._data )
+    title += ": " + (this._data.displayName || this._data.name || this._data.id || this._data.type);
+
+  document.title = title;
 
   if ( cb )
     async.nextTick(cb);
@@ -387,6 +393,7 @@ HTMLApi.prototype.actionLoad = function(name, obj, body)
   // The description of the input and output for this action
   var actionSchema = (isCollection ? objSchema.collectionActions[name] : objSchema.resourceActions[name]);
 
+
   // The schema for the input
   var actionInput = {};
   if ( actionSchema.input )
@@ -400,7 +407,7 @@ HTMLApi.prototype.actionLoad = function(name, obj, body)
   
   function shown(modal) 
   {
-    self.loadReferenceOptions(actionSchema, ready);
+    self.loadReferenceOptions(actionInput, ready);
 
     function ready()
     {
@@ -939,7 +946,7 @@ HTMLApi.prototype.create = function()
   for ( k in schema.resourceFields )
   {
     v = schema.resourceFields[k];
-    data[k] = '';
+    data[k] = (v['nullable'] ? null : '');
     if ( v['default'] )
     {
       data[k] = v['default'];
@@ -1007,7 +1014,7 @@ HTMLApi.prototype.loadReferenceOptions = function(schema,doneCb)
       cb();
     }
 
-    self.ajax('GET', URLParse.updateQuery(task.url,{_format: 'json', limit: self.referenceDropdownLimit, 'removed_null': 1}), gotReferences);
+    self.ajax('GET', URLParse.updateQuery(task.url,{_format: 'json', limit: self._referenceDropdownLimit, 'removed_null': 1}), gotReferences);
   }
 
   var q = async.queue(getReferences, 1);
@@ -1095,11 +1102,39 @@ HTMLApi.prototype.showEdit = function(data,update,schema,url)
         title: title,
         buttons: popinActions
     }, function() {
+      // Focus the first regular input
       var input = $(":input:not(input[type=button],input[type=submit],button):visible:first", htmlapi._reqModal);
       if ( input )
         input.focus();
+
+      // Make the null checkboxes clear the field, and field clear null
+      var checkboxes = $('INPUT[name$="__-*NULL*-__"]', htmlapi._reqModal)
+      var selector;
+      for ( var i = 0 ; i < checkboxes.length ; i++ )
+      {
+        (function(check) {
+          var $check = $(check);
+          var selector = 'INPUT[name="'+ check.name.replace(self._magicNullRegex,'') +'"]';
+          var $input = $(selector, htmlapi._reqModal);
+          
+          $check.on('click', function(event) {
+            if ( this.value )
+              $input.val('');
+          });
+
+          $input.on('keyup', function(event) {
+            if ( event.keyCode >= 32 )
+              check.checked = false;
+          });
+        })(checkboxes[i]);
+      }
     });
   }
+}
+
+HTMLApi.prototype._escapeRegex = function(str)
+{
+  return str.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')
 }
 
 HTMLApi.prototype._flattenFields = function(mode,schema,data)
@@ -1156,6 +1191,7 @@ HTMLApi.prototype._flattenField = function(mode, name, field, data, depth)
       name: name,
       formFieldName: formFieldName,
       formFieldName2: formFieldName2,
+      formFieldNameNull: formFieldName+this._magicNull,
       required: field.required || false,
       writable: (mode == 'action') || (mode == 'update' && field.update) || (mode != 'update' && field.create),
       type: type,
@@ -1263,9 +1299,23 @@ HTMLApi.prototype.createTypeChanged = function(type,first)
 
 HTMLApi.prototype._flattenInputs = function($form)
 {
-  var serialized = $form.serializeArray();
-  
   var i, j;
+  var serialized = $form.serializeArray();
+
+  // serializeArray doesn't include unchecked checkboxes... so add those.
+  var checkboxes = $("input:checkbox:not(:checked)",$form);
+  var check;
+  for ( i = 0 ; i < checkboxes.length ; i++ )
+  {
+    check = checkboxes[i];
+
+    // But ignore the magic null checkboxes
+    if ( check.name.match(this._magicNullRegex) )
+      continue;
+
+    serialized.push({name: check.name, value: false});
+  }
+  
   var $files = $("INPUT[type='file']",$form);
   for ( i = 0 ; i < $files.length ; i++ )
   {
@@ -1345,10 +1395,24 @@ HTMLApi.prototype.getEditValues = function(method, schema)
   var body = {};
   var blobs = null;
   var k, field, v;
+  var isNull;
   for ( k in schema.resourceFields )
   {
     field = schema.resourceFields[k];
     v = inputs[k];
+
+    // Ignore the null checkboxes
+    if ( k.match(this._magicNullRegex) )
+      continue;
+
+    // Set the value to the magicNull if the checkbox is checked
+    if ( inputs[k+this._magicNull] )
+      v = this._magicNull;
+
+    // _flattenInputs won't have a value for unchecked ones.
+    // Set a false value for unchecked boolean inputs that were on the page
+//    if ( field.type == 'boolean' && v === undefined && $('INPUT[name="'+k+'"]', $form)[0] )
+//      v = false;
 
     if ( field._typeList[0] == 'array' )
     {
@@ -1365,10 +1429,13 @@ HTMLApi.prototype.getEditValues = function(method, schema)
       }
     }
 
-    // Don't include nullable fields if they have no value
-    if ( v === "" && field.nullable )
+    if ( v === this._magicNull )
     {
-      continue;
+      // Don't send nullable fields if they have no value
+      if ( field.nullable )
+        continue;
+      else
+        v = null;
     }
 
     if ( field.type == 'blob' )
