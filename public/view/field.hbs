@@ -78,16 +78,6 @@
   {{/if}}
 {{/ifEqual}}
 
-{{#if field.nullable}}
-  {{#unless field.options}}
-    {{#ifInList type 'string,date,password,number,int,float,reference'}}
-      <label>
-        <input type="checkbox" name="{{formFieldNameNull}}" value="1" {{#ifEqual null value}} CHECKED{{/ifEqual}}>NULL
-      </label> 
-    {{/ifInList}}
-  {{/unless}}
-{{/if}}
-
 {{#ifEqual type "__type__"}}
   <select name="{{formFieldName}}" onchange="htmlapi.createTypeChanged($(this).val());">
     {{#each field.options}}
@@ -98,6 +88,16 @@
 
 {{#if field.required}}
   </span>
+{{/if}}
+
+{{#if enlargeable}}
+  <input type="button" onclick="htmlapi.switchToTextarea(this);" value="&#x21f2;" title="Enlarge"/>
+{{/if}}
+
+{{#if nullCheck}}
+  <label>
+    <input type="checkbox" name="{{formFieldNameNull}}" value="1" onclick="htmlapi.toggleNull(this);" {{#ifEqual null value}} CHECKED{{/ifEqual}}>NULL
+  </label> 
 {{/if}}
 
 {{#ifInList type 'array,map'}}

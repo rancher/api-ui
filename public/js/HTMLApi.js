@@ -1108,26 +1108,15 @@ HTMLApi.prototype.showEdit = function(data,update,schema,url)
         input.focus();
 
       // Make the null checkboxes clear the field, and field clear null
-      var checkboxes = $('INPUT[name$="__-*NULL*-__"]', htmlapi._reqModal)
-      var selector;
-      for ( var i = 0 ; i < checkboxes.length ; i++ )
-      {
-        (function(check) {
-          var $check = $(check);
-          var selector = 'INPUT[name="'+ check.name.replace(self._magicNullRegex,'') +'"]';
-          var $input = $(selector, htmlapi._reqModal);
-          
-          $check.on('click', function(event) {
-            if ( this.value )
-              $input.val('');
-          });
+      $(htmlapi._reqModal).on('keyup','input[type="text"], textarea', function(event) {
+        if ( event.keyCode < 32 )
+          return;
 
-          $input.on('keyup', function(event) {
-            if ( event.keyCode >= 32 )
-              check.checked = false;
-          });
-        })(checkboxes[i]);
-      }
+        var selector = 'INPUT[name="'+ event.target.name + self._magicNull + '"]';
+        var checks = $(selector, htmlapi._reqModal)
+        if ( checks && checks[0] )
+          checks[0].checked = false;
+      });
     });
   }
 }
@@ -1194,6 +1183,8 @@ HTMLApi.prototype._flattenField = function(mode, name, field, data, depth)
       formFieldNameNull: formFieldName+this._magicNull,
       required: field.required || false,
       writable: (mode == 'action') || (mode == 'update' && field.update) || (mode != 'update' && field.create),
+      enlargeable: (type == 'string' && (!field.maxLength || field.maxLength > 63)),
+      nullCheck: (field.nullable && !field.options && ['string','data','password','number','int','float','reference'].indexOf(field.type) >= 0 ),
       type: type,
       field: field,
       children: null,
@@ -1530,5 +1521,39 @@ HTMLApi.prototype.subRemove = function(button)
 {
   var $div = $(button).parents('DIV');
   $($div[0]).remove();
+  this._reqModal.sfDialog('resize');
+}
+
+HTMLApi.prototype.toggleNull = function(check)
+{
+  var $check = $(check);
+  var selector = 'INPUT[name="'+ check.name.replace(this._magicNullRegex,'') +'"]';
+  var $input = $(selector, htmlapi._reqModal);
+
+  if ( !$input || !$input[0] )
+    return;
+
+  if ( check.checked )
+    $input.val('');
+  else
+    $input[0].focus();
+}
+
+HTMLApi.prototype.switchToTextarea = function(button)
+{
+  var $button = $(button);
+  var $par = $($button.parent());
+  var $input = $('INPUT[type="text"]', $par);
+
+  if ( !$input[0] )
+    return;
+
+  var val = $input.val();
+
+  var $textarea = $('<textarea>', {name: $input.attr('name') }).addClass('expandedTextarea');
+  $input.replaceWith($textarea);
+  $textarea.val(val);
+  $textarea.on('keydown', function(e) { if ( e.keyCode == 13 ) { e.stopPropagation(); return true; } });
+  $button.hide();
   this._reqModal.sfDialog('resize');
 }

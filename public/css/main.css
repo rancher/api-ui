@@ -233,6 +233,16 @@ INPUT[type="button"] {
   border: 1px solid #f8f8f8;
 }
 
+#request-input INPUT[type="text"],
+#request-input INPUT[type="password"] {
+  width: 210px;
+}
+
+#request-input TEXTAREA {
+  width: 210px;
+  height: 100px;
+}
+
 #curl,
 #request,
 #response {
