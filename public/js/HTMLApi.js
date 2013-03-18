@@ -1527,7 +1527,8 @@ HTMLApi.prototype.subRemove = function(button)
 HTMLApi.prototype.toggleNull = function(check)
 {
   var $check = $(check);
-  var selector = 'INPUT[name="'+ check.name.replace(this._magicNullRegex,'') +'"]';
+  var name = check.name.replace(this._magicNullRegex,'');
+  var selector = 'INPUT[name="'+ name +'"], TEXTAREA[name="'+ name +'"]';
   var $input = $(selector, htmlapi._reqModal);
 
   if ( !$input || !$input[0] )
