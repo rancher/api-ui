@@ -7,13 +7,17 @@
     <th width="200">Sort</th>
     <th width="150">Pagination</th>
     <th width="120" rowspan="2" style="vertical-align: top; text-align: right; font-weight: normal;">
+      {{#if user}}
+        <span class="user">{{user}}</span>
+      {{/if}}
+      <a href="#" onclick="htmlapi.logout(); return false">Log Out</a><br/>
+
       {{#if explorer}}
         <a href="#" onclick="Cookie.set('apiview','explorer'); explorer.show(); return false">Explorer View</a><br/>
       {{/if}}
       {{#if docs}}
-        <a href="{{docs}}" target="cloudapidocs">Documentation</a><br/>
+        <a href="{{docs}}" target="cloudapidocs">Documentation</a>
       {{/if}}
-      <a href="#" onclick="htmlapi.logout(); return false">Log Out</a>
     </th>
   </tr>
   <tr>

@@ -1,13 +1,18 @@
-<div class="column-header">
-  Collection
-</div>
+<div class="column-header">Collection</div>
+<ul class="column-body">
+  <li>
+    <div class="section-header">&#9660;Links</div>
+    {{>column-links}}
+  </li>
 
-{{>column-links}}
-
-<div class="collection-rows">
-  <ul>
-  {{#each data}}
-    <li class="row" data-self="{{this.links.self}}">{{displayName this}}</li>
-  {{/each}}
-  </ul>
-</div>
+  <li>
+    <div class="section-header">&#9660;Data</div>
+    <ul>
+    {{#each data}}
+      <li class="row" data-id="{{this.id}}" data-self="{{this.links.self}}">{{displayName this}}</li>
+    {{else}}
+      <div class="muted"><i>None</i></div>
+    {{/each}}
+    </ul>
+  </li>
+</ul>

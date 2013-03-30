@@ -9,14 +9,37 @@
   white-space: nowrap;
 }
 
+#explorer-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+}
+
+#explorer LI {
+  line-height: normal;
+}
+
+#explorer UL {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
 #explorer .column {
-  overflow: auto;
-  width: 250px;
+  overflow-x: auto;
+  overflow-y: scroll;
+  min-width: 100px;
+  max-width: 400px;
   height: 100%;
   border-right: 1px solid #555;
   margin: 0;
   padding: 0;
   float: left;
+}
+
+#explorer UL.column-body {
+  margin-left: 0;
 }
 
 #explorer .column-header {
@@ -25,8 +48,14 @@
   font-weight: bold;
 }
 
-#explorer .column-links {
+#explorer .section-header {
   background-color: #ddd;
+  border-bottom: 1px solid black;
+  font-weight: bold;
+}
+
+#explorer .column-links {
+  background-color: #eee;
   border-bottom: 1px solid black;
 }
 
@@ -41,16 +70,22 @@
   -webkit-text-overflow: ellipsis;
   cursor: pointer;
   cursor: hand;
+  border: 1px solid white;
 }
 
 #explorer .row:hover {
-  background-color: #ffc;
+  border-color: #bfdd2f;
+  border-style: dashed;
+}
+
+#explorer .row.selected {
+  border-color: #efefc7;
+  background-color: #e4efc7;
 }
 
 #explorer TABLE.resource-fields {
   width: 100%;
-  table-layout: fixed;
-  background-color: #ddd;
+  background-color: #eee;
   border-collapse: collapse;
   border-spacing: 0;
 }
@@ -59,6 +94,8 @@
   border: 1px solid white;
 }
 
+#explorer .resource-fields .key, 
 #explorer .resource-fields .value {
+  font-size: 11px;
   word-wrap: break-word;
 }

@@ -1,3 +1,36 @@
+/* Override bootstrap input sizes.. */
+select,
+textarea,
+input[type="text"],
+input[type="password"],
+input[type="datetime"],
+input[type="datetime-local"],
+input[type="date"],
+input[type="month"],
+input[type="time"],
+input[type="week"],
+input[type="number"],
+input[type="email"],
+input[type="url"],
+input[type="search"],
+input[type="tel"],
+input[type="color"],
+.uneditable-input {
+  height: auto;
+  padding: 0;
+  margin: 0;
+  font-size: 12px;
+}
+
+button, input {
+  line-height: normal;
+}
+
+select {
+  width: auto;
+}
+
+
 HTML, BODY {
   color: black;
   background-color: white;
@@ -14,7 +47,7 @@ BODY, TD, DIV {
   font-size: 12px;
 }
 
-FORM, FIELDSET, INPUT, TEXTAREA, BLOCKQUOTE {
+FORM, FIELDSET, TEXTAREA, BLOCKQUOTE {
   margin: 0;
   padding: 0;
 }
@@ -184,12 +217,22 @@ LI {
 #json {
   font-family: "Monaco", "Andale Mono", "Courier New", "Courier", monospace;
   white-space: pre-wrap;
+  line-height: normal;
 }
 
-UL {
+#json LI {
+  line-height: normal;
+}
+
+#json UL {
   list-style: none;
   margin: 0 0 0 2em;
   padding: 0;
+}
+
+#json LI .icon {
+  position: relative;
+  left: -15px;
 }
 
 H1 {
@@ -234,12 +277,36 @@ INPUT[type="button"] {
 }
 
 #request-input INPUT[type="text"],
+#request-input INPUT[type="number"],
 #request-input INPUT[type="password"] {
-  width: 210px;
+  width: 250px;
+}
+
+#request-input .dualValue INPUT[type="text"],
+#request-input .dualValue INPUT[type="number"],
+#request-input .dualValue INPUT[type="password"] {
+  width: 180px;
+}
+
+#request-input .dualValue INPUT.key {
+  width: 100px;
+}
+
+#request-input SELECT {
+  max-width: 250px;
+}
+
+#request-input LABEL {
+  display: inline;
+}
+
+#request-input LABEL input[type="checkbox"] {
+  display: inline;
+  margin-right: 5px;
 }
 
 #request-input TEXTAREA {
-  width: 210px;
+  width: 200px;
   height: 100px;
 }
 

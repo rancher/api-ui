@@ -1,8 +1,9 @@
 <div class="column-links">
-  Links:<br/>
   <ul>
-  {{#eachProperty links}}
-    <li class="row resource-link" data-self="{{value}}">{{key}}</li>
-  {{/eachProperty}}
+    {{#eachProperty links}}
+      <li class="row resource-link" data-self="{{value}}"><i class="icon icon-circle-arrow-right"></i>{{key}}</li>
+    {{else}}
+      <li><div class="muted"><i>None</i></div></li>
+    {{/eachProperty}}
   </ul>
 </div>

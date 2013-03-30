@@ -1,15 +1,25 @@
 <div class="column-header">
   Resource
+  {{#if data.type}}: {{data.type}}{{/if}}
+  {{#if data.id}} {{data.id}}{{/if}}
 </div>
+<ul class="column-body">
+  <li>
+    <div class="section-header">&#9660;Links</div>
+    {{>column-links}}
+  </li>
 
-{{>column-links}}
+  <li>
+    <div class="section-header">&#9660;Fields</div>
+    <table class="resource-fields">
+    {{#eachProperty data}}
+    <tr>
+      <td class="key">{{displayKey key}}</td>
+      <td class="value">{{displayValue value}}</td>
+    </tr>
+    {{/eachProperty}}
+    </table>
+  </li>
+</ul>
 
-<table class="resource-fields">
-{{#eachProperty data}}
-<tr>
-  <td class="key">{{key}}</td>
-  <td class="value">{{displayValue value}}</td>
-</tr>
-{{/eachProperty}}
-</table>
 

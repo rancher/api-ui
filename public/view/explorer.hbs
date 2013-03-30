@@ -1,9 +1,29 @@
 <div id="header">
-  <a href="#" onclick="Cookie.set('apiview','browse'); htmlapi.show(); return false">JSON View</a><br/>
-  <form>
-    <input type="checkbox" id="show_removed"><label for="show_removed">Show removed resources<br/>
-  </form>
+  <table id="header-body" width="100%">
+  <tr>
+  <!--
+    <td>
+      <form>
+        <label class="checkbox"><input type="checkbox" id="show_removed"/>Show removed resources</label><br/>
+      </form>
+    </td>
+  -->
+    <td style="vertical-align: top; text-align: right">
+      {{#if user}}
+        <span class="user">{{user}}</span>
+      {{/if}}
+      <a href="#" onclick="htmlapi.logout(); return false">Log Out</a><br/>
+
+      <a href="#" onclick="Cookie.set('apiview','browse'); htmlapi.show(); return false">JSON View</a><br/>
+      {{#if docs}}
+        <a href="{{docs}}" target="cloudapidocs">Documentation</a>
+      {{/if}}
+    </td>
+  </tr>
+  </table>
 </div>
 
 <div id="explorer">
+  <div id="explorer-wrapper">
+  </div>
 </div>

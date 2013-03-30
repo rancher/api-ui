@@ -1,10 +1,12 @@
 {
   "base": {
     "css": [
+      "bootstrap",
       "main"
     ],
 
     "js": [
+      "jquery",
       "async", "json2", "polyfill",
       "JSONFormatter", "URLParse", "Cookie",
       "handlebars.runtime", "template"
@@ -36,6 +38,7 @@
     "js": [
       "HTMLApi",
       "Explorer",
+      "jquery.scrollintoview",
       "init"
     ]
   }

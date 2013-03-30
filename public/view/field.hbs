@@ -1,7 +1,7 @@
 {{#ifInList type 'array,map'}}
   {{#each children}}
-    <div>
-      <input type="button" onclick="htmlapi.subRemove(this);" value="-">
+    <div class="dualValue">
+      <a class="btn btn-mini" tabindex="-1" onclick="htmlapi.subRemove(this);"><i class="icon-minus"></i></a>
       {{>field}}
     </div>
   {{/each}}
@@ -13,7 +13,7 @@
 
 {{#if parentIsMap}}
   {{#if formFieldName2}}
-    <input type="text" name="{{formFieldName2}}" value="{{value2}}" />:&nbsp;
+    <input type="text" class="key" name="{{formFieldName2}}" value="{{value2}}" />&nbsp;:&nbsp;
   {{/if}}
 {{/if}}
 
@@ -91,16 +91,18 @@
 {{/if}}
 
 {{#if enlargeable}}
-  <input type="button" onclick="htmlapi.switchToTextarea(this);" value="&#x21f2;" title="Enlarge"/>
+  <a class="btn btn-mini" onclick="htmlapi.switchToTextarea(this);" tabindex="-1" title="Enlarge"><i class="icon-resize-full"></i></a>
 {{/if}}
 
 {{#if nullCheck}}
   <label>
-    <input type="checkbox" name="{{formFieldNameNull}}" value="1" onclick="htmlapi.toggleNull(this);" {{#ifEqual null value}} CHECKED{{/ifEqual}}>NULL
+    <input type="checkbox" name="{{formFieldNameNull}}" value="1" tabindex="-1" onclick="htmlapi.toggleNull(this);" {{#ifEqual null value}} CHECKED{{/ifEqual}}>NULL
   </label> 
 {{/if}}
 
-{{#ifInList type 'array,map'}}
-    <input type="button" onclick="htmlapi.subAdd(this,'{{name}}');" value="+"/>
-  </div>
-{{/ifInList}}
+{{#unless addingField}}
+  {{#ifInList type 'array,map'}}
+      <a class="btn btn-mini" tabindex="-1" onclick="htmlapi.subAdd(this,'{{name}}');"><i class="icon-plus"></i></a>
+    </div>
+  {{/ifInList}}
+{{/unless}}

@@ -1,10 +1,11 @@
 "use strict";
 
-function HTMLApi(data, docs, cb)
+function HTMLApi(data, docs, user, cb)
 {
   this._schemas     = null;
   this._data        = data;
   this._docs        = docs;
+  this._user        = user;
   this._filterId    = 0;
 
   this._reqModal    = null;
@@ -33,7 +34,7 @@ function HTMLApi(data, docs, cb)
   function initDone(err, results)
   {
     if ( err )
-      alert('Error loading UI: ' + err);
+      cb(err);
     else
       cb();
   }
@@ -242,7 +243,8 @@ HTMLApi.prototype.render = function(cb)
   var tpl = {
     data: this._data,
     docs: this._docs,
-    explorer: Cookie.get('debug')
+    user: this._user,
+    explorer: Cookie.get('debug') || true
   };
 
   document.body.innerHTML = Handlebars.templates['body'](tpl);
@@ -272,9 +274,8 @@ HTMLApi.prototype._addCollapser = function(item)
   if ( item.nodeName != 'LI' )
     return;
   
-  var collapser = $('<div/>', {
-    "class": "collapser",
-    text: '-',
+  var collapser = $('<i/>', {
+    "class": "icon icon-minus",
     click: JSONFormatter.prototype.collapse
   });
 
@@ -1108,7 +1109,7 @@ HTMLApi.prototype.showEdit = function(data,update,schema,url)
         input.focus();
 
       // Make the null checkboxes clear the field, and field clear null
-      $(htmlapi._reqModal).on('keyup','input[type="text"], textarea', function(event) {
+      $(htmlapi._reqModal).on('keyup','input[type="text"], input[type="number"], textarea', function(event) {
         if ( event.keyCode < 32 )
           return;
 
@@ -1210,7 +1211,7 @@ HTMLApi.prototype._flattenField = function(mode, name, field, data, depth)
       }
 
       if ( link )
-        displayType = '<a href="' + link + '">' + displayType + '</a>';
+        displayType = '<a tabindex="-1" href="' + link + '">' + displayType + '</a>';
     }
 
     for ( var i = field._typeList.length - 2 ; i >= depth ; i-- )
@@ -1509,10 +1510,17 @@ HTMLApi.prototype.subAdd = function(button, name)
 
   var field = this._flattenField('update',name,schemaField,'',1);
   field.parentIsMap = parentField.type == 'map';
+  field.enlargeable = false;
 
-  var html = Handlebars.templates['field'](field);
+  var par = {
+    type: parentField.type,
+    addingField: true,
+    children: [field]
+  }
 
-  html = '<div><input type="button" onclick="htmlapi.subRemove(this);" value="-">' + html + '</div>';
+  var html = Handlebars.templates['field'](par);
+
+//  html = '<div><input type="button" onclick="htmlapi.subRemove(this);" value="-">' + html + '</div>';
   $(button).before(html);
   this._reqModal.sfDialog('resize');
 }

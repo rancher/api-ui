@@ -13,7 +13,6 @@ var explorer;
   }
 
   async.series([
-    function(cb) { addScript("https://img4.wsimg.com/starfield/jquery/v1.7.1/jquery.js", cb); },
     function(cb) { addScript("https://img3.wsimg.com/starfield/curl/v1.8.1/curl.js", cb); }
   ], duelLoaded);
 
@@ -28,10 +27,25 @@ var explorer;
   }
 
   function dialogReady() {
-    htmlapi = new HTMLApi(window.data, window.docs, apiReady);
+    document.body.innerHTML = '<div class="loading"></div>';
+    try {
+      htmlapi = new HTMLApi(window.data, window.docs, window.user, apiReady);
+    }
+    catch (e)
+    {
+      apiError(err);
+    }
   }
 
-  function apiReady() {
+  function apiError(err)
+  {
+    document.body.innerHTML = 'Error loading UI: ', Handlebars.Utils.escapeExpression(err);
+  }
+
+  function apiReady(err) {
+    if ( err )
+      return apiError(err);
+
     explorer = new Explorer(htmlapi);
 
     var view = Cookie.get('apiview') || 'browse';
