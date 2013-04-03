@@ -205,7 +205,7 @@ JSONFormatter.prototype = {
   
   // Convert a whole JSON value / JSONP response into a formatted HTML document
   jsonToHTML: function(json, callback, uri) {
-    var output = '<div id="json">' +
+    var output = '<div id="json" class="json">' +
                  this.valueToHTML(json) +
                  '</div>';
     if (callback) {
@@ -240,7 +240,7 @@ JSONFormatter.prototype = {
 
     var output = '<div id="error">' + stringbundle.GetStringFromName('errorParsing') + '</div>' +
                  '<h1>' + stringbundle.GetStringFromName('docContents') + ':</h1>' +
-                 '<div id="json">' + this.htmlEncode(data) + '</div>';
+                 '<div id="json" class="json">' + this.htmlEncode(data) + '</div>';
     return this.toHTML(output, uri + ' - Error');
   },
   

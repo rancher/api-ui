@@ -10,10 +10,12 @@ function HTMLApi(data, docs, user, cb)
 
   this._reqModal    = null;
   this._editSchema  = null;
+  this._editData    = null;
   this._lastMethod  = null;
-  this._lastBody    = null;
+  this._lastMode    = null;
   this._lastType    = null;
   this._lastOpt     = null;
+  this._lastRequestBody    = null;
 
   this._referenceDropdownLimit = 100;
   this._magicNull = "__-*NULL*-__";
@@ -381,7 +383,7 @@ HTMLApi.prototype.actionLoad = function(name, obj, body)
 {
   var self = this;
 
-  this._lastBody = body||this._lastBody||{};
+  this._lastRequestBody = body||this._lastRequestBody||{};
 
   if ( !obj )
     obj = this._data;
@@ -416,7 +418,7 @@ HTMLApi.prototype.actionLoad = function(name, obj, body)
       
       var tpl = {};
       var mode = 'action';
-      tpl.fields = self._flattenFields(mode, actionInput, self._lastBody);
+      tpl.fields = self._flattenFields(mode, actionInput, self._lastRequestBody);
       tpl.hasFields = tpl.fields.length > 0;
       tpl.mode = mode;
       tpl.createTypes = false;
@@ -428,7 +430,7 @@ HTMLApi.prototype.actionLoad = function(name, obj, body)
 
       var html = Handlebars.templates['edit'](tpl);
       var popinActions = [
-        {id: 'ok',      text: 'Show Request', /*on_enter: true, */ onClick: function() { self.showRequest('POST',actionInput,retry,url); }.bind(self) },
+        {id: 'ok',      text: 'Show Request', /*on_enter: true, */ onClick: function() { self.showRequest(mode,'POST',actionInput,retry,url); }.bind(self) },
         {id: 'cancel',  text: 'Cancel', cancel: true }
       ];
 
@@ -507,27 +509,38 @@ HTMLApi.prototype.filterAdd = function(name, modifier, value, before)
   if ( !name )
   {
     // Get the first filter name
-    name = schemaFilters[ Object.keys(schemaFilters)[0] ];
+    name = Object.keys(schemaFilters)[0];
   }
+
+  if ( !modifier && schemaFilters[name] && schemaFilters[name]['modifiers'] )
+  {
+    modifier = schemaFilters[name]['modifiers'][0];
+  }
+
+  if ( !modifier )
+    modifier = 'eq';
 
   var cur = {
     name:     name,
-    modifier: modifier || 'eq',
+    modifier: modifier,
     value:    value || ''
   };
 
-  html = Handlebars.templates['filter']({
+  var html = Handlebars.templates['filter']({
     allFilterSchema: schemaFilters,
     thisFilterSchema: schemaFilters[name],
     cur: cur
   });
 
+  var $elem = $(html);
   if( before )
-    $(before).before(html);
+    $elem = $(before).before($elem);
   else
-    $('#filter-body').append(html);
+    $lem = $('#filter-body').append($elem);
 
   $('#no-filters').hide();
+  this.modifierChange($elem);
+  return $elem;
 }
 
 HTMLApi.prototype.filterRemove = function(elem)
@@ -552,24 +565,36 @@ HTMLApi.prototype.filterChange = function(elem)
   var  value = $('#'+prefix+'_value').val();
 
   this.filterRemove(elem);
-  this.filterAdd(name, modifier, value, next);
+  $elem = this.filterAdd(name, modifier, value, next);
 }
 
-HTMLApi.prototype.modifierChange = function(elem)
+HTMLApi.prototype.modifierChange = function(inElem)
 {
-  var $elem = $(elem);
-  var modifier = $elem.val();
-  var $row = $elem.parents('.filter');
-  var prefix = $row.data('prefix');
-  var $input = $(prefix+'_value');
+  var $elem, $row, prefix;
+  if ( inElem.tagName == 'select' )
+  {
+    $elem = $(inElem);
+    $row = $elem.parents('.filter');
+    prefix = $row.data('prefix');
+  }
+  else
+  {
+    $row = $(inElem);
+    prefix = $row.data('prefix');
+    $elem = $('#'+prefix+'_modifier');
+  }
 
-  $input.toggle( (modifier != 'null' && modifier != 'notnull') );
+  var modifier = $elem.val();
+  var $input = $('#'+prefix+'_value');
+  var on = (modifier != 'null' && modifier != 'notnull');
+
+  $input.toggle(on);
 }
 
 HTMLApi.prototype.filterApply = function(clear)
 {
   var $rows = $('#filters DIV.filter');
-  var $row,name,modifier,value;
+  var $row,prefix,name,modifier,value;
 
   var query = '';
 
@@ -722,7 +747,7 @@ HTMLApi.prototype.request = function(method,body,opt,really)
   opt = opt || {};
 
   this._lastOpt = opt;
-  this._lastBody = body;
+  this._lastRequestBody = body;
   this._lastMethod = method;
 
   var url = opt.url || this._data.links.self || window.location.href;
@@ -872,7 +897,7 @@ HTMLApi.prototype.requestDone = function(err, body, res)
       if ( body.links && body.links.self )
         selfUrl = body.links.self;
 
-      out = this._formatter.valueToHTML(body)
+      out = '<div class="json">'+this._formatter.valueToHTML(body)+'</div>';
     }
     else
     {
@@ -963,6 +988,7 @@ HTMLApi.prototype.create = function()
     }
   }
 
+  this._lastMode = 'create';
   if ( this._data.createTypes )
   {
     // Make sure the selected type exists in the createTypes list
@@ -971,7 +997,7 @@ HTMLApi.prototype.create = function()
       type = Object.keys(this._data.createTypes)[0];
 
     this._lastType = type;
-    this._lastBody = data;
+    this._lastRequestBody = data;
     this.createTypeChanged(type,true);
   }
   else
@@ -1062,6 +1088,7 @@ HTMLApi.prototype.showEdit = function(data,update,schema,url)
 
   this.loadReferenceOptions(schema, display); 
   this._editSchema = schema;
+  this._editData = data;
 
   function display()
   {
@@ -1088,14 +1115,14 @@ HTMLApi.prototype.showEdit = function(data,update,schema,url)
 
     var retry = function()
     {
-      self.showEdit(self._lastBody||data, update, schema, url);
+      self.showEdit(self._lastRequestBody||data, update, schema, url);
     }
 
     var title = (update ? 'Edit' : 'Create') +' '+ schema.id;
     var html = Handlebars.templates['edit'](tpl);
     var method = (update ? 'PUT' : 'POST');
     var popinActions = [
-      {id: 'ok',      text: 'Show Request', /*on_enter: true, */ onClick: function() { self.showRequest(method,schema,retry,url); }.bind(self) },
+      {id: 'ok',      text: 'Show Request', /*on_enter: true, */ onClick: function() { self.showRequest(mode, method,schema,retry,url); }.bind(self) },
       {id: 'cancel',  text: 'Cancel', cancel: true }
     ];
 
@@ -1281,12 +1308,12 @@ HTMLApi.prototype.createTypeChanged = function(type,first)
   // Save the current values
   if ( first !== true )
   {
-    var values = self.getEditValues(null, schema);
-    self._lastBody = values.body;
+    var values = self.getFormValues(self._lastMode, null, schema);
+    self._lastRequestBody = values.body;
   }
 
   self._lastType = type;
-  self.showEdit(self._lastBody, false, schema, this._data.createTypes[type] );
+  self.showEdit(self._lastRequestBody, false, schema, this._data.createTypes[type] );
 }
 
 HTMLApi.prototype._flattenInputs = function($form)
@@ -1379,7 +1406,7 @@ HTMLApi.prototype._flattenInputs = function($form)
   return inputs;
 }
 
-HTMLApi.prototype.getEditValues = function(method, schema)
+HTMLApi.prototype.getFormValues = function(mode, method, schema)
 {
   var $form = $('#edit-form')
   var inputs = this._flattenInputs($form);
@@ -1397,14 +1424,11 @@ HTMLApi.prototype.getEditValues = function(method, schema)
     if ( k.match(this._magicNullRegex) )
       continue;
 
+    // Only u
+
     // Set the value to the magicNull if the checkbox is checked
     if ( inputs[k+this._magicNull] )
       v = this._magicNull;
-
-    // _flattenInputs won't have a value for unchecked ones.
-    // Set a false value for unchecked boolean inputs that were on the page
-//    if ( field.type == 'boolean' && v === undefined && $('INPUT[name="'+k+'"]', $form)[0] )
-//      v = false;
 
     if ( field._typeList[0] == 'array' )
     {
@@ -1466,9 +1490,9 @@ HTMLApi.prototype.getEditValues = function(method, schema)
   };
 }
 
-HTMLApi.prototype.showRequest = function(method, schema, retry, url)
+HTMLApi.prototype.showRequest = function(mode, method, schema, retry, url)
 {
-  var values = this.getEditValues(method,schema);
+  var values = this.getFormValues(mode,method,schema);
 
   var opt = {blobs: values.blobs};
 

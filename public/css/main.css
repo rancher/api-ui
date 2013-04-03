@@ -214,25 +214,26 @@ LI {
   font-family: "Monaco", "Andale Mono", "Courier New", "Courier", monospace;  
 }
 
-#json {
+.json {
   font-family: "Monaco", "Andale Mono", "Courier New", "Courier", monospace;
   white-space: pre-wrap;
   line-height: normal;
 }
 
-#json LI {
+.json LI {
   line-height: normal;
 }
 
-#json UL {
+.json UL {
   list-style: none;
-  margin: 0 0 0 2em;
+  margin: 0 0 0 20px;
   padding: 0;
 }
 
-#json LI .icon {
+.json LI .icon {
   position: relative;
   left: -15px;
+  margin-right: -15px;
 }
 
 H1 {
