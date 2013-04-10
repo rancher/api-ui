@@ -438,6 +438,7 @@ HTMLApi.prototype.actionLoad = function(name, obj, body)
       self.replaceModal(html);
       modal.sfDialog('setButtons',popinActions);
       modal.sfDialog('resize');
+      self.editOrActionShown();
     }
   }
 }
@@ -486,6 +487,7 @@ HTMLApi.prototype.filterInit = function(cb)
   });
   $('#filters').html(html);
 
+  var $elem;
   for ( var i = 0 ; i < filters.length ; i++ )
   {
     v = filters[i];
@@ -495,7 +497,9 @@ HTMLApi.prototype.filterInit = function(cb)
       thisFilterSchema: schema.collectionFilters[v.name],
       cur: v
     });
-    $('#filter-body').append(html);
+    $elem = $(html);
+    $('#filter-body').append($elem);
+    this.modifierChange($elem);
   }
 
   async.nextTick(cb);
@@ -1129,24 +1133,28 @@ HTMLApi.prototype.showEdit = function(data,update,schema,url)
     self.showModal(html, {
         title: title,
         buttons: popinActions
-    }, function() {
-      // Focus the first regular input
-      var input = $(":input:not(input[type=button],input[type=submit],button):visible:first", htmlapi._reqModal);
-      if ( input )
-        input.focus();
-
-      // Make the null checkboxes clear the field, and field clear null
-      $(htmlapi._reqModal).on('keyup','input[type="text"], input[type="number"], textarea', function(event) {
-        if ( event.keyCode < 32 )
-          return;
-
-        var selector = 'INPUT[name="'+ event.target.name + self._magicNull + '"]';
-        var checks = $(selector, htmlapi._reqModal)
-        if ( checks && checks[0] )
-          checks[0].checked = false;
-      });
-    });
+    }, self.editOrActionShown.bind(self));
   }
+}
+
+HTMLApi.prototype.editOrActionShown = function() {
+  var self = this;
+
+  // Focus the first regular input
+  var input = $(":input:not(input[type=button],input[type=submit],button):visible:first", htmlapi._reqModal);
+  if ( input )
+    input.focus();
+
+  // Make the null checkboxes clear the field, and field clear null
+  $(htmlapi._reqModal).on('keyup','input[type="text"], input[type="number"], textarea', function(event) {
+    if ( event.keyCode < 32 )
+      return;
+
+    var selector = 'INPUT[name="'+ event.target.name + self._magicNull + '"]';
+    var checks = $(selector, htmlapi._reqModal)
+    if ( checks && checks[0] )
+      checks[0].checked = false;
+  });
 }
 
 HTMLApi.prototype._escapeRegex = function(str)
@@ -1424,7 +1432,9 @@ HTMLApi.prototype.getFormValues = function(mode, method, schema)
     if ( k.match(this._magicNullRegex) )
       continue;
 
-    // Only u
+    // Don't send fields that can't be set on create
+    if ( mode == 'create' && !field.create )
+      continue;
 
     // Set the value to the magicNull if the checkbox is checked
     if ( inputs[k+this._magicNull] )
@@ -1432,6 +1442,7 @@ HTMLApi.prototype.getFormValues = function(mode, method, schema)
 
     if ( field._typeList[0] == 'array' )
     {
+      // Make sure it's an array
       if ( !v || v.length == 0 )
         v = [];
 
@@ -1480,6 +1491,7 @@ HTMLApi.prototype.getFormValues = function(mode, method, schema)
     }
     else if ( method == 'PUT' && typeof this._data[k] != 'undefined' )
     {
+      // Copy fields from the original for edit
       body[k] = this._data[k];
     }
   }

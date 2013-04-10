@@ -35,7 +35,7 @@
     <select id="filter_{{cur.name}}_value">
       <option value=""></option>
       {{#eachProperty thisFilterSchema.options}}
-        <option value="{{value}}" {{#ifEqual value cur.value}} SELECTED{{/ifEqual}}>{{value}}</option>
+        <option value="{{value}}" {{#ifEqual ../cur.value value}} SELECTED{{/ifEqual}}>{{value}}</option>
       {{/eachProperty}}
     </select>
   {{else}}

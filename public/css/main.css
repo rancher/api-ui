@@ -220,6 +220,11 @@ LI {
   line-height: normal;
 }
 
+.json .array-count {
+  font-size: 10px;
+  color: gray;
+}
+
 .json LI {
   line-height: normal;
 }

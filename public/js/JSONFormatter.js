@@ -114,9 +114,9 @@ JSONFormatter.prototype = {
   arrayToHTML: function(json, in_path) {
     var hasContents = false;
     var output = '';
-    var numProps = 0;
+    var cur = 0, total = 0;
     for (var prop in json ) {
-      numProps++;
+      total++;
     }
 
     var path;
@@ -130,19 +130,19 @@ JSONFormatter.prototype = {
       path.push(prop);
       output += '<li>' + this.valueToHTML(json[prop],path);
 
-      if ( numProps > 1 ) {
+      if ( cur < total ) {
         output += ',';
       }
       output += '</li>';
-      numProps--;
+      cur++;
     }
     
     if ( hasContents ) {
-      output = '[<ul class="array collapsible">' + output + '</ul>]';
+      output = '[' + (total > 1 ? '<span class="array-count"> ' + total + ' items</span>' : '') + '<ul class="array collapsible">' + output + '</ul>]';
     } else {
       output = '[ ]';
     }
-    
+
     return output;
   },
   
@@ -150,12 +150,12 @@ JSONFormatter.prototype = {
   objectToHTML: function(json, in_path) {
     var hasContents = false;
     var output = '';
-    var numProps = 0;
+    var cur = 0, total = 0;
     for (var prop in json ) {
       if ( ! json.hasOwnProperty(prop) || prop.substr(0,2) == '__' )
         continue;
 
-      numProps++;
+      total++;
     }
 
     var keyHtml, valueHtml, path;
@@ -187,11 +187,11 @@ JSONFormatter.prototype = {
       output += '<li><span class="prop"><span class="q">"</span>' + keyHtml +
                 '<span class="q">"</span></span>: ' + valueHtml;
 
-      if ( numProps > 1 ) {
+      if ( cur < total ) {
         output += ',';
       }
       output += '</li>';
-      numProps--;
+      cur++;
     }
     
     if ( hasContents ) {
