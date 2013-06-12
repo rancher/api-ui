@@ -1458,8 +1458,8 @@ HTMLApi.prototype.getFormValues = function(mode, method, schema)
 
     if ( v === this._magicNull )
     {
-      // Don't send nullable fields if they have no value
-      if ( field.nullable )
+      // Don't send nullable fields if null, unless the current value is not null
+      if ( field.nullable && !this._editData[k] )
         continue;
       else
         v = null;
