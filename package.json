@@ -1,6 +1,6 @@
 {
   "name": "gdapi-ui",
-  "version": "1.2.6-dev",
+  "version": "1.2.6",
   "dependencies": {
     "gd-assets": "1.0.x"
   }
