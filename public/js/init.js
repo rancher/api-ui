@@ -37,18 +37,13 @@ var explorer;
     }
   }
 
-  function apiError(err)
-  {
-    document.body.innerHTML = 'Error loading UI: ', Handlebars.Utils.escapeExpression(err);
-  }
-
   function apiReady(err) {
+    var view = Cookie.get('apiview') || 'browse';
     if ( err )
-      return apiError(err);
+      view = 'browse';
 
     explorer = new Explorer(htmlapi);
 
-    var view = Cookie.get('apiview') || 'browse';
     if ( view == 'explorer' )
       explorer.show();
     else
