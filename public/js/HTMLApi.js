@@ -2,6 +2,7 @@
 
 function HTMLApi(data, docs, user, cb)
 {
+  var self = this;
   this._schemas     = null;
   this._data        = data;
   this._docs        = docs;
@@ -16,6 +17,7 @@ function HTMLApi(data, docs, user, cb)
   this._lastType    = null;
   this._lastOpt     = null;
   this._lastRequestBody    = null;
+  this._error = null;
 
   this._referenceDropdownLimit = 100;
   this._magicNull = "__-*NULL*-__";
@@ -35,15 +37,14 @@ function HTMLApi(data, docs, user, cb)
 
   function initDone(err, results)
   {
-    if ( err )
-      cb(err);
-    else
-      cb();
+    self._error = err;
+    cb();
   }
 }
 
 HTMLApi.prototype.show = function(cb)
 {
+  var self = this;
   async.auto({
     render:                     this.render.bind(this)         ,
     operations: ['render',      this.operationInit.bind(this) ],
@@ -57,7 +58,16 @@ HTMLApi.prototype.show = function(cb)
     {
     }
 
-    $('#header-body').css('visibility','visible');
+    if ( self._error )
+    {
+      $('#header-body').css('display','none');
+      $('#header-error').css('display','');
+    }
+    else
+    {
+      $('#header-body').css('visibility','visible');
+    }
+
     $('#json').css('padding-top', $('#header')[0].offsetHeight + 'px');
     if ( cb )
       cb();
@@ -164,7 +174,7 @@ HTMLApi.prototype.schemasLoad = function(cb)
   if ( link )
   {
     this.ajax('GET', link, function(err,res) {
-      cb(err,res);
+      cb("Error loading schema from [" + link + "]: " + err,res);
     });
   }
   else
@@ -244,6 +254,7 @@ HTMLApi.prototype.render = function(cb)
     data: this._data,
     docs: this._docs,
     user: this._user,
+    error: this._error,
     explorer: Cookie.get('debug') || true
   };
 
