@@ -39,7 +39,7 @@ var explorer;
 
   function apiError(err)
   {
-    document.body.innerHTML = 'Error loading UI: ', Handlebars.Utils.escapeExpression(err);
+    document.body.innerHTML = 'Error loading UI: '+ Handlebars.Utils.escapeExpression(err);
   }
 
   function apiReady(err) {

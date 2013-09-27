@@ -55,8 +55,6 @@ HTMLApi.prototype.show = function(cb)
   {
     if ( err )
     {
-      alert('Error loading UI: ' + err);
-      return;
     }
 
     $('#header-body').css('visibility','visible');
