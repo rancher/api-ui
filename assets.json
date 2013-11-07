@@ -1,4 +1,8 @@
 {
+  "_paths": {
+    "image": "public/image"
+  },
+
   "base": {
     "css": [
       "bootstrap",

@@ -1,6 +1,6 @@
 "use strict";
 
-function HTMLApi(data, docs, user, cb)
+function HTMLApi(data, schemasUrl, docs, user, cb)
 {
   var self = this;
   this._schemas     = null;
@@ -31,7 +31,7 @@ function HTMLApi(data, docs, user, cb)
 
   async.auto({
     title:                      this.titleUpdate.bind(this),
-    rawSchema:                  this.schemasLoad.bind(this),
+    rawSchema:                  this.schemasLoad.bind(this, schemasUrl),
     schema:     ['rawSchema',   this.schemasMunge.bind(this)  ],
   }, initDone);
 
@@ -162,12 +162,12 @@ HTMLApi.prototype.titleUpdate = function(cb)
     async.nextTick(cb);
 }
 
-HTMLApi.prototype.schemasLoad = function(cb)
+HTMLApi.prototype.schemasLoad = function(link, cb)
 {
   if ( !this._data )
     return async.nextTick(function() { cb("No data") });
 
-  var link;
+  // Link may come from the page <script>, but override it if one is in the JSON body.
   if ( this._data.links && this._data.links.schemas )
     link = this._data.links.schemas;
 
