@@ -14,7 +14,7 @@ Usage
 This will write files to ./compiled/{version}/, suitable for publishing to a CDN.
 
 ```bash
-  ./compile
+  ./bin/compile
 ```
 
 
@@ -23,7 +23,7 @@ This will start a server on the given port number (default: 3000) that serves up
 This mode is mostly suitable for development of this library itself.
 
 ```bash
-  ./serve [port]
+  ./bin/gdapi-ui [port]
 ```
 
 ### Running as part of another Node.js Connect/Express service

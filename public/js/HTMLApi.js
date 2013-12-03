@@ -1,12 +1,13 @@
 "use strict";
 
-function HTMLApi(data, schemasUrl, docs, user, cb)
+function HTMLApi(data, schemasUrl, docs, user, curlUser, cb)
 {
   var self = this;
   this._schemas     = null;
   this._data        = data;
   this._docs        = docs;
   this._user        = user;
+  this._curlUser  = curlUser || '${GDAPI_ACCESS_KEY}:${GDAPI_SECRET_KEY}';
   this._filterId    = 0;
 
   this._reqModal    = null;
@@ -174,7 +175,10 @@ HTMLApi.prototype.schemasLoad = function(link, cb)
   if ( link )
   {
     this.ajax('GET', link, function(err,res) {
-      cb("Error loading schema from [" + link + "]: " + err,res);
+      if ( err )
+        cb("Error loading schema from [" + link + "]: " + err);
+      else
+        cb(null,res);
     });
   }
   else
@@ -450,6 +454,34 @@ HTMLApi.prototype.actionLoad = function(name, obj, body)
       self.editOrActionShown();
     }
   }
+}
+
+// ----------------------------------------------------------------------------
+HTMLApi.prototype.sortChange = function(elem)
+{
+  var name = $(elem).val();
+  var order = 'asc';
+
+  if( !name )
+  {
+    name = null;
+    order = null;
+  }
+
+  var url = window.location.href.replace(/#.*/,'');
+  url = URLParse.updateQuery(url, {'sort': name,'order': order,'marker': null});
+  window.location.href = url;
+}
+
+HTMLApi.prototype.sortOrderChange = function()
+{
+  var order='asc';
+  if ( this._data.sort && this._data.sort.order && this._data.sort.order == 'asc')
+    order='desc';
+  
+  var url = window.location.href.replace(/#.*/,'');
+  url = URLParse.updateQuery(url, {'order': order,'marker': null});
+  window.location.href = url;
 }
 
 // ----------------------------------------------------------------------------
@@ -784,11 +816,13 @@ HTMLApi.prototype.request = function(method,body,opt,really)
     $('#waiting').show();
     $('#result' ).hide();
 
+    // @TODO Switch to XMLHttpRequest file upload, remove iframe & support for old browsers
+    // so ?_format=json is not required.
     if ( opt.blobs )
     {
       var form = this.oldPopin.getForm();
       form.encoding = 'multipart/form-data';
-      form.action = Utils.updateQuery(url,{_format: 'json'});
+      form.action = URLParse.updateQuery(url,{_format: 'json'});
       form.method = method;
 
       // Move all the file inputs to the end
@@ -818,6 +852,7 @@ HTMLApi.prototype.request = function(method,body,opt,really)
   }
 
   var tpl = {
+    curl_user: this._curlUser,
     method: method,
     host: urlParts.host,
     path: urlParts.requestUri,

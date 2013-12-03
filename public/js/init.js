@@ -29,7 +29,7 @@ var explorer;
   function dialogReady() {
     document.body.innerHTML = '<div class="loading"></div>';
     try {
-      htmlapi = new HTMLApi(window.data, window.schemas, window.docs, window.user, apiReady);
+      htmlapi = new HTMLApi(window.data, window.schemas, window.docs, window.user, window.curlUser, apiReady);
     }
     catch (e)
     {

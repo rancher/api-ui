@@ -2,7 +2,7 @@
 <br/>
 <div id="curl">
   curl 
-    -u <i>"${GDAPI_ACCESS_KEY}:${GDAPI_SECRET_KEY}"</i> \<br/>
+    {{#if curl_user}}-u <i>"{{curl_user}}"</i> \<br/>{{/if}}
     -X {{method}} \<br/>
     -H 'Accept: application/json'  \<br/>
     {{#if rawBody}}
