@@ -460,28 +460,16 @@ HTMLApi.prototype.actionLoad = function(name, obj, body)
 HTMLApi.prototype.sortChange = function(elem)
 {
   var name = $(elem).val();
-  var order = 'asc';
 
-  if( !name )
-  {
-    name = null;
-    order = null;
-  }
-
-  var url = window.location.href.replace(/#.*/,'');
-  url = URLParse.updateQuery(url, {'sort': name,'order': order,'marker': null});
-  window.location.href = url;
+  var links = this._data.sortLinks;
+  if ( links && links[name] )
+    window.location.href = links[name];
 }
 
 HTMLApi.prototype.sortOrderChange = function()
 {
-  var order='asc';
-  if ( this._data.sort && this._data.sort.order && this._data.sort.order == 'asc')
-    order='desc';
-  
-  var url = window.location.href.replace(/#.*/,'');
-  url = URLParse.updateQuery(url, {'order': order,'marker': null});
-  window.location.href = url;
+  if ( this._data.sort && this._data.sort.reverse )
+    window.location.href = this._data.sort.reverse;
 }
 
 // ----------------------------------------------------------------------------
