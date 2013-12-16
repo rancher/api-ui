@@ -259,7 +259,7 @@ HTMLApi.prototype.render = function(cb)
     docs: this._docs,
     user: this._user,
     error: this._error,
-    explorer: Cookie.get('debug') || true
+    explorer: Cookie.get('debug') || false
   };
 
   document.body.innerHTML = Handlebars.templates['body'](tpl);
@@ -720,6 +720,8 @@ HTMLApi.prototype.valueFormatter = function(key,obj, path)
 
 HTMLApi.prototype.ajax = function(method, url, body, cb)
 {
+  method = method || 'GET';
+
   if ( typeof body == 'function' )
   {
     cb = body;
@@ -730,15 +732,23 @@ HTMLApi.prototype.ajax = function(method, url, body, cb)
   {
     body = JSON.stringify(body);
   }
+  
+  var headers = {
+    'Accept' : 'application/json'
+  };
+
+  var csrf = Cookie.get('CSRF');
+  if ( method != 'GET'  && csrf)
+  {
+    headers['X-API-CSRF'] = csrf;
+  }
 
   var res;
   res = jQuery.ajax({
-    type: method||'GET',
+    type: method,
     data: body,
     contentType: 'application/json',
-    headers: {
-      'Accept' : 'application/json'
-    },
+    headers: headers,
     url: url,
     dataType: 'json',
     success: function(data, msg, jqxhr) { cb(null,data, jqxhr); },

@@ -3,7 +3,7 @@
     "image": "public/image"
   },
 
-  "base": {
+  "_base": {
     "css": [
       "bootstrap",
       "main"
@@ -19,7 +19,7 @@
 
   "ui": {
     "group": [
-      "base"
+      "_base"
     ],
 
     "css": [

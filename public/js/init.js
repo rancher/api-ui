@@ -33,7 +33,7 @@ var explorer;
     }
     catch (e)
     {
-      apiError(err);
+      apiError(e);
     }
   }
 
