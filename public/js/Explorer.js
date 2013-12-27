@@ -156,7 +156,7 @@ Explorer.prototype.populateColumn = function(idOrElem, obj)
     var html = Handlebars.templates['column-collection'](tpl);
     col.html(html);
 
-    col.on('click', $.proxy(this.followLink, this));
+    col.on('click', $.proxy(this.clickRow, this));
   }
   else
   {
@@ -270,6 +270,23 @@ function compareOrder(node1, node2)
 }
 
 Explorer.prototype.followLink = function(event)
+{
+  var self = this;
+  var $tgt = $(event.target);
+  var link = $tgt.data('self');
+
+  // Open in new window with ctrl/apple key or middle click
+  if ( link && ( moreKey(event) || event.which == 2 ))
+  {
+    window.open(link);
+  }
+  else
+  {
+    this.clickRow(event);
+  }
+}
+
+Explorer.prototype.clickRow = function(event)
 {
   var self = this;
   var $tgt = $(event.target);
