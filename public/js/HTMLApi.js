@@ -793,7 +793,16 @@ HTMLApi.prototype.request = function(method,body,opt,really)
   this._lastRequestBody = body;
   this._lastMethod = method;
 
-  var url = opt.url || this._data.links.self || window.location.href;
+  var url = opt.url;
+  if ( !url && this._data.links )
+    url = this._data.links.self;
+
+  if ( !url )
+  {
+    alert("I don't know what URL to send a request to, did you specify a 'self' link?");
+    return 
+  }
+
   var urlParts = URLParse.parse(url);
 
   if ( really )
@@ -939,7 +948,7 @@ HTMLApi.prototype.requestDone = function(err, body, res)
     loc = res.getResponseHeader('Location');
   }
 
-  var retry = (typeof body != 'object' || (body.type && body.type == 'error') ) && this._lastOpt.retry;
+  var retry = (this._lastOpt.retry && (res.status >= 400));
 
   var primary = 'reload';
   var popinActions = [
@@ -1189,6 +1198,10 @@ HTMLApi.prototype._escapeRegex = function(str)
 HTMLApi.prototype._flattenFields = function(mode,schema,data)
 {
   var rows = [];
+
+  if ( !schema || !schema.resourceFields )
+    return [];
+
   var keys = Object.keys(schema.resourceFields);
   var name, field, row;
   for ( var i = 0 ; i < keys.length ; i++ )
