@@ -155,7 +155,7 @@ HTMLApi.prototype.titleUpdate = function(cb)
 {
   var title = "API";
   if ( this._data )
-    title += ": " + (this._data.displayName || this._data.name || this._data.id || this._data.type);
+    title += ": " + (this._data.displayName || this._data.name || this._data.id || this._data.resourceType || this._data.type);
 
   document.title = title;
 
@@ -786,7 +786,7 @@ HTMLApi.prototype.logout = function()
 HTMLApi.prototype.request = function(method,body,opt,really)
 {
   var self = this;
-  method = method || 'GET';
+  method = (method || 'GET').toUpperCase();
   opt = opt || {};
 
   this._lastOpt = opt;
@@ -795,14 +795,6 @@ HTMLApi.prototype.request = function(method,body,opt,really)
 
   var url = opt.url || this._data.links.self || window.location.href;
   var urlParts = URLParse.parse(url);
-
-  var realUrl = url;
-  var realMethod = method;
-  if ( method != 'POST' )
-  {
-    realUrl = URLParse.updateQuery(url,{'_method': method});
-    realMethod = 'POST';
-  }
 
   if ( really )
   {
@@ -814,36 +806,26 @@ HTMLApi.prototype.request = function(method,body,opt,really)
     $('#waiting').show();
     $('#result' ).hide();
 
-    // @TODO Switch to XMLHttpRequest file upload, remove iframe & support for old browsers
-    // so ?_format=json is not required.
     if ( opt.blobs )
     {
-      var form = this.oldPopin.getForm();
-      form.encoding = 'multipart/form-data';
-      form.action = URLParse.updateQuery(url,{_format: 'json'});
-      form.method = method;
-
-      // Move all the file inputs to the end
+      var form = new FormData();
       var fields = form.getElementsByTagName('INPUT');
       var field;
-      for ( var i = fields.length-1 ; i >= 0 ; i-- )
+
+      for ( var i = 0 ; i < fields.length ; i++ )
       {
         field = fields[i];
         if ( field.type == 'file' )
-        {
-          $L.detach(field);
-          form.appendChild(field);
-        }
+          form.append(field.name, field.files[0]);
+        else
+          form.append(field.name, field.value)
       }
 
-      var iframe = $L.create('IFRAME',{id: 'post_iframe'},{display: 'none'}, form);
-      iframe.onload = this.postDone.bind(this);
-      form.target = 'post_iframe'
-      form.submit();
+      this.ajax(method, url, form, function(err, body, jqxhr) { self.requestDone(err,body,jqxhr) });
     }
     else
     {
-      this.ajax('POST', realUrl, body||'', function(err,body,jqxhr) { self.requestDone(err,body,jqxhr); });
+      this.ajax(method, url, body||'', function(err,body,jqxhr) { self.requestDone(err,body,jqxhr); });
     }
 
     return;
@@ -1087,7 +1069,7 @@ HTMLApi.prototype.loadReferenceOptions = function(schema,doneCb)
       cb();
     }
 
-    self.ajax('GET', URLParse.updateQuery(task.url,{_format: 'json', limit: self._referenceDropdownLimit, 'removed_null': 1}), gotReferences);
+    self.ajax('GET', URLParse.updateQuery(task.url,{limit: self._referenceDropdownLimit}), gotReferences);
   }
 
   var q = async.queue(getReferences, 1);
