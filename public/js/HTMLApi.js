@@ -1278,12 +1278,12 @@ HTMLApi.prototype._flattenField = function(mode, name, field, data, depth)
         var displaySchema = this.getSchema(displayType);
         if ( displaySchema )
         {
-          link = displaySchema.links['self'];
+          link = displaySchema.links['collection'] || displaySchema.links['self'];
         }
       }
 
       if ( link )
-        displayType = '<a tabindex="-1" href="' + link + '">' + displayType + '</a>';
+        displayType = '<a tabindex="-1" href="' + link + '" target="_blank">' + displayType + '</a>';
     }
 
     for ( var i = field._typeList.length - 2 ; i >= depth ; i-- )
