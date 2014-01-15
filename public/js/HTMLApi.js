@@ -381,7 +381,7 @@ HTMLApi.prototype.actionInit = function(cb)
 {
   var data = this._data;
 
-  if ( !data.actions )
+  if ( !data.actions || !Object.keys(data.actions).length )
     return async.nextTick(cb);
     
   var html = Handlebars.templates['actions']({
