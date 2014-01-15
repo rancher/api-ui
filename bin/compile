@@ -2,10 +2,11 @@
 
 var assets = require('gd-assets');
 var mkdirp = require('mkdirp');
+var path = require('path');
 
-var groups    = assets.groups.load(__dirname+'/../assets.json');
+var groups    = assets.groups.load(path.resolve(__dirname+'/../assets.json'));
 var pkg       = require('../package.json');
-var outputDir = __dirname+'/../compiled/' + pkg.version;
+var outputDir = path.resolve(__dirname+'/../compiled/' + pkg.version);
 
 mkdirp(outputDir, function(err) {
   if ( err )
