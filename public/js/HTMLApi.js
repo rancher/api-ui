@@ -473,7 +473,13 @@ HTMLApi.prototype.sortOrderChange = function()
 }
 
 // ----------------------------------------------------------------------------
+HTMLApi.prototype.setLimit = function(limit)
+{
+  var url = URLParse.updateQuery(window.location.href, {limit: limit});
+  window.location.href = url;
+}
 
+// ----------------------------------------------------------------------------
 HTMLApi.prototype.filterInit = function(cb)
 {
   var name, list, i, v, modifier, pos;
