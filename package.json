@@ -1,7 +1,19 @@
 {
   "name": "gdapi-ui",
   "version": "1.2.18",
+  "description": "HTML UI for GDAPI-compliant APIs",
+  "author": {
+    "name": "Vincent Fiduccia",
+    "email": "vincent@godaddy.com"
+  },
+  "license": "MIT",
+  "homepage": "http://github.com/godaddy/gdapi-ui",
+  "bugs": "http://github.com/godaddy/gdapi-ui/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/godaddy/gdapi-ui.git"
+  },
   "dependencies": {
-    "gd-assets": "1.0.x"
+    "gd-assets": "~1.1"
   }
 }
