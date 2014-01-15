@@ -1,9 +1,19 @@
 #!/usr/bin/env node
 
 var assets = require('gd-assets');
+var mkdirp = require('mkdirp');
 
 var groups    = assets.groups.load(__dirname+'/../assets.json');
 var pkg       = require('../package.json');
 var outputDir = __dirname+'/../compiled/' + pkg.version;
 
-assets.compile(groups, pkg, outputDir);
+mkdirp(outputDir, function(err) {
+  if ( err )
+  {
+    console.error(err);
+  }
+  else
+  {
+    assets.compile(groups, pkg, outputDir);
+  }
+})
