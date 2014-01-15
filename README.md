@@ -5,12 +5,20 @@ An in-browser client for Go Daddy® REST API.
 
 Integrating with your API
 -------
-See [HTML UI](https://github.com/godaddy/gdapi#html-ui) in the API specification.
+See [HTML UI](https://github.com/godaddy/gdapi/blob/master/specification.md#html-ui) in the API specification.
+
+Install
+--------
+```bash
+git clone https://github.com/godaddy/gdapi-ui
+cd gdapi-ui
+npm install
+```
 
 Usage
 --------
 
-### Compiling the stand-alone CSS and JavaScript files
+### Compiling into stand-alone CSS and JavaScript files
 This will write files to ./compiled/{version}/, suitable for publishing to a CDN.
 
 ```bash
@@ -39,7 +47,7 @@ app.get('/', function(req, res){
 });
 
 var assets = require('gd-assets');
-var groups = assets.groups.load(__dirname+'/assets.json');
+var groups = assets.groups.load('/path/to/gdapi-ui//assets.json');
 assets.middleware(app, groups)
 
 app.listen(3000);
