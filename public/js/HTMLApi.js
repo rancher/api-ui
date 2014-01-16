@@ -131,7 +131,7 @@ HTMLApi.prototype.showModal = function(html,in_opt,cb)
       $(this.context.document).unbind('keydown', onMoreKeys);
     }
   };
-  
+
   var k = Object.keys(in_opt);
   for ( var i = 0 ; i < k.length ; i++ )
   {
@@ -197,7 +197,7 @@ HTMLApi.prototype.schemasMunge = function(cb, results)
 
   var out = {};
   var i, schema;
-  for ( i = 0 ; i < schemas.data.length ; i++ ) 
+  for ( i = 0 ; i < schemas.data.length ; i++ )
   {
     schema = schemas.data[i];
     out[schema.id] = this._schemaMunge(schema);
@@ -270,7 +270,7 @@ HTMLApi.prototype.render = function(cb)
   $('#operations').html('<span class="inactive">None</span>');
   $('#actions').html('<span class="inactive">None</span>');
   $('#filters').html('<span class="inactive">None</span>');
-  
+
   return async.nextTick(cb);
 }
 
@@ -288,7 +288,7 @@ HTMLApi.prototype._addCollapser = function(item)
   // This mainly filters out the root object (which shouldn't be collapsible)
   if ( item.nodeName != 'LI' )
     return;
-  
+
   var collapser = $('<i/>', {
     "class": "icon icon-minus",
     click: JSONFormatter.prototype.collapse
@@ -366,7 +366,7 @@ HTMLApi.prototype.operationInit = function(cb)
         html += '<input type="button" onclick="htmlapi.update(this);" value="Edit">&nbsp;';
         break;
       default:
-        break; 
+        break;
       }
     }
   }
@@ -383,7 +383,7 @@ HTMLApi.prototype.actionInit = function(cb)
 
   if ( !data.actions || !Object.keys(data.actions).length )
     return async.nextTick(cb);
-    
+
   var html = Handlebars.templates['actions']({
     actions: data.actions
   });
@@ -420,15 +420,15 @@ HTMLApi.prototype.actionLoad = function(name, obj, body)
   var title = 'Action: ' + name;
 
   self.showModal(null, {title: title}, shown);
-  
-  function shown(modal) 
+
+  function shown(modal)
   {
     self.loadReferenceOptions(actionInput, ready);
 
     function ready()
     {
       var rows = [];
-      
+
       var tpl = {};
       var mode = 'action';
       tpl.fields = self._flattenFields(mode, actionInput, self._lastRequestBody);
@@ -447,7 +447,7 @@ HTMLApi.prototype.actionLoad = function(name, obj, body)
         {id: 'cancel',  text: 'Cancel', cancel: true }
       ];
 
-      
+
       self.replaceModal(html);
       modal.sfDialog('setButtons',popinActions);
       modal.sfDialog('resize');
@@ -499,7 +499,7 @@ HTMLApi.prototype.filterInit = function(cb)
         canFilter = true;
 
       list = this._data.filters[name];
-      
+
       if ( !list )
         continue;
 
@@ -641,7 +641,7 @@ HTMLApi.prototype.filterApply = function(clear)
   {
     for ( var i = 0 ; i < $rows.length ; i++ )
     {
-      $row      = $($rows[i]); 
+      $row      = $($rows[i]);
       prefix    = $row.data('prefix');
       name      = $('#'+prefix+'_name').val();
       modifier  = $('#'+prefix+'_modifier').val();
@@ -654,7 +654,7 @@ HTMLApi.prototype.filterApply = function(clear)
       // Equals doesn't need an explicit modifier
       if ( modifier == 'eq' )
         modifier = false;
-      
+
       query += (query ? '&' : '?') + escape(name) + (modifier ? '_'+modifier : '') + (value ? '=' + escape(value) : '');
     }
   }
@@ -738,7 +738,7 @@ HTMLApi.prototype.ajax = function(method, url, body, cb)
   {
     body = JSON.stringify(body);
   }
-  
+
   var headers = {
     'Accept' : 'application/json'
   };
@@ -758,7 +758,7 @@ HTMLApi.prototype.ajax = function(method, url, body, cb)
     url: url,
     dataType: 'json',
     success: function(data, msg, jqxhr) { cb(null,data, jqxhr); },
-    error: function(jqxhr, msg, exception) { 
+    error: function(jqxhr, msg, exception) {
       var body = null;
       try {
         body = jQuery.parseJSON(jqxhr.responseText);
@@ -767,7 +767,7 @@ HTMLApi.prototype.ajax = function(method, url, body, cb)
         body = jqxhr.responseText;
       }
 
-      cb(msg, body, jqxhr); 
+      cb(msg, body, jqxhr);
     }
   });
 }
@@ -786,7 +786,7 @@ HTMLApi.prototype.reload = function()
 
 HTMLApi.prototype.logout = function()
 {
-  window.location.href = window.location.href.replace(/\/\//,"//logout@");  
+  window.location.href = window.location.href.replace(/\/\//,"//logout@");
 }
 
 HTMLApi.prototype.request = function(method,body,opt,really)
@@ -806,7 +806,7 @@ HTMLApi.prototype.request = function(method,body,opt,really)
   if ( !url )
   {
     alert("I don't know what URL to send a request to, did you specify a 'self' link?");
-    return 
+    return
   }
 
   var urlParts = URLParse.parse(url);
@@ -994,7 +994,7 @@ HTMLApi.prototype.requestDone = function(err, body, res)
       popinActions[i].disabledClasses = "sf-btn-secondary sf-btn-dsabld";
     }
   }
-  
+
   this._reqModal.sfDialog('setButtons', popinActions);
   $('#notsent').hide();
   $('#waiting').hide();
@@ -1010,7 +1010,7 @@ HTMLApi.prototype.create = function()
   var data = {};
   var k, v;
   var schema = this.getSchema();
-  
+
   // Apply schema defaults
   for ( k in schema.resourceFields )
   {
@@ -1067,14 +1067,14 @@ HTMLApi.prototype.loadReferenceOptions = function(schema,doneCb)
         var i, obj, label;
         for ( i = 0 ; i < res.data.length ; i++ )
         {
-          obj = res.data[i]; 
+          obj = res.data[i];
           if ( obj.displayName )
             label = obj.displayName + ' (' + obj.id + ')';
           else if ( obj.name )
             label = obj.name + ' (' + obj.id + ')';
           else
             label = obj.id;
-          
+
           opt[ obj.id ] = label;
         }
 
@@ -1129,14 +1129,14 @@ HTMLApi.prototype.showEdit = function(data,update,schema,url)
 
   var mode = (update ? 'update' : 'create');
 
-  this.loadReferenceOptions(schema, display); 
+  this.loadReferenceOptions(schema, display);
   this._editSchema = schema;
   this._editData = data;
 
   function display()
   {
     var rows = [];
-    
+
     var tpl = {};
     tpl.fields = self._flattenFields(mode, schema, data);
     tpl.hasFields = tpl.fields.length > 0;
@@ -1245,7 +1245,7 @@ HTMLApi.prototype._flattenField = function(mode, name, field, data, depth)
       subType = field._typeList[i];
       if ( subType == 'array' )
       {
-        formFieldName += '[]'; 
+        formFieldName += '[]';
       }
 
       if ( subType == 'map' )
@@ -1385,7 +1385,7 @@ HTMLApi.prototype._flattenInputs = function($form)
 
     serialized.push({name: check.name, value: false});
   }
-  
+
   var $files = $("INPUT[type='file']",$form);
   for ( i = 0 ; i < $files.length ; i++ )
   {
@@ -1412,15 +1412,15 @@ HTMLApi.prototype._flattenInputs = function($form)
       name = k.replace(/\[\]$/,'');
       if ( typeof inputs[name] === "undefined" )
         inputs[name] = [];
-      
+
       inputs[name].push(v);
     }
     else if ( isMapKey || isMapValue )
     {
       if ( isMapKey )
-        name = k.replace(/\.key\{\}$/,''); 
+        name = k.replace(/\.key\{\}$/,'');
       else if ( isMapValue )
-        name = k.replace(/\.value\{\}$/,''); 
+        name = k.replace(/\.value\{\}$/,'');
 
       if ( typeof maps[name] === 'undefined' )
       {
