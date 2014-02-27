@@ -278,7 +278,7 @@ HTMLApi.prototype.docsLoad = function(link, cb, results)
         if ( doc.description )
           schema.description = doc.description;
 
-        if ( !doc.resourceFields)
+        if ( !doc.resourceFields )
           return;
 
         var keys = Object.keys(doc.resourceFields);
@@ -294,8 +294,9 @@ HTMLApi.prototype.docsLoad = function(link, cb, results)
           schema.resourceFields[key].description = field.description;
         }
 
-        cb(null,res);
       });
+
+      cb(null,res);
     });
   }
   else
