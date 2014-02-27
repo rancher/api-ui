@@ -293,6 +293,7 @@ HTMLApi.prototype.docsLoad = function(link, cb, results)
             continue;
 
           schema.resourceFields[key].description = field.description;
+          schema.resourceFields[key].placeholder = field.placeholder;
         }
 
       });
@@ -1251,6 +1252,8 @@ HTMLApi.prototype.editOrActionShown = function() {
     if ( checks && checks[0] )
       checks[0].checked = false;
   });
+
+  $('.tip').tooltip({placement: 'right'});
 }
 
 HTMLApi.prototype._escapeRegex = function(str)
@@ -1320,6 +1323,7 @@ HTMLApi.prototype._flattenField = function(mode, name, field, data, depth)
       required: field.required || false,
       writable: (mode == 'action') || (mode == 'update' && field.update) || (mode != 'update' && field.create),
       description: field.description,
+      placeholder: field.placeholder||"",
       enlargeable: (type == 'string' && (!field.maxLength || field.maxLength > 63)),
       nullCheck: (field.nullable && !field.options && ['string','data','password','number','int','float','reference'].indexOf(field.type) >= 0 ),
       type: type,
