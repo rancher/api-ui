@@ -264,7 +264,8 @@ HTMLApi.prototype.docsLoad = function(link, cb, results)
     this.ajax('GET', link, function(err,res) {
       if ( err )
       {
-        cb("Error loading docs from [" + link + "]: " + err);
+        //cb("Error loading docs from [" + link + "]: " + err);
+        cb();
         return;
       }
 
