@@ -12,8 +12,9 @@ function HTMLApi(opt, cb)
   this._docsJson    = opt.docsJson;
   this._user        = opt.user;
   this._curlUser    = opt.curlUser || '${GDAPI_ACCESS_KEY}:${GDAPI_SECRET_KEY}';
-  this._filterId    = 0;
+  this._logout      = opt.logout !== false;
 
+  this._filterId    = 0;
   this._reqModal    = null;
   this._editSchema  = null;
   this._editData    = null;
@@ -315,6 +316,7 @@ HTMLApi.prototype.render = function(cb)
     data: this._data,
     docsPage: this._docsPage,
     user: this._user,
+    logout: this._logout,
     error: this._error,
     explorer: Cookie.get('debug') || false
   };

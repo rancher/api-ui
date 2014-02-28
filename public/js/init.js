@@ -33,9 +33,10 @@ var explorer;
         data:       window.data,
         schemasUrl: window.schemas,
         docsPage:   window.docsPage || window.docs,
-        docsJson:   window.docJson || window.docsJson,
+        docsJson:   window.docsJson || window.docJson,
         user:       window.user,
-        curlUser:   window.curlUser
+        curlUser:   window.curlUser,
+        logout:     window.logout
       }, apiReady);
     }
     catch (e)
