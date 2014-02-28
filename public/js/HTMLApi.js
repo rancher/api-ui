@@ -394,7 +394,7 @@ HTMLApi.prototype.operationInit = function(cb)
 
   if ( schema )
   {
-    var methods = ( type == 'collection' ? schema.collectionMethods : schema.resourceMethods );
+    var methods = ( type == 'collection' ? schema.collectionMethods : schema.resourceMethods ) || [];
     var order = {'POST': 1, 'PUT': 2, 'DELETE': 3}
     methods.sort(function(a,b) {
       var ia = order[a];
