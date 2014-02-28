@@ -1,5 +1,8 @@
 <form id="edit-form">
 <div id="request-input">
+  {{#if description}}
+    <div class="well" style="padding: 10px; margin-bottom: 10px;">{{description}}</div>
+  {{/if}}
   <table class="fixed" width="100%">
   <tr>
     <th>Field Name</th>
@@ -27,7 +30,10 @@
       <tr>
         <td>
           {{#if required}}<span class="required">*</span>{{/if}}
-          {{name}}:
+          {{name}}
+          {{#if description}}
+            <span class="tip" data-title="{{description}}"><i class="icon-info-sign"></i></span>
+          {{/if}}
         </td>
         <td>
           <span class="inactive">{{{displayType}}}</span>
@@ -44,6 +50,7 @@
               {{/if}}
           {{/if}}
         </td>
+      </tr>
     {{/each}}
   {{else}}
     <tr>

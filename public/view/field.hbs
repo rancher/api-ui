@@ -18,11 +18,11 @@
 {{/if}}
 
 {{#ifInList type 'string,date'}}
-  <input type="text" name="{{formFieldName}}" value="{{value}}" />
+  <input type="text" name="{{formFieldName}}" value="{{value}}" placeholder="{{placeholder}}"/>
 {{/ifInList}}
 
 {{#ifEqual type 'password'}}
-  <input type="password" name="{{formFieldName}}" value="{{value}}" />
+  <input type="password" name="{{formFieldName}}" value="{{value}} placeholder="{{placeholder}}" />
 {{/ifEqual}}
 
 {{#ifInList type 'number,int,float'}}
@@ -30,6 +30,7 @@
     type="number"
     name="{{formFieldName}}" 
     value="{{value}}"
+    placeholder="{{placeholder}}"
     {{#ifEqual field.min undefined}} {{else}} min="{{field.min}}"{{/ifEqual}}
     {{#ifEqual field.max undefined}} {{else}} max="{{field.max}}"{{/ifEqual}}
     {{#if field.step}} step="{{field.step}}"{{/if}}

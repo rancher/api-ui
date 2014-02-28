@@ -11,6 +11,7 @@
 
     "js": [
       "jquery",
+      "bootstrap",
       "async", "json2", "polyfill",
       "JSONFormatter", "URLParse", "Cookie",
       "handlebars.runtime", "template"

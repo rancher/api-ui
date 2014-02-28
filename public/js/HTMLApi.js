@@ -1,15 +1,20 @@
 "use strict";
 
-function HTMLApi(data, schemasUrl, docs, user, curlUser, cb)
+//data, schemasUrl, docs, user, curlUser, cb
+
+function HTMLApi(opt, cb)
 {
   var self = this;
   this._schemas     = null;
-  this._data        = data;
-  this._docs        = docs;
-  this._user        = user;
-  this._curlUser  = curlUser || '${GDAPI_ACCESS_KEY}:${GDAPI_SECRET_KEY}';
-  this._filterId    = 0;
+  this._schemaDocs  = null;
+  this._data        = opt.data;
+  this._docsPage    = opt.docsPage;
+  this._docsJson    = opt.docsJson;
+  this._user        = opt.user;
+  this._curlUser    = opt.curlUser || '${GDAPI_ACCESS_KEY}:${GDAPI_SECRET_KEY}';
+  this._logout      = opt.logout !== false;
 
+  this._filterId    = 0;
   this._reqModal    = null;
   this._editSchema  = null;
   this._editData    = null;
@@ -32,8 +37,9 @@ function HTMLApi(data, schemasUrl, docs, user, curlUser, cb)
 
   async.auto({
     title:                      this.titleUpdate.bind(this),
-    rawSchema:                  this.schemasLoad.bind(this, schemasUrl),
+    rawSchema:                  this.schemasLoad.bind(this, opt.schemasUrl),
     schema:     ['rawSchema',   this.schemasMunge.bind(this)  ],
+    docs:       ['schema',      this.docsLoad.bind(this, opt.docsJson) ],
   }, initDone);
 
   function initDone(err, results)
@@ -250,14 +256,67 @@ HTMLApi.prototype._fieldMunge = function(field)
   return field;
 }
 
+HTMLApi.prototype.docsLoad = function(link, cb, results)
+{
+  var schemas = results.schema;
+
+  if ( link )
+  {
+    this.ajax('GET', link, function(err,res) {
+      if ( err )
+      {
+        //cb("Error loading docs from [" + link + "]: " + err);
+        cb();
+        return;
+      }
+
+      res.data.forEach(function(doc) {
+        var schema = schemas[doc.id];
+        var field;
+
+        if ( !schema )
+          return;
+
+        if ( doc.description )
+          schema.description = doc.description;
+
+        if ( !doc.resourceFields )
+          return;
+
+        var keys = Object.keys(doc.resourceFields);
+        var key, field;
+        for (var i = 0 ; i < keys.length ; i++ )
+        {
+          key = keys[i];
+          field = doc.resourceFields[key];
+
+          if ( !field || !field.description || !schema.resourceFields[key] )
+            continue;
+
+          schema.resourceFields[key].description = field.description;
+          schema.resourceFields[key].placeholder = field.placeholder;
+        }
+
+      });
+
+      cb(null,res);
+    });
+  }
+  else
+  {
+    return async.nextTick(function() { cb() });
+  }
+}
+
 HTMLApi.prototype.render = function(cb)
 {
   var jsonHtml = this._formatter.valueToHTML(this._data)
 
   var tpl = {
     data: this._data,
-    docs: this._docs,
+    docsPage: this._docsPage,
     user: this._user,
+    logout: this._logout,
     error: this._error,
     explorer: Cookie.get('debug') || false
   };
@@ -1138,6 +1197,7 @@ HTMLApi.prototype.showEdit = function(data,update,schema,url)
     var rows = [];
 
     var tpl = {};
+    tpl.description = schema.description;
     tpl.fields = self._flattenFields(mode, schema, data);
     tpl.hasFields = tpl.fields.length > 0;
     tpl.mode = mode;
@@ -1194,6 +1254,8 @@ HTMLApi.prototype.editOrActionShown = function() {
     if ( checks && checks[0] )
       checks[0].checked = false;
   });
+
+  $('.tip').tooltip({placement: 'right'});
 }
 
 HTMLApi.prototype._escapeRegex = function(str)
@@ -1262,6 +1324,8 @@ HTMLApi.prototype._flattenField = function(mode, name, field, data, depth)
       formFieldNameNull: formFieldName+this._magicNull,
       required: field.required || false,
       writable: (mode == 'action') || (mode == 'update' && field.update) || (mode != 'update' && field.create),
+      description: field.description,
+      placeholder: field.placeholder||"",
       enlargeable: (type == 'string' && (!field.maxLength || field.maxLength > 63)),
       nullCheck: (field.nullable && !field.options && ['string','data','password','number','int','float','reference'].indexOf(field.type) >= 0 ),
       type: type,

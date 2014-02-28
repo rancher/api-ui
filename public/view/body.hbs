@@ -11,13 +11,15 @@
       {{#if user}}
         <span class="user">{{user}}</span>
       {{/if}}
-      <a href="#" onclick="htmlapi.logout(); return false">Log Out</a><br/>
+      {{#if logout}}
+        <a href="#" onclick="htmlapi.logout(); return false">Log Out</a><br/>
+      {{/if}}
 
       {{#if explorer}}
         <a href="#" onclick="Cookie.set('apiview','explorer'); explorer.show(); return false">Explorer View</a><br/>
       {{/if}}
-      {{#if docs}}
-        <a href="{{docs}}" target="cloudapidocs">Documentation</a>
+      {{#if docsPage}}
+        <a href="{{docsPage}}" target="apidocs">Documentation</a>
       {{/if}}
     </th>
   </tr>
