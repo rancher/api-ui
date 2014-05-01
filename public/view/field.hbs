@@ -21,6 +21,10 @@
   <input type="text" name="{{formFieldName}}" value="{{value}}" placeholder="{{placeholder}}"/>
 {{/ifInList}}
 
+{{#ifEqual type 'json'}}
+  <textarea name="{{formFieldName}}">{{value}}</textarea>
+{{/ifEqual}}
+
 {{#ifEqual type 'password'}}
   <input type="password" name="{{formFieldName}}" value="{{value}} placeholder="{{placeholder}}" />
 {{/ifEqual}}

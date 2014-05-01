@@ -1309,11 +1309,15 @@ HTMLApi.prototype._flattenField = function(mode, name, field, data, depth)
       {
         formFieldName += '[]';
       }
-
-      if ( subType == 'map' )
+      else if ( subType == 'map' )
       {
         formFieldName2 = formFieldName+'.key{}';
         formFieldName += '.value{}';
+      }
+
+      if ( subType == 'json' )
+      {
+        formFieldName += '.json{}';
       }
     }
 
@@ -1383,6 +1387,10 @@ HTMLApi.prototype._flattenField = function(mode, name, field, data, depth)
       {
         row.children.push( this._flattenField(mode, name, field, data[i], depth+1) );
       }
+    }
+    else if ( type == 'json' )
+    {
+      row.value = JSON.stringify(data);
     }
     else
     {
@@ -1458,7 +1466,7 @@ HTMLApi.prototype._flattenInputs = function($form)
 
   var inputs = {};
   var k, field, v;
-  var isArray, isMapKey, isMapValue, name, values;
+  var isArray, isMapKey, isMapValue, isJsonValue, name, values;
 
   var maps = {};
 
@@ -1470,6 +1478,18 @@ HTMLApi.prototype._flattenInputs = function($form)
     isArray = k.indexOf('[]') >= 0;
     isMapKey = k.indexOf('.key{}') >= 0;
     isMapValue = k.indexOf('.value{}') >= 0;
+    isJsonValue = k.indexOf('.json{}') >= 0;
+
+    if ( isJsonValue )
+    {
+      try {
+        v = JSON.parse(v);
+      }
+      catch(e)
+      {
+        alert(e);
+      }
+    }
 
     if ( isArray )
     {
@@ -1481,10 +1501,13 @@ HTMLApi.prototype._flattenInputs = function($form)
     }
     else if ( isMapKey || isMapValue )
     {
+      name = k;
+      if ( isJsonValue )
+        name = name.replace(/\.json\{\}$/,'');
       if ( isMapKey )
-        name = k.replace(/\.key\{\}$/,'');
+        name = name.replace(/\.key\{\}$/,'');
       else if ( isMapValue )
-        name = k.replace(/\.value\{\}$/,'');
+        name = name.replace(/\.value\{\}$/,'');
 
       if ( typeof maps[name] === 'undefined' )
       {
@@ -1495,6 +1518,12 @@ HTMLApi.prototype._flattenInputs = function($form)
         maps[name].keys.push(v);
       if ( isMapValue )
         maps[name].values.push(v);
+    }
+    else if ( isJsonValue )
+    {
+      name = k;
+      name = name.replace(/\.json\{\}$/,'');
+      inputs[name] = v;
     }
     else
     {
@@ -1654,6 +1683,8 @@ HTMLApi.prototype.subAdd = function(button, name)
   var field = this._flattenField('update',name,schemaField,'',1);
   field.parentIsMap = parentField.type == 'map';
   field.enlargeable = false;
+  if ( field.type == 'json' )
+    field.value = '{}';
 
   var par = {
     type: parentField.type,
