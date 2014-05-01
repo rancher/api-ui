@@ -1,50 +1,54 @@
 {
-  "_paths": {
-    "image": "public/image"
+  "staticFileDirs": {
+    "image": "image"
   },
 
-  "_base": {
-    "css": [
-      "bootstrap",
-      "main"
-    ],
+  /* a comment */
+  "groups": {
+    "base": {
+      "saveOutput": false,
+      "css": [
+        "bootstrap",
+        "main"
+      ],
 
-    "js": [
-      "jquery",
-      "bootstrap",
-      "async", "json2", "polyfill",
-      "JSONFormatter", "URLParse", "Cookie",
-      "handlebars.runtime", "template"
-    ]
-  },
+      "js": [
+        "jquery",
+        "bootstrap",
+        "async", "json2", "polyfill",
+        "JSONFormatter", "URLParse", "Cookie",
+        "handlebars.runtime", "template"
+      ]
+    },
 
-  "ui": {
-    "group": [
-      "_base"
-    ],
+    "ui": {
+      "include": [
+        "base"
+      ],
 
-    "css": [
-      "explorer"
-    ],
+      "css": [
+        "explorer"
+      ],
 
-    "view": [
-      "body",
-      "filters", "filter", "actions",
-      "request", "response",
-      "edit", "field",
+      "view": [
+        "body",
+        "filters", "filter", "actions",
+        "request", "response",
+        "edit", "field",
 
-      "explorer",
-      "column",
-      "column-links",
-      "column-collection",
-      "column-resource"
-    ],
+        "explorer",
+        "column",
+        "column-links",
+        "column-collection",
+        "column-resource"
+      ],
 
-    "js": [
-      "HTMLApi",
-      "Explorer",
-      "jquery.scrollintoview",
-      "init"
-    ]
+      "js": [
+        "HTMLApi",
+        "Explorer",
+        "jquery.scrollintoview",
+        "init"
+      ]
+    }
   }
 }
