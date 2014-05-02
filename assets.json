@@ -1,6 +1,7 @@
 {
   "staticFileDirs": {
-    "image": "image"
+    "image": "image",
+    "fonts": "fonts"
   },
 
   /* a comment */

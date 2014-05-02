@@ -1,14 +1,14 @@
-<div class="filter" data-prefix="filter_{{cur.name}}">
+<div class="filter {{#ifInList cur.modifier "null,notnull"}}filter-novalue{{/ifInList}}" data-prefix="filter_{{cur.name}}">
   <input type="button" onclick="htmlapi.filterRemove(this)" value="-">&nbsp;
 
-  <select id="filter_{{cur.name}}_name" onchange="htmlapi.filterChange(this)">
+  <select class="filter-key" id="filter_{{cur.name}}_name" onchange="htmlapi.filterChange(this)">
   {{#eachProperty allFilterSchema}}
     <option value="{{key}}" {{#ifEqual key ../cur.name}} SELECTED{{/ifEqual}}>{{key}}</option>
   {{/eachProperty}}
   </select>
 
   {{#if thisFilterSchema.modifiers}}
-    <select id="filter_{{cur.name}}_modifier" onchange="htmlapi.modifierChange(this);">
+    <select class="filter-modifier" id="filter_{{cur.name}}_modifier" onchange="htmlapi.modifierChange(this);">
       {{#each thisFilterSchema.modifiers}}
         <option value="{{.}}" {{#ifEqual ../cur.modifier .}} SELECTED{{/ifEqual}}>
           {{#ifEqual . "eq"     }}={{/ifEqual}}
@@ -32,13 +32,13 @@
   {{/if}}
 
   {{#if thisFilterSchema.options}}
-    <select id="filter_{{cur.name}}_value">
+    <select class="filter-value" id="filter_{{cur.name}}_value">
       <option value=""></option>
       {{#eachProperty thisFilterSchema.options}}
         <option value="{{value}}" {{#ifEqual ../cur.value value}} SELECTED{{/ifEqual}}>{{value}}</option>
       {{/eachProperty}}
     </select>
   {{else}}
-    <input type="text" id="filter_{{cur.name}}_value" value="{{cur.value}}" />
+    <input type="text" class="filter-value" id="filter_{{cur.name}}_value" value="{{cur.value}}" />
   {{/if}}
 </div>

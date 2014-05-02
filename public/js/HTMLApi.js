@@ -54,7 +54,6 @@ HTMLApi.prototype.show = function(cb)
   var self = this;
   async.auto({
     render:                     this.render.bind(this)         ,
-    operations: ['render',      this.operationInit.bind(this) ],
     actions:    ['render',      this.actionInit.bind(this)    ],
     filters:    ['render',      this.filterInit.bind(this)    ],
   }, showDone);
@@ -75,7 +74,6 @@ HTMLApi.prototype.show = function(cb)
       $('#header-body').css('visibility','visible');
     }
 
-    $('#json').css('padding-top', $('#header')[0].offsetHeight + 'px');
     if ( cb )
       cb();
   }
@@ -310,7 +308,35 @@ HTMLApi.prototype.docsLoad = function(link, cb, results)
 
 HTMLApi.prototype.render = function(cb)
 {
-  var jsonHtml = this._formatter.valueToHTML(this._data)
+  var data = this._data;
+  var jsonHtml = this._formatter.valueToHTML(data)
+  var schema = null;
+  if ( data.resourceType )
+    schema = this.getSchema(data.resourceType);
+  else if ( data.type )
+    schema = this.getSchema(data.type);
+
+  var operations = {
+    up: true,
+    reload: true,
+  };
+
+  if ( data.type == 'collection' && (data.resourceType||'').toLowerCase() == 'apiversion' )
+    operations.up = false;
+
+  if ( schema )
+  {
+    var methods = ( data.type == 'collection' ? schema.collectionMethods : schema.resourceMethods ) || [];
+    var methodMap = {};
+    methods.forEach(function(method) {
+      operations[ method.toLowerCase() ] = true;
+    });
+
+    if ( data.createTypes && Object.keys(data.createTypes).length )
+    {
+      operations.post = true;
+    }
+  }
 
   var tpl = {
     data: this._data,
@@ -318,6 +344,8 @@ HTMLApi.prototype.render = function(cb)
     user: this._user,
     logout: this._logout,
     error: this._error,
+    schema: schema,
+    operations: operations,
     explorer: Cookie.get('debug') || false
   };
 
@@ -326,7 +354,6 @@ HTMLApi.prototype.render = function(cb)
 
   this._addCollapsers();
 
-  $('#operations').html('<span class="inactive">None</span>');
   $('#actions').html('<span class="inactive">None</span>');
   $('#filters').html('<span class="inactive">None</span>');
 
@@ -374,64 +401,6 @@ HTMLApi.prototype.getSchema = function(type, obj)
     return this._schemas[type];
 
   return null;
-}
-
-// ----------------------------------------------------------------------------
-
-HTMLApi.prototype.operationInit = function(cb)
-{
-  var html = '';
-  var schema = this.getSchema();
-  var data = this._data;
-  var type = data.type;
-
-  var upEnabled = true;
-  if ( data.type == 'collection' && (data.resourceType||'').toLowerCase() == 'apiversion' )
-    upEnabled = false;
-
-  html += '<input type="button" onclick="htmlapi.up();" value="Go Up"' + (upEnabled ? '' : ' DISABLED')+'>&nbsp;';
-  html += '<input type="button" onclick="htmlapi.reload();" value="Reload"><br/>';
-
-  if ( schema )
-  {
-    var methods = ( type == 'collection' ? schema.collectionMethods : schema.resourceMethods ) || [];
-    var order = {'POST': 1, 'PUT': 2, 'DELETE': 3}
-    methods.sort(function(a,b) {
-      var ia = order[a];
-      if ( !ia )
-        return -1;
-
-      var ib = order[b];
-      if ( !ib )
-        return 1;
-
-      return ia-ib;
-    });
-
-    var method;
-    for ( var i = 0, len = methods.length ; i < len ; i++ )
-    {
-      method = methods[i].toUpperCase();
-
-      switch ( method )
-      {
-      case 'POST':
-        html += '<input type="button" onclick="htmlapi.create(this);" value="Create">&nbsp;';
-        break;
-      case 'DELETE':
-        html += '<input type="button" onclick="htmlapi.remove(this);" value="Delete">&nbsp;';
-        break;
-      case 'PUT':
-        html += '<input type="button" onclick="htmlapi.update(this);" value="Edit">&nbsp;';
-        break;
-      default:
-        break;
-      }
-    }
-  }
-
-  $('#operations').html(html);
-  async.nextTick(cb);
 }
 
 // ----------------------------------------------------------------------------
@@ -762,6 +731,12 @@ HTMLApi.prototype.valueFormatter = function(key,obj, path)
   path = (path||[]).slice(0);
   path.push(key);
 
+  var schema = null;
+  if ( obj.resourceType )
+    schema = this.getSchema(obj.resourceType);
+  else if ( obj.type )
+    schema = this.getSchema(obj.type);
+
   var html = this._formatter.valueToHTML(obj[key], path);
 
   if ( !obj[key] )
@@ -771,13 +746,22 @@ HTMLApi.prototype.valueFormatter = function(key,obj, path)
   {
     html = '<a class="valuelink" href="' + obj.links['self'] + '">' + html + '</a>';
   }
-  else if (key == 'type' || key == 'resourceType')
+  else if ( schema && schema.resourceFields && schema.resourceFields[key] )
   {
-    var schema = this.getSchema(obj[key]);
-    if ( schema )
+    var field = schema.resourceFields[key];
+    if ( field._typeList && field._typeList[0] == 'reference' )
     {
-      html = '<a class="valuelink" href="' + schema.links['self'] + '">' + html + '</a>';
+      var subtype = this.getSchema(field._typeList[1]);
+      if ( subtype && subtype.links.collection )
+      {
+        var url = subtype.links.collection.replace(/\/+$/,'') + '/' + escape(obj[key]);
+        html = '<a class="valuelink" href="' + url + '">' + html + '</a>';
+      }
     }
+  }
+  else if (schema && (key == 'type' || key == 'resourceType') )
+  {
+    html = '<a class="valuelink" href="' + schema.links['self'] + '">' + html + '</a>';
   }
 
   return html;
