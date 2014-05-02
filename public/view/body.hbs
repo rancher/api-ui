@@ -3,26 +3,28 @@
   <div iv="header-body">
     <label>Operations</label>
     <div id="operations">
-      <p>
-        <button class="btn btn-primary btn-sm" onclick="htmlapi.up()" {{#unless operations.up}}disabled="disabled"{{/unless}}><i class="glyphicon glyphicon-arrow-up"></i> Up</button>
-        <button class="btn btn-primary btn-sm" onclick="htmlapi.reload()"><i class="glyphicon glyphicon-refresh"></i> Reload</button>
-      </p>
+        <button type="button" class="btn btn-primary btn-sm" onclick="htmlapi.up()" {{#unless operations.up}}disabled="disabled"{{/unless}}><span class="glyphicon glyphicon-arrow-up"></span> Up</button>
+        <button type="button" class="btn btn-primary btn-sm" onclick="htmlapi.reload()"><span class="glyphicon glyphicon-refresh"></span> Reload</button>
       {{#if operations.post}}
-        <button class="btn btn-primary btn-sm" onclick="htmlapi.create()"><i class="glyphicon glyphicon-plus"></i> Create</button>
+        <button type="button" class="btn btn-primary btn-sm" onclick="htmlapi.create()"><span class="glyphicon glyphicon-plus"></span> Create</button>
       {{/if}}
       {{#if operations.put}}
-        <button class="btn btn-primary btn-sm" onclick="htmlapi.update()"><i class="glyphicon glyphicon-edit"></i> Edit</button>
+        <button type="button" class="btn btn-primary btn-sm" onclick="htmlapi.update()"><span class="glyphicon glyphicon-edit"></span> Edit</button>
       {{/if}}
       {{#if operations.delete}}
-        <button class="btn btn-primary btn-sm" onclick="htmlapi.delete()"><i class="glyphicon glyphicon-trash"></i> Delete</button>
+        <button type="button" class="btn btn-primary btn-sm" onclick="htmlapi.delete()"><span class="glyphicon glyphicon-trash"></span> Delete</button>
       {{/if}}
     </div>
     <br/>
 
     <label>Actions</label>
-    <form onsubmit="htmlapi.actionLoad($('#action').val(),undefined,{}); return false;">
-      <div id="actions">{{! Set based on schema }}</div>
-    </form>
+    <div>
+      {{#eachProperty actions}}
+        <button type="button" class="btn btn-success btn-sm" data-action="{{key}}" {{#if value}}onclick="htmlapi.showAction(this);"{{else}}disabled="disabled"{{/if}}>{{key}}</button>
+      {{else}}
+        <span class="inactive">None</span>
+      {{/eachProperty}}
+    </div>
     <br/>
 
     <label>Filter</label>
@@ -31,63 +33,85 @@
     </form>
     <br/>
 
-    <label>Sort</label>
     {{#if data.sortLinks }}
       <form>
-        <select id="sortBy" onchange="htmlapi.sortChange(this)">
-            <option value="">(None)</option>
-            {{#eachProperty data.sortLinks}}
-              <option value="{{key}}"{{#ifEqual ../../data.sort.name key}} SELECTED{{/ifEqual}}>{{key}}</option>
-            {{/eachProperty}}
-        </select>
-        {{#if data.sort.name }}
-          <input type="button" value="{{#ifEqual data.sort.order "desc"}}&uarr;{{else}}&darr;{{/ifEqual}}" onclick="htmlapi.sortOrderChange();"/>
-        {{/if}}
+        <div class="row">
+          <div class="col-xs-7">
+            <label>Sort By</label>
+            <select id="sortBy" class="form-control" onchange="htmlapi.sortChange(this)">
+                {{#unless data.sort.name}}<option value="">(Not Sorted)</option>{{/unless}}
+                {{#eachProperty data.sortLinks}}
+                  <option value="{{key}}"{{#ifEqual ../../data.sort.name key}} SELECTED{{/ifEqual}}>{{key}}</option>
+                {{/eachProperty}}
+            </select>
+          </div>
+          <div class="col-xs-5">
+            <label>Direction</label>
+            {{#if data.sort.name }}
+              <div class="btn-group btn-group-sm">
+                {{#ifEqual data.sort.order "desc"}}
+                  <button type="button" class="btn btn-default btn-sm active"><span class="glyphicon glyphicon-sort-by-attributes-alt"></span></button>
+                  <button type="button" class="btn btn-default btn-sm" onclick="htmlapi.sortOrderChange();"><span class="glyphicon glyphicon-sort-by-attributes"></span></button>
+                {{else}}
+                  <button type="button" class="btn btn-default btn-sm" onclick="htmlapi.sortOrderChange();"><span class="glyphicon glyphicon-sort-by-attributes-alt"></span></button>
+                  <button type="button" class="btn btn-default btn-sm active"><span class="glyphicon glyphicon-sort-by-attributes"></span></button>
+                {{/ifEqual}}
+              </div>
+            {{/if}}
+          </div>
+        </div>
       </form>
-      <span class="inactive">
-        {{#if data.sort.name}}
-          {{data.sort.name}}&nbsp;{{#ifEqual data.sort.order "desc"}}&uarr;{{else}}&darr;{{/ifEqual}}
-        {{else}}
-          Not Sorted
-        {{/if}}
-      </span>
     {{else}}
-      <span class="inactive">Not available</span>
+      <label>Sort</label>
+      <p class="inactive">Not available</p>
     {{/if}}
     <br/>
 
     <label>Pagination</label>
     {{#if data.pagination}}
       <div>
-        <form>
-          <input type="number" min="0" step="100" id="limit" name="limit" style="width: 50px" value="{{data.pagination.limit}}"/>/page
-          <input type="submit" value="Set" onclick="htmlapi.setLimit($('limit').val())">
-        </form>
-      </div>
-      <div>
         {{#if data.pagination.partial}}
           {{#if data.pagination.first}}
             {{#ifEqual data.links.self data.pagination.first}}
-              {{! Nothing }}
+              <button type="button" class="btn btn-success btn-sm" disabled="disabled"><span class="glyphicon glyphicon-step-backward"></span></button>
             {{else}}
-              <a href="{{data.pagination.first}}">First</a>&nbsp;
+              <a class="btn btn-success btn-sm" href="{{data.pagination.first}}"><span class="glyphicon glyphicon-step-backward"></span></a>
             {{/ifEqual}}
+          {{else}}
+              <button type="button" class="btn btn-success btn-sm" disabled="disabled"><span class="glyphicon glyphicon-step-backward"></span></button>
           {{/if}}
           {{#if data.pagination.prev}}
-            <a href="{{data.pagination.prev}}">Prev</a>&nbsp;
+            <a class="btn btn-success btn-sm" href="{{data.pagination.prev}}"><span class="glyphicon glyphicon-chevron-left"></span></a>
+          {{else}}
+              <button type="button" class="btn btn-success btn-sm" disabled="disabled"><span class="glyphicon glyphicon-chevron-left"></span></button>
           {{/if}}
           {{#if data.pagination.next}}
-            <a href="{{data.pagination.next}}">Next</a>&nbsp;
+            <a class="btn btn-success btn-sm" href="{{data.pagination.next}}"><span class="glyphicon glyphicon-chevron-right"></span></a>
+          {{else}}
+              <button type="button" class="btn btn-success btn-sm" disabled="disabled"><span class="glyphicon glyphicon-chevron-right"></span></button>
           {{/if}}
           {{#if data.pagination.last}}
-            <a href="{{data.pagination.last}}">Last</a>
+            <a class="btn btn-success btn-sm" href="{{data.pagination.last}}"><span class="glyphicon glyphicon-step-forward"></span></a>
+          {{else}}
+              <button type="button" class="btn btn-success btn-sm" disabled="disabled"><span class="glyphicon glyphicon-step-forward"></span></button>
           {{/if}}
         {{else}}
-          <span class="inactive">Full result</span>
+          <p class="inactive">Full result</p>
         {{/if}}
       </div>
+      <div>
+        <form class="form-horizontal">
+        <div class="input-group input-group-sm">
+          <span class="input-group-addon">Limit:</span>
+          <input class="form-control" type="number" min="0" step="100" id="limit" name="limit" value="{{data.pagination.limit}}"/>
+          <span class="input-group-btn">
+            <button type="submit" class="btn btn-primary btn-sm" onclick="htmlapi.setLimit($('limit').val())"><span class="glyphicon glyphicon-signal"></span> Set</button>
+          </span>
+        </div>
+        </form>
+      </div>
     {{else}}
-      <span class="inactive">Not available</span>
+      <p class="inactive">Not available</p>
     {{/if}}
     <br/>
   </div>

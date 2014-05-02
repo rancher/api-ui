@@ -33,7 +33,7 @@
 
       "view": [
         "body",
-        "filters", "filter", "actions",
+        "filters", "filter",
         "request", "response",
         "edit", "field",
 

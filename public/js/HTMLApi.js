@@ -54,7 +54,6 @@ HTMLApi.prototype.show = function(cb)
   var self = this;
   async.auto({
     render:                     this.render.bind(this)         ,
-    actions:    ['render',      this.actionInit.bind(this)    ],
     filters:    ['render',      this.filterInit.bind(this)    ],
   }, showDone);
 
@@ -338,6 +337,13 @@ HTMLApi.prototype.render = function(cb)
     }
   }
 
+  var actions = {};
+  var allActions = ( data.type == 'collection' ? schema.collectionActions : schema.resourceActions ) || {};
+  Object.keys(allActions).sort().forEach(function(key) {
+    // Set the action to true if it's available on this object or false if it isn't
+    actions[key] = !!data.actions[key];
+  });
+
   var tpl = {
     data: this._data,
     docsPage: this._docsPage,
@@ -346,6 +352,7 @@ HTMLApi.prototype.render = function(cb)
     error: this._error,
     schema: schema,
     operations: operations,
+    actions: actions,
     explorer: Cookie.get('debug') || false
   };
 
@@ -354,7 +361,6 @@ HTMLApi.prototype.render = function(cb)
 
   this._addCollapsers();
 
-  $('#actions').html('<span class="inactive">None</span>');
   $('#filters').html('<span class="inactive">None</span>');
 
   return async.nextTick(cb);
@@ -405,19 +411,9 @@ HTMLApi.prototype.getSchema = function(type, obj)
 
 // ----------------------------------------------------------------------------
 
-HTMLApi.prototype.actionInit = function(cb)
+HTMLApi.prototype.showAction = function(button)
 {
-  var data = this._data;
-
-  if ( !data.actions || !Object.keys(data.actions).length )
-    return async.nextTick(cb);
-
-  var html = Handlebars.templates['actions']({
-    actions: data.actions
-  });
-  $('#actions').html(html);
-
-  async.nextTick(cb);
+  this.actionLoad(button.getAttribute('data-action'), undefined, {});
 }
 
 HTMLApi.prototype.actionLoad = function(name, obj, body)

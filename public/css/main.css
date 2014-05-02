@@ -28,27 +28,6 @@ FIELDSET, IMG {
   border: 0;
 }
 
-INPUT, TEXTAREA, SELECT {
-  font-family: inherit;
-  font-weight: inherit;
-}
-
-INPUT, A {
-  outline: none;
-}
-
-TEXTAREA, 
-INPUT[type=text],
-INPUT[type=number],
-INPUT[type=password] {
-  background-color: white;
-  border: 1px solid #C0C0C0;
-}
-
-INPUT.fixie {
-  border: 0;
-}
-
 LABEL {
   -moz-user-select: none;
   -khtml-user-select: none;
@@ -224,20 +203,20 @@ H1 {
   z-index: 1;
 }
 
+#header .btn {
+  margin-bottom: 3px;
+}
+
+#header .input-group .btn {
+  margin-bottom: 0;
+}
+
 TH {
 text-align: left;
 }
 
 .inactive {
   color: #666;
-}
-
-INPUT {
-  margin: 2px;
-}
-
-INPUT[type="button"] {
-  min-width: 20px;
 }
 
 #request-input TD {
