@@ -4,29 +4,12 @@ var htmlapi;
 var explorer;
 (function()
 {
-  function addScript(url,onload) {
-    var head = document.getElementsByTagName('HEAD')[0];
-    var script = document.createElement('script');
-    script.src = url
-    script.onload = function() { onload() };
-    head.appendChild(script);
-  }
-
-  async.series([
-    function(cb) { addScript("https://img3.wsimg.com/starfield/curl/v1.8.1/curl.js", cb); }
-  ], duelLoaded);
-
-  function duelLoaded() {
-    jQuery(window).load(jQueryReady);
-  }
+  jQuery(window).load(jQueryReady);
 
   function jQueryReady() {
-    require('starfield/sf.dialog', function() {
-      dialogReady();
-    });
-  }
+    if ( window.autoInit === false )
+      return;
 
-  function dialogReady() {
     document.body.innerHTML = '<div class="loading"></div>';
     try {
       htmlapi = new HTMLApi({

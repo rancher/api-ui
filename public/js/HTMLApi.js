@@ -78,80 +78,113 @@ HTMLApi.prototype.show = function(cb)
   }
 }
 
-HTMLApi.prototype._setupModal = function(html)
-{
-  if ( this._reqModal )
-  {
-    this._reqModal.sfDialog('close');
-    this._reqModal.remove();
-    this._reqModal = null;
-  }
-
-  if ( !html )
-  {
-    html = '<div class="loading"></div>';
-  }
-
-  this._reqModal = $('<div style="width: 700px;"/>').html(html);
-  return this._reqModal;
-}
-
-HTMLApi.prototype.showModal = function(html,in_opt,cb)
+HTMLApi.prototype.showModal = function(body,opt,cb)
 {
   var self = this;
 
-  function onMoreKeys(e)
+  if ( !this.onKeys )
   {
-    if ( e.keyCode == 13 )
-    {
-      // Find the first primary button and click it
-      var buttons = self._reqModal.sfDialog('getButtons');
-      var button;
-      for (var i = 0 ; i < buttons.length ; i++ )
+    this.onKeys = function(e) {
+      if ( e.keyCode == 13 )
       {
-        button = buttons[i].button;
-        if ( button.hasClass('sf-btn-primary') )
+        // Find the first primary button and click it
+        var actions = self._reqModal._actions;
+        for (var i = 0 ; i < actions.length ; i++ )
         {
-          button.trigger('click');
-          break;
+          if ( actions[i].primary )
+            self.modalAction(actions[i].id);
         }
       }
-    }
+      else if ( e.keyCode == 27 )
+      {
+        var actions = self._reqModal._actions;
+        for (var i = 0 ; i < actions.length ; i++ )
+        {
+          if ( actions[i].cancel )
+            self.modalAction(actions[i].id);
+        }
+      }
 
-    return true;
+      return true;
+    }.bind(this);
   }
 
-  var opt = {
-    destroyOnClose: false,
-    dialogHeightMin: 100,
-    buttons: [
-      {id: 'cancel',  text: 'Cancel', cancel: true }
-    ],
-    onOpen: function() {
-      $(this.context.document).bind('keydown', onMoreKeys);
-    },
-    onClose: function() {
-      $(this.context.document).unbind('keydown', onMoreKeys);
-    }
-  };
 
-  var k = Object.keys(in_opt);
-  for ( var i = 0 ; i < k.length ; i++ )
+  this.hideModal();
+
+  if ( !body )
   {
-    opt[ k[i] ] = in_opt[ k[i] ];
+    body = '<div class="loading"></div>';
   }
 
-  self._setupModal(html);
-  require('starfield/sf.dialog', function() {
-    self._reqModal.sfDialog(opt);
-    if ( cb )
-      cb(self._reqModal);
-  });
+  opt.body = body;
+
+  var modalHtml = Handlebars.templates['modal'](opt);
+  var modal = $(modalHtml);
+  this._reqModal = modal;
+  $('.modal-dialog',modal).css('width',opt.width||'750px');
+  this.setModalActions(opt.actions);
+  modal.bind('keydown', this.onKeys);
+  modal.modal({backdrop: 'static', keyboard: false});
+
+  if ( cb )
+  {
+    modal.on('shown.bs.modal', function() { cb(modal); });
+  }
+
 }
 
 HTMLApi.prototype.replaceModal = function(html)
 {
   this._reqModal.html(html);
+}
+
+HTMLApi.prototype.modalAction = function(id) {
+  var action;
+  this._reqModal._actions.forEach(function(candidate) {
+    if ( candidate.id == id )
+      action = candidate;
+  });
+
+  if ( action && action.onClick)
+  {
+    action.onClick();
+  }
+  else if ( action && action.cancel )
+  {
+    this.hideModal();
+  }
+}
+
+HTMLApi.prototype.hideModal = function() {
+ var old = this._reqModal;
+ if ( !old )
+  return;
+
+  old.modal('hide');
+  old.on('hidden.bs.modal', function() {
+    old.unbind('keydown', this.onKeys);
+    old.remove();
+  });
+}
+
+HTMLApi.prototype.setModalActions = function(actions)
+{
+  actions = actions || [];
+  this._reqModal._actions = actions;
+  var html = '';
+
+  actions.forEach(function(action) {
+    color = 'btn-default';
+    if ( action.primary )
+      color = 'btn-primary';
+    else if ( action.cancel )
+      color = 'btn-link';
+
+    html += '<button type="button" class="btn '+color+'" onclick="htmlapi.modalAction(\''+ action.id +'\');">'+ action.text + '</button>';
+  });
+
+  $('.modal-footer', this._reqModal).html(html);
 }
 
 HTMLApi.prototype.titleUpdate = function(cb)
@@ -361,7 +394,7 @@ HTMLApi.prototype.render = function(cb)
 
   this._addCollapsers();
 
-  $('#filters').html('<span class="inactive">None</span>');
+  $('#filters').html('<span class="inactive">Not available</span>');
 
   return async.nextTick(cb);
 }
@@ -467,14 +500,13 @@ HTMLApi.prototype.actionLoad = function(name, obj, body)
 
       var html = Handlebars.templates['edit'](tpl);
       var popinActions = [
-        {id: 'ok',      text: 'Show Request', /*on_enter: true, */ onClick: function() { self.showRequest(mode,'POST',actionInput,retry,url); }.bind(self) },
+        {id: 'ok',      text: 'Show Request', primary: true, onClick: function() { self.showRequest(mode,'POST',actionInput,retry,url); }.bind(self) },
         {id: 'cancel',  text: 'Cancel', cancel: true }
       ];
 
 
       self.replaceModal(html);
-      modal.sfDialog('setButtons',popinActions);
-      modal.sfDialog('resize');
+      this.setModalActions(popinActions);
       self.editOrActionShown();
     }
   }
@@ -852,7 +884,7 @@ HTMLApi.prototype.request = function(method,body,opt,really)
 
   if ( really )
   {
-    this._reqModal.sfDialog('setButtons', [
+    this.setModalActions([
       {id: 'cancel', text: 'Cancel', cancel: true}
     ]);
 
@@ -927,12 +959,11 @@ HTMLApi.prototype.request = function(method,body,opt,really)
   self.showModal(html, {
     destroyOnClose: false,
     title: 'API Request',
-    buttons: [
-      {id: 'ok',      text: 'Send Request', onClick: function() { self.request(method,body,opt,true); } },
+    actions: [
+      {id: 'ok',      text: 'Send Request', primary: true, onClick: function() { self.request(method,body,opt,true); } },
       {id: 'cancel',  text: 'Cancel', cancel: true}
     ]
   });
-  self._reqModal.sfDialog('resize');
 }
 
 HTMLApi.prototype.postDone = function()
@@ -1005,18 +1036,18 @@ HTMLApi.prototype.requestDone = function(err, body, res)
   if ( loc )
   {
     primary = 'follow';
-    popinActions.unshift({id: 'follow', text: 'Follow Location', /*on_enter: !retry,*/ onClick: function() { window.location.href = loc }});
+    popinActions.unshift({id: 'follow', text: 'Follow Location', onClick: function() { window.location.href = loc }});
   }
   else if ( selfUrl )
   {
     primary = 'followSelf';
-    popinActions.unshift({id: 'followSelf', text: 'Follow Self Link', /*on_enter: !retry,*/ onClick: function() { window.location.href = selfUrl }});
+    popinActions.unshift({id: 'followSelf', text: 'Follow Self Link', onClick: function() { window.location.href = selfUrl }});
   }
 
   if ( retry )
   {
     primary = 'edit';
-    popinActions.unshift({id: 'edit', text: 'Edit & Retry', /*on_enter: true,*/ onClick: this._lastOpt.retry.bind(this) });
+    popinActions.unshift({id: 'edit', text: 'Edit & Retry', onClick: this._lastOpt.retry.bind(this) });
   }
 
   // Default to "Go Up" on successful delete
@@ -1027,20 +1058,19 @@ HTMLApi.prototype.requestDone = function(err, body, res)
 
   for ( var i = 0 ; i < popinActions.length ; i++ )
   {
-    if ( popinActions[i].id != primary && !popinActions[i].cancel )
+    if ( popinActions[i].id == primary )
     {
-      popinActions[i].enabledClasses = "sf-btn-secondary";
-      popinActions[i].disabledClasses = "sf-btn-secondary sf-btn-dsabld";
+      popinActions[i].primary = true;
+      break;
     }
   }
 
-  this._reqModal.sfDialog('setButtons', popinActions);
+  this.setModalActions(popinActions);
   $('#notsent').hide();
   $('#waiting').hide();
   $('#result').html(html);
   $('#response-body').html(out);
   $('#result' ).show();
-  this._reqModal.sfDialog('resize');
 }
 
 HTMLApi.prototype.create = function()
@@ -1205,13 +1235,13 @@ HTMLApi.prototype.showEdit = function(data,update,schema,url)
     var html = Handlebars.templates['edit'](tpl);
     var method = (update ? 'PUT' : 'POST');
     var popinActions = [
-      {id: 'ok',      text: 'Show Request', /*on_enter: true, */ onClick: function() { self.showRequest(mode, method,schema,retry,url); }.bind(self) },
+      {id: 'ok',      text: 'Show Request', primary: true, onClick: function() { self.showRequest(mode, method,schema,retry,url); }.bind(self) },
       {id: 'cancel',  text: 'Cancel', cancel: true }
     ];
 
     self.showModal(html, {
         title: title,
-        buttons: popinActions
+        actions: popinActions
     }, self.editOrActionShown.bind(self));
   }
 }
@@ -1676,14 +1706,12 @@ HTMLApi.prototype.subAdd = function(button, name)
 
 //  html = '<div><input type="button" onclick="htmlapi.subRemove(this);" value="-">' + html + '</div>';
   $(button).before(html);
-  this._reqModal.sfDialog('resize');
 }
 
 HTMLApi.prototype.subRemove = function(button)
 {
   var $div = $(button).parents('DIV');
   $($div[0]).remove();
-  this._reqModal.sfDialog('resize');
 }
 
 HTMLApi.prototype.toggleNull = function(check)
@@ -1718,5 +1746,4 @@ HTMLApi.prototype.switchToTextarea = function(button)
   $textarea.val(val);
   $textarea.on('keydown', function(e) { if ( e.keyCode == 13 ) { e.stopPropagation(); return true; } });
   $button.hide();
-  this._reqModal.sfDialog('resize');
 }
