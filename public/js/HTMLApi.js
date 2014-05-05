@@ -54,8 +54,6 @@ HTMLApi.prototype.show = function(cb)
   var self = this;
   async.auto({
     render:                     this.render.bind(this)         ,
-    operations: ['render',      this.operationInit.bind(this) ],
-    actions:    ['render',      this.actionInit.bind(this)    ],
     filters:    ['render',      this.filterInit.bind(this)    ],
   }, showDone);
 
@@ -75,86 +73,120 @@ HTMLApi.prototype.show = function(cb)
       $('#header-body').css('visibility','visible');
     }
 
-    $('#json').css('padding-top', $('#header')[0].offsetHeight + 'px');
     if ( cb )
       cb();
   }
 }
 
-HTMLApi.prototype._setupModal = function(html)
-{
-  if ( this._reqModal )
-  {
-    this._reqModal.sfDialog('close');
-    this._reqModal.remove();
-    this._reqModal = null;
-  }
-
-  if ( !html )
-  {
-    html = '<div class="loading"></div>';
-  }
-
-  this._reqModal = $('<div style="width: 700px;"/>').html(html);
-  return this._reqModal;
-}
-
-HTMLApi.prototype.showModal = function(html,in_opt,cb)
+HTMLApi.prototype.showModal = function(body,opt,cb)
 {
   var self = this;
 
-  function onMoreKeys(e)
+  if ( !this.onKeys )
   {
-    if ( e.keyCode == 13 )
-    {
-      // Find the first primary button and click it
-      var buttons = self._reqModal.sfDialog('getButtons');
-      var button;
-      for (var i = 0 ; i < buttons.length ; i++ )
+    this.onKeys = function(e) {
+      if ( e.keyCode == 13 )
       {
-        button = buttons[i].button;
-        if ( button.hasClass('sf-btn-primary') )
+        // Find the first primary button and click it
+        var actions = self._reqModal._actions;
+        for (var i = 0 ; i < actions.length ; i++ )
         {
-          button.trigger('click');
-          break;
+          if ( actions[i].primary )
+            self.modalAction(actions[i].id);
         }
       }
-    }
+      else if ( e.keyCode == 27 )
+      {
+        var actions = self._reqModal._actions;
+        for (var i = 0 ; i < actions.length ; i++ )
+        {
+          if ( actions[i].cancel )
+            self.modalAction(actions[i].id);
+        }
+      }
 
-    return true;
+      return true;
+    }.bind(this);
   }
 
-  var opt = {
-    destroyOnClose: false,
-    dialogHeightMin: 100,
-    buttons: [
-      {id: 'cancel',  text: 'Cancel', cancel: true }
-    ],
-    onOpen: function() {
-      $(this.context.document).bind('keydown', onMoreKeys);
-    },
-    onClose: function() {
-      $(this.context.document).unbind('keydown', onMoreKeys);
-    }
-  };
 
-  var k = Object.keys(in_opt);
-  for ( var i = 0 ; i < k.length ; i++ )
+  this.hideModal();
+
+  if ( !body )
   {
-    opt[ k[i] ] = in_opt[ k[i] ];
+    body = '<div class="loading"></div>';
   }
 
-  self._setupModal(html);
-  require('starfield/sf.dialog', function() {
-    self._reqModal.sfDialog(opt);
-    if ( cb )
-      cb(self._reqModal);
-  });
+  opt.body = body;
+
+  var modalHtml = Handlebars.templates['modal'](opt);
+  var modal = $(modalHtml);
+  this._reqModal = modal;
+  $('.modal-dialog',modal).css('width',opt.width||'750px');
+  this.setModalActions(opt.actions);
+  modal.bind('keydown', this.onKeys);
+  modal.modal({backdrop: 'static', keyboard: false});
+
+  if ( cb )
+  {
+    modal.on('shown.bs.modal', function() { cb(modal); });
+  }
+
 }
 
 HTMLApi.prototype.replaceModal = function(html)
 {
-  this._reqModal.html(html);
+  $('.modal-body', this._reqModal).html(html);
+}
+
+HTMLApi.prototype.modalAction = function(id) {
+  var action;
+  this._reqModal._actions.forEach(function(candidate) {
+    if ( candidate.id == id )
+      action = candidate;
+  });
+
+  if ( action && action.onClick)
+  {
+    action.onClick();
+  }
+  else if ( action && action.cancel )
+  {
+    this.hideModal();
+  }
+}
+
+HTMLApi.prototype.hideModal = function() {
+  var self = this;
+  var old = self._reqModal;
+  if ( !old )
+    return;
+
+  old.modal('hide');
+  old.on('hidden.bs.modal', function() {
+    old.unbind('keydown', self.onKeys);
+    old.remove();
+    self._reqModal = null;
+  });
+}
+
+HTMLApi.prototype.setModalActions = function(actions)
+{
+  actions = actions || [];
+  this._reqModal._actions = actions;
+  var html = '';
+
+  actions.forEach(function(action) {
+    color = 'btn-default';
+    if ( action.primary )
+      color = 'btn-primary';
+    else if ( action.cancel )
+      color = 'btn-link';
+
+    html += '<button type="button" class="btn '+color+'" onclick="htmlapi.modalAction(\''+ action.id +'\');">'+ action.text + '</button>';
+  });
+
+  $('.modal-footer', this._reqModal).html(html);
 }
 
 HTMLApi.prototype.titleUpdate = function(cb)
@@ -310,7 +342,42 @@ HTMLApi.prototype.docsLoad = function(link, cb, results)
 
 HTMLApi.prototype.render = function(cb)
 {
-  var jsonHtml = this._formatter.valueToHTML(this._data)
+  var data = this._data;
+  var jsonHtml = this._formatter.valueToHTML(data)
+  var schema = null;
+  if ( data.resourceType )
+    schema = this.getSchema(data.resourceType);
+  else if ( data.type )
+    schema = this.getSchema(data.type);
+
+  var operations = {
+    up: true,
+    reload: true,
+  };
+
+  if ( data.type == 'collection' && (data.resourceType||'').toLowerCase() == 'apiversion' )
+    operations.up = false;
+
+  if ( schema )
+  {
+    var methods = ( data.type == 'collection' ? schema.collectionMethods : schema.resourceMethods ) || [];
+    var methodMap = {};
+    methods.forEach(function(method) {
+      operations[ method.toLowerCase() ] = true;
+    });
+
+    if ( data.createTypes && Object.keys(data.createTypes).length )
+    {
+      operations.post = true;
+    }
+  }
+
+  var actions = {};
+  var allActions = ( data.type == 'collection' ? schema.collectionActions : schema.resourceActions ) || {};
+  Object.keys(allActions).sort().forEach(function(key) {
+    // Set the action to true if it's available on this object or false if it isn't
+    actions[key] = !!data.actions[key];
+  });
 
   var tpl = {
     data: this._data,
@@ -318,6 +385,9 @@ HTMLApi.prototype.render = function(cb)
     user: this._user,
     logout: this._logout,
     error: this._error,
+    schema: schema,
+    operations: operations,
+    actions: actions,
     explorer: Cookie.get('debug') || false
   };
 
@@ -326,9 +396,7 @@ HTMLApi.prototype.render = function(cb)
 
   this._addCollapsers();
 
-  $('#operations').html('<span class="inactive">None</span>');
-  $('#actions').html('<span class="inactive">None</span>');
-  $('#filters').html('<span class="inactive">None</span>');
+  $('#filters').html('<span class="inactive">Not available</span>');
 
   return async.nextTick(cb);
 }
@@ -378,77 +446,9 @@ HTMLApi.prototype.getSchema = function(type, obj)
 
 // ----------------------------------------------------------------------------
 
-HTMLApi.prototype.operationInit = function(cb)
+HTMLApi.prototype.showAction = function(button)
 {
-  var html = '';
-  var schema = this.getSchema();
-  var data = this._data;
-  var type = data.type;
-
-  var upEnabled = true;
-  if ( data.type == 'collection' && (data.resourceType||'').toLowerCase() == 'apiversion' )
-    upEnabled = false;
-
-  html += '<input type="button" onclick="htmlapi.up();" value="Go Up"' + (upEnabled ? '' : ' DISABLED')+'>&nbsp;';
-  html += '<input type="button" onclick="htmlapi.reload();" value="Reload"><br/>';
-
-  if ( schema )
-  {
-    var methods = ( type == 'collection' ? schema.collectionMethods : schema.resourceMethods ) || [];
-    var order = {'POST': 1, 'PUT': 2, 'DELETE': 3}
-    methods.sort(function(a,b) {
-      var ia = order[a];
-      if ( !ia )
-        return -1;
-
-      var ib = order[b];
-      if ( !ib )
-        return 1;
-
-      return ia-ib;
-    });
-
-    var method;
-    for ( var i = 0, len = methods.length ; i < len ; i++ )
-    {
-      method = methods[i].toUpperCase();
-
-      switch ( method )
-      {
-      case 'POST':
-        html += '<input type="button" onclick="htmlapi.create(this);" value="Create">&nbsp;';
-        break;
-      case 'DELETE':
-        html += '<input type="button" onclick="htmlapi.remove(this);" value="Delete">&nbsp;';
-        break;
-      case 'PUT':
-        html += '<input type="button" onclick="htmlapi.update(this);" value="Edit">&nbsp;';
-        break;
-      default:
-        break;
-      }
-    }
-  }
-
-  $('#operations').html(html);
-  async.nextTick(cb);
-}
-
-// ----------------------------------------------------------------------------
-
-HTMLApi.prototype.actionInit = function(cb)
-{
-  var data = this._data;
-
-  if ( !data.actions || !Object.keys(data.actions).length )
-    return async.nextTick(cb);
-
-  var html = Handlebars.templates['actions']({
-    actions: data.actions
-  });
-  $('#actions').html(html);
-
-  async.nextTick(cb);
+  this.actionLoad(button.getAttribute('data-action'), undefined, {});
 }
 
 HTMLApi.prototype.actionLoad = function(name, obj, body)
@@ -502,14 +502,13 @@ HTMLApi.prototype.actionLoad = function(name, obj, body)
 
       var html = Handlebars.templates['edit'](tpl);
       var popinActions = [
-        {id: 'ok',      text: 'Show Request', /*on_enter: true, */ onClick: function() { self.showRequest(mode,'POST',actionInput,retry,url); }.bind(self) },
+        {id: 'ok',      text: 'Show Request', primary: true, onClick: function() { self.showRequest(mode,'POST',actionInput,retry,url); }.bind(self) },
         {id: 'cancel',  text: 'Cancel', cancel: true }
       ];
 
 
       self.replaceModal(html);
-      modal.sfDialog('setButtons',popinActions);
-      modal.sfDialog('resize');
+      self.setModalActions(popinActions);
       self.editOrActionShown();
     }
   }
@@ -762,6 +761,12 @@ HTMLApi.prototype.valueFormatter = function(key,obj, path)
   path = (path||[]).slice(0);
   path.push(key);
 
+  var schema = null;
+  if ( obj.resourceType )
+    schema = this.getSchema(obj.resourceType);
+  else if ( obj.type )
+    schema = this.getSchema(obj.type);
+
   var html = this._formatter.valueToHTML(obj[key], path);
 
   if ( !obj[key] )
@@ -771,13 +776,22 @@ HTMLApi.prototype.valueFormatter = function(key,obj, path)
   {
     html = '<a class="valuelink" href="' + obj.links['self'] + '">' + html + '</a>';
   }
-  else if (key == 'type' || key == 'resourceType')
+  else if ( schema && schema.resourceFields && schema.resourceFields[key] )
   {
-    var schema = this.getSchema(obj[key]);
-    if ( schema )
+    var field = schema.resourceFields[key];
+    if ( field._typeList && field._typeList[0] == 'reference' )
     {
-      html = '<a class="valuelink" href="' + schema.links['self'] + '">' + html + '</a>';
+      var subtype = this.getSchema(field._typeList[1]);
+      if ( subtype && subtype.links.collection )
+      {
+        var url = subtype.links.collection.replace(/\/+$/,'') + '/' + escape(obj[key]);
+        html = '<a class="valuelink" href="' + url + '">' + html + '</a>';
+      }
     }
+  }
+  else if (schema && (key == 'type' || key == 'resourceType') )
+  {
+    html = '<a class="valuelink" href="' + schema.links['self'] + '">' + html + '</a>';
   }
 
   return html;
@@ -872,7 +886,7 @@ HTMLApi.prototype.request = function(method,body,opt,really)
 
   if ( really )
   {
-    this._reqModal.sfDialog('setButtons', [
+    this.setModalActions([
       {id: 'cancel', text: 'Cancel', cancel: true}
     ]);
 
@@ -947,12 +961,11 @@ HTMLApi.prototype.request = function(method,body,opt,really)
   self.showModal(html, {
     destroyOnClose: false,
     title: 'API Request',
-    buttons: [
-      {id: 'ok',      text: 'Send Request', onClick: function() { self.request(method,body,opt,true); } },
+    actions: [
+      {id: 'ok',      text: 'Send Request', primary: true, onClick: function() { self.request(method,body,opt,true); } },
       {id: 'cancel',  text: 'Cancel', cancel: true}
     ]
   });
-  self._reqModal.sfDialog('resize');
 }
 
 HTMLApi.prototype.postDone = function()
@@ -1025,18 +1038,18 @@ HTMLApi.prototype.requestDone = function(err, body, res)
   if ( loc )
   {
     primary = 'follow';
-    popinActions.unshift({id: 'follow', text: 'Follow Location', /*on_enter: !retry,*/ onClick: function() { window.location.href = loc }});
+    popinActions.unshift({id: 'follow', text: 'Follow Location', onClick: function() { window.location.href = loc }});
   }
   else if ( selfUrl )
   {
     primary = 'followSelf';
-    popinActions.unshift({id: 'followSelf', text: 'Follow Self Link', /*on_enter: !retry,*/ onClick: function() { window.location.href = selfUrl }});
+    popinActions.unshift({id: 'followSelf', text: 'Follow Self Link', onClick: function() { window.location.href = selfUrl }});
   }
 
   if ( retry )
   {
     primary = 'edit';
-    popinActions.unshift({id: 'edit', text: 'Edit & Retry', /*on_enter: true,*/ onClick: this._lastOpt.retry.bind(this) });
+    popinActions.unshift({id: 'edit', text: 'Edit & Retry', onClick: this._lastOpt.retry.bind(this) });
   }
 
   // Default to "Go Up" on successful delete
@@ -1047,20 +1060,19 @@ HTMLApi.prototype.requestDone = function(err, body, res)
 
   for ( var i = 0 ; i < popinActions.length ; i++ )
   {
-    if ( popinActions[i].id != primary && !popinActions[i].cancel )
+    if ( popinActions[i].id == primary )
     {
-      popinActions[i].enabledClasses = "sf-btn-secondary";
-      popinActions[i].disabledClasses = "sf-btn-secondary sf-btn-dsabld";
+      popinActions[i].primary = true;
+      break;
     }
   }
 
-  this._reqModal.sfDialog('setButtons', popinActions);
+  this.setModalActions(popinActions);
   $('#notsent').hide();
   $('#waiting').hide();
   $('#result').html(html);
   $('#response-body').html(out);
   $('#result' ).show();
-  this._reqModal.sfDialog('resize');
 }
 
 HTMLApi.prototype.create = function()
@@ -1225,13 +1237,13 @@ HTMLApi.prototype.showEdit = function(data,update,schema,url)
     var html = Handlebars.templates['edit'](tpl);
     var method = (update ? 'PUT' : 'POST');
     var popinActions = [
-      {id: 'ok',      text: 'Show Request', /*on_enter: true, */ onClick: function() { self.showRequest(mode, method,schema,retry,url); }.bind(self) },
+      {id: 'ok',      text: 'Show Request', primary: true, onClick: function() { self.showRequest(mode, method,schema,retry,url); }.bind(self) },
       {id: 'cancel',  text: 'Cancel', cancel: true }
     ];
 
     self.showModal(html, {
         title: title,
-        buttons: popinActions
+        actions: popinActions
     }, self.editOrActionShown.bind(self));
   }
 }
@@ -1309,11 +1321,15 @@ HTMLApi.prototype._flattenField = function(mode, name, field, data, depth)
       {
         formFieldName += '[]';
       }
-
-      if ( subType == 'map' )
+      else if ( subType == 'map' )
       {
         formFieldName2 = formFieldName+'.key{}';
         formFieldName += '.value{}';
+      }
+
+      if ( subType == 'json' )
+      {
+        formFieldName += '.json{}';
       }
     }
 
@@ -1383,6 +1399,10 @@ HTMLApi.prototype._flattenField = function(mode, name, field, data, depth)
       {
         row.children.push( this._flattenField(mode, name, field, data[i], depth+1) );
       }
+    }
+    else if ( type == 'json' )
+    {
+      row.value = JSON.stringify(data);
     }
     else
     {
@@ -1458,7 +1478,7 @@ HTMLApi.prototype._flattenInputs = function($form)
 
   var inputs = {};
   var k, field, v;
-  var isArray, isMapKey, isMapValue, name, values;
+  var isArray, isMapKey, isMapValue, isJsonValue, name, values;
 
   var maps = {};
 
@@ -1470,6 +1490,18 @@ HTMLApi.prototype._flattenInputs = function($form)
     isArray = k.indexOf('[]') >= 0;
     isMapKey = k.indexOf('.key{}') >= 0;
     isMapValue = k.indexOf('.value{}') >= 0;
+    isJsonValue = k.indexOf('.json{}') >= 0;
+
+    if ( isJsonValue )
+    {
+      try {
+        v = JSON.parse(v);
+      }
+      catch(e)
+      {
+        alert(e);
+      }
+    }
 
     if ( isArray )
     {
@@ -1481,10 +1513,13 @@ HTMLApi.prototype._flattenInputs = function($form)
     }
     else if ( isMapKey || isMapValue )
     {
+      name = k;
+      if ( isJsonValue )
+        name = name.replace(/\.json\{\}$/,'');
       if ( isMapKey )
-        name = k.replace(/\.key\{\}$/,'');
+        name = name.replace(/\.key\{\}$/,'');
       else if ( isMapValue )
-        name = k.replace(/\.value\{\}$/,'');
+        name = name.replace(/\.value\{\}$/,'');
 
       if ( typeof maps[name] === 'undefined' )
       {
@@ -1495,6 +1530,12 @@ HTMLApi.prototype._flattenInputs = function($form)
         maps[name].keys.push(v);
       if ( isMapValue )
         maps[name].values.push(v);
+    }
+    else if ( isJsonValue )
+    {
+      name = k;
+      name = name.replace(/\.json\{\}$/,'');
+      inputs[name] = v;
     }
     else
     {
@@ -1654,6 +1695,8 @@ HTMLApi.prototype.subAdd = function(button, name)
   var field = this._flattenField('update',name,schemaField,'',1);
   field.parentIsMap = parentField.type == 'map';
   field.enlargeable = false;
+  if ( field.type == 'json' )
+    field.value = '{}';
 
   var par = {
     type: parentField.type,
@@ -1665,14 +1708,12 @@ HTMLApi.prototype.subAdd = function(button, name)
 
 //  html = '<div><input type="button" onclick="htmlapi.subRemove(this);" value="-">' + html + '</div>';
   $(button).before(html);
-  this._reqModal.sfDialog('resize');
 }
 
 HTMLApi.prototype.subRemove = function(button)
 {
   var $div = $(button).parents('DIV');
   $($div[0]).remove();
-  this._reqModal.sfDialog('resize');
 }
 
 HTMLApi.prototype.toggleNull = function(check)
@@ -1707,5 +1748,4 @@ HTMLApi.prototype.switchToTextarea = function(button)
   $textarea.val(val);
   $textarea.on('keydown', function(e) { if ( e.keyCode == 13 ) { e.stopPropagation(); return true; } });
   $button.hide();
-  this._reqModal.sfDialog('resize');
 }

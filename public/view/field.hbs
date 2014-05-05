@@ -1,7 +1,7 @@
 {{#ifInList type 'array,map'}}
   {{#each children}}
     <div class="dualValue">
-      <a class="btn btn-mini" tabindex="-1" onclick="htmlapi.subRemove(this);"><i class="icon-minus"></i></a>
+      <a class="btn btn-default btn-xs btn-inline" tabindex="-1" onclick="htmlapi.subRemove(this);"><i class="glyphicon glyphicon-minus"></i></a>
       {{>field}}
     </div>
   {{/each}}
@@ -13,22 +13,27 @@
 
 {{#if parentIsMap}}
   {{#if formFieldName2}}
-    <input type="text" class="key" name="{{formFieldName2}}" value="{{value2}}" />&nbsp;:&nbsp;
+    <input type="text" class="form-control key" name="{{formFieldName2}}" value="{{value2}}" />&nbsp;:&nbsp;
   {{/if}}
 {{/if}}
 
 {{#ifInList type 'string,date'}}
-  <input type="text" name="{{formFieldName}}" value="{{value}}" placeholder="{{placeholder}}"/>
+  <input type="text" class="form-control" name="{{formFieldName}}" value="{{value}}" placeholder="{{placeholder}}"/>
 {{/ifInList}}
 
+{{#ifEqual type 'json'}}
+  <textarea class="form-control" name="{{formFieldName}}">{{value}}</textarea>
+{{/ifEqual}}
+
 {{#ifEqual type 'password'}}
-  <input type="password" name="{{formFieldName}}" value="{{value}} placeholder="{{placeholder}}" />
+  <input type="password" class="form-control" name="{{formFieldName}}" value="{{value}} placeholder="{{placeholder}}" />
 {{/ifEqual}}
 
 {{#ifInList type 'number,int,float'}}
   <input 
     type="number"
-    name="{{formFieldName}}" 
+    class="form-control"
+    name="{{formFieldName}}"
     value="{{value}}"
     placeholder="{{placeholder}}"
     {{#ifEqual field.min undefined}} {{else}} min="{{field.min}}"{{/ifEqual}}
@@ -38,23 +43,23 @@
 {{/ifInList}}
 
 {{#ifEqual type "blob"}}
-  <input type="file" name="{{formFieldName}}" />
+  <input type="file" class="form-control" name="{{formFieldName}}" />
 {{/ifEqual}}
 
 {{#ifEqual type "boolean"}}
   {{#if field.nullable}}
-    <select name="{{formFieldName}}">
+    <select name="{{formFieldName}}" class="form-control">
       <option value="__-*NULL*-__" {{#ifEqual null ../value}} SELECTED{{/ifEqual}}>NULL</option>
       <option value="" {{#ifEqual false ../value}} SELECTED{{/ifEqual}}>false</option>
       <option value="1" {{#ifEqual true ../value}} SELECTED{{/ifEqual}}>true</option>
     </select>
   {{else}}
-    <input type="checkbox" name="{{formFieldName}}" value="1" {{#if value}} CHECKED{{/if}} />
+    <input type="checkbox" class="form-control" name="{{formFieldName}}" value="1" {{#if value}} CHECKED{{/if}} />
   {{/if}}
 {{/ifEqual}}
 
 {{#ifEqual type "enum"}}
-  <select name="{{formFieldName}}">
+  <select name="{{formFieldName}}" class="form-control">
     {{#if field.nullable}}
       <option value="__-*NULL*-__">NULL</option>
     {{/if}}
@@ -66,7 +71,7 @@
 
 {{#ifEqual type "reference"}}
   {{#if field.options}}
-    <select name="{{formFieldName}}">
+    <select name="{{formFieldName}}" class="form-control">
       {{#if field.nullable}}
         <option value="__-*NULL*-__">NULL</option>
       {{/if}}
@@ -75,12 +80,12 @@
       {{/eachProperty}}
     </select>
   {{else}}
-    <input type="text" name="{formFieldName}}" value="{{value}}">
+    <input type="text" class="form-control" name="{formFieldName}}" value="{{value}}">
   {{/if}}
 {{/ifEqual}}
 
 {{#ifEqual type "__type__"}}
-  <select name="{{formFieldName}}" onchange="htmlapi.createTypeChanged($(this).val());">
+  <select name="{{formFieldName}}" class="form-control" onchange="htmlapi.createTypeChanged($(this).val());">
     {{#each field.options}}
       <option value="{{this}}" {{#ifEqual this ../value}} SELECTED{{/ifEqual}}>{{this}}</option>
     {{/each}}
@@ -92,18 +97,20 @@
 {{/if}}
 
 {{#if enlargeable}}
-  <a class="btn btn-mini" onclick="htmlapi.switchToTextarea(this);" tabindex="-1" title="Enlarge"><i class="icon-resize-full"></i></a>
+  <a class="btn btn-default btn-xs btn-inline" onclick="htmlapi.switchToTextarea(this);" tabindex="-1" title="Enlarge"><i class="glyphicon glyphicon-resize-full"></i></a>
 {{/if}}
 
 {{#if nullCheck}}
-  <label>
-    <input type="checkbox" name="{{formFieldNameNull}}" value="1" tabindex="-1" onclick="htmlapi.toggleNull(this);" {{#ifEqual null value}} CHECKED{{/ifEqual}}>NULL
-  </label> 
+  <div class="nullcheck">
+    <label>
+      <input type="checkbox" name="{{formFieldNameNull}}" value="1" tabindex="-1" onclick="htmlapi.toggleNull(this);" {{#ifEqual null value}} CHECKED{{/ifEqual}}>NULL
+    </label>
+  </div>
 {{/if}}
 
 {{#unless addingField}}
   {{#ifInList type 'array,map'}}
-      <a class="btn btn-mini" tabindex="-1" onclick="htmlapi.subAdd(this,'{{name}}');"><i class="icon-plus"></i></a>
+      <a class="btn btn-default btn-xs btn-inline" tabindex="-1" onclick="htmlapi.subAdd(this,'{{name}}');"><i class="glyphicon glyphicon-plus"></i></a>
     </div>
   {{/ifInList}}
 {{/unless}}

@@ -1,31 +1,3 @@
-/* Override bootstrap input sizes.. */
-select,
-textarea,
-input[type="text"],
-input[type="password"],
-input[type="datetime"],
-input[type="datetime-local"],
-input[type="date"],
-input[type="month"],
-input[type="time"],
-input[type="week"],
-input[type="number"],
-input[type="email"],
-input[type="url"],
-input[type="search"],
-input[type="tel"],
-input[type="color"],
-.uneditable-input {
-  height: auto;
-  padding: 0;
-  margin: 0;
-  font-size: 12px;
-}
-
-button, input {
-  line-height: normal;
-}
-
 select {
   width: auto;
 }
@@ -33,13 +5,8 @@ select {
 
 HTML, BODY {
   color: black;
-  background-color: white;
+  background-color: #fafafa;
   min-height: 100%;
-}
-
-HTML, BODY, DIV, P {
-  margin: 0;
-  padding: 0;
 }
 
 BODY, TD, DIV {
@@ -58,27 +25,6 @@ TABLE {
 }
 
 FIELDSET, IMG {
-  border: 0;
-}
-
-INPUT, TEXTAREA, SELECT {
-  font-family: inherit;
-  font-weight: inherit;
-}
-
-INPUT, A {
-  outline: none;
-}
-
-TEXTAREA, 
-INPUT[type=text],
-INPUT[type=number],
-INPUT[type=password] {
-  background-color: white;
-  border: 1px solid #C0C0C0;
-}
-
-INPUT.fixie {
   border: 0;
 }
 
@@ -218,6 +164,7 @@ LI {
   font-family: "Monaco", "Andale Mono", "Courier New", "Courier", monospace;
   white-space: pre-wrap;
   line-height: normal;
+  margin-right: 265px;
 }
 
 .json .array-count {
@@ -246,16 +193,22 @@ H1 {
 }
 
 #header {
-  padding: 5px;
-  min-height: 50px;
+  padding: 10px;
   background-color: #f8f8f8;
-  margin-bottom: 5px;
-  border-bottom: 1px solid #555;
+  border: 1px solid #555;
   position: fixed;
   top: 0;
-  left: 0;
   right: 0;
+  width: 250px;
   z-index: 1;
+}
+
+#header .btn {
+  margin-bottom: 3px;
+}
+
+#header .input-group .btn {
+  margin-bottom: 0;
 }
 
 TH {
@@ -266,20 +219,13 @@ text-align: left;
   color: #666;
 }
 
-INPUT {
-  margin: 2px;
-}
-
-INPUT[type="button"] {
-  min-width: 20px;
-}
-
-#filters INPUT[type="text"] {
-  width: 100px;
-}
-
 #request-input TD {
   border: 1px solid #f8f8f8;
+}
+
+#request-input INPUT,
+#request-input TEXTAREA {
+  display: inline-block;
 }
 
 #request-input INPUT[type="text"],
@@ -312,8 +258,13 @@ INPUT[type="button"] {
 }
 
 #request-input TEXTAREA {
-  width: 200px;
+  width: 250px;
   height: 100px;
+  vertical-align: top;
+}
+
+#request-input .dualValue TEXTAREA {
+  width: 150px;
 }
 
 #curl,
@@ -328,4 +279,37 @@ INPUT[type="button"] {
 
 .response-header-name {
   font-weight: bold;
+}
+
+.filter-key {
+  width: 150px;
+}
+
+.filter-modifier {
+  width: 30px;
+}
+
+.filter-value {
+  display: block;
+  width: 99%;
+}
+
+.filter-novalue .filter-modifier: {
+  width: 80px;
+}
+
+.filter-novalue .filter-value {
+  display: none;
+}
+
+.nullcheck {
+  display: inline-block;
+}
+
+.nullcheck LABEL {
+  font-weight: normal;
+}
+
+.btn-inline {
+  display: inline-block;
 }
