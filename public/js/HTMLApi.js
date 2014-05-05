@@ -136,7 +136,7 @@ HTMLApi.prototype.showModal = function(body,opt,cb)
 
 HTMLApi.prototype.replaceModal = function(html)
 {
-  this._reqModal.html(html);
+  $('.modal-body', this._reqModal).html(html);
 }
 
 HTMLApi.prototype.modalAction = function(id) {
@@ -157,14 +157,16 @@ HTMLApi.prototype.modalAction = function(id) {
 }
 
 HTMLApi.prototype.hideModal = function() {
- var old = this._reqModal;
- if ( !old )
-  return;
+  var self = this;
+  var old = self._reqModal;
+  if ( !old )
+    return;
 
   old.modal('hide');
   old.on('hidden.bs.modal', function() {
-    old.unbind('keydown', this.onKeys);
+    old.unbind('keydown', self.onKeys);
     old.remove();
+    self._reqModal = null;
   });
 }
 
@@ -506,7 +508,7 @@ HTMLApi.prototype.actionLoad = function(name, obj, body)
 
 
       self.replaceModal(html);
-      this.setModalActions(popinActions);
+      self.setModalActions(popinActions);
       self.editOrActionShown();
     }
   }
