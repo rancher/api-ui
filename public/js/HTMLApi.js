@@ -159,14 +159,15 @@ HTMLApi.prototype.modalAction = function(id) {
 HTMLApi.prototype.hideModal = function() {
   var self = this;
   var old = self._reqModal;
+  self._reqModal = null;
+
   if ( !old )
     return;
 
+  old.unbind('keydown', self.onKeys);
   old.modal('hide');
   old.on('hidden.bs.modal', function() {
-    old.unbind('keydown', self.onKeys);
     old.remove();
-    self._reqModal = null;
   });
 }
 
