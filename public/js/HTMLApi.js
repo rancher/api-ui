@@ -418,7 +418,7 @@ HTMLApi.prototype._addCollapser = function(item)
     return;
 
   var collapser = $('<i/>', {
-    "class": "icon icon-minus",
+    "class": "glyphicon glyphicon-minus",
     click: JSONFormatter.prototype.collapse
   });
 

@@ -258,30 +258,30 @@ JSONFormatter.prototype = {
   // Click handler for collapsing and expanding objects and arrays
   collapse: function(evt) {
     var collapser = evt.target;
-   
+
     var target = collapser.parentNode.getElementsByClassName('collapsible');
-    
+
     if ( ! target.length ) {
       return;
     }
-    
+
     target = target[0];
 
     if ( target.style.display == 'none' ) {
       var ellipsis = target.parentNode.getElementsByClassName('ellipsis')[0];
       target.parentNode.removeChild(ellipsis);
       target.style.display = '';
-      $(collapser).removeClass('icon-plus');
-      $(collapser).addClass('icon-minus');
+      $(collapser).removeClass('glyphicon-plus');
+      $(collapser).addClass('glyphicon-minus');
     } else {
       target.style.display = 'none';
-      
+
       var ellipsis = document.createElement('span');
       ellipsis.className = 'ellipsis';
       ellipsis.innerHTML = ' &hellip; ';
       target.parentNode.insertBefore(ellipsis, target);
-      $(collapser).removeClass('icon-minus');
-      $(collapser).addClass('icon-plus');
+      $(collapser).removeClass('glyphicon-minus');
+      $(collapser).addClass('glyphicon-plus');
     }
   }
   
