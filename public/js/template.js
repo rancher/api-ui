@@ -59,3 +59,25 @@ Handlebars.registerHelper('displayValue', function(context, options) {
   html = html.replace(/(<span class="string">)&quot;([^"]+)&quot;(<\/span>)/g, '$1$2$3');
   return new Handlebars.SafeString(html);
 });
+
+Handlebars.registerHelper('displayModifier', function(context, options) {
+  var str = '';
+  switch (context)
+  {
+    case ""       : str = '='; break;
+    case "eq"     : str = '='; break;
+    case "ne"     : str = '&ne;'; break;
+    case "lt"     : str = '&lt;'; break;
+    case "lte"    : str = '&le;'; break;
+    case "gt"     : str = '&gt;'; break;
+    case "gte"    : str = '&ge;'; break;
+    case "null"   : str = 'NULL'; break;
+    case "notnull": str = 'Not NULL'; break;
+    case "like"   : str = 'Like'; break;
+    case "notlike": str = 'Not like'; break;
+    case "prefix" : str = 'starts with'; break;
+    case "suffix" : str = 'ends with'; break;
+  }
+
+  return new Handlebars.SafeString(str);
+});

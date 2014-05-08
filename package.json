@@ -14,7 +14,7 @@
     "url": "https://github.com/godaddy/gdapi-ui.git"
   },
   "dependencies": {
-    "gd-assets": "~2.0",
+    "gd-assets": "~2.0.1",
     "mkdirp": "~0.3"
   }
 }

@@ -281,17 +281,12 @@ text-align: left;
   font-weight: bold;
 }
 
+.filter {
+  margin-bottom: 10px;
+}
+
 .filter-key {
-  width: 150px;
-}
-
-.filter-modifier {
-  width: 30px;
-}
-
-.filter-value {
-  display: block;
-  width: 99%;
+  margin-bottom: 2px;
 }
 
 .filter-novalue .filter-modifier: {

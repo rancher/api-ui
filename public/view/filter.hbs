@@ -1,44 +1,44 @@
 <div class="filter {{#ifInList cur.modifier "null,notnull"}}filter-novalue{{/ifInList}}" data-prefix="filter_{{cur.name}}">
-  <input type="button" onclick="htmlapi.filterRemove(this)" value="-">&nbsp;
-
-  <select class="filter-key" id="filter_{{cur.name}}_name" onchange="htmlapi.filterChange(this)">
-  {{#eachProperty allFilterSchema}}
-    <option value="{{key}}" {{#ifEqual key ../cur.name}} SELECTED{{/ifEqual}}>{{key}}</option>
-  {{/eachProperty}}
-  </select>
-
-  {{#if thisFilterSchema.modifiers}}
-    <select class="filter-modifier" id="filter_{{cur.name}}_modifier" onchange="htmlapi.modifierChange(this);">
-      {{#each thisFilterSchema.modifiers}}
-        <option value="{{.}}" {{#ifEqual ../cur.modifier .}} SELECTED{{/ifEqual}}>
-          {{#ifEqual . "eq"     }}={{/ifEqual}}
-          {{#ifEqual . "ne"     }}&ne;{{/ifEqual}}
-          {{#ifEqual . "lt"     }}&lt;{{/ifEqual}}
-          {{#ifEqual . "lte"    }}&le;{{/ifEqual}}
-          {{#ifEqual . "gt"     }}&gt;{{/ifEqual}}
-          {{#ifEqual . "gte"    }}&ge;{{/ifEqual}}
-          {{#ifEqual . "null"   }}NULL{{/ifEqual}}
-          {{#ifEqual . "notnull"}}Not NULL{{/ifEqual}}
-          {{#ifEqual . "like"   }}Like{{/ifEqual}}
-          {{#ifEqual . "notlike"}}Not Like{{/ifEqual}}
-          {{#ifEqual . "prefix" }}starts with{{/ifEqual}}
-          {{#ifEqual . "suffix" }}ends with{{/ifEqual}}
-        </option>
-      {{/each}}
+  <div class="input-group filter-key">
+    <span class="input-group-btn">
+      <button type="button" class="btn btn-primary" onclick="htmlapi.filterRemove(this)"><i class="glyphicon glyphicon-minus-sign"></i></button>
+    </span>
+    <select class="form-control" id="filter_{{cur.name}}_name" onchange="htmlapi.filterChange(this)">
+    {{#eachProperty allFilterSchema}}
+      <option value="{{key}}" {{#ifEqual key ../cur.name}} SELECTED{{/ifEqual}}>{{key}}</option>
+    {{/eachProperty}}
     </select>
-  {{else}}
-    <input type="hidden" id="filter_{{cur.name}}_modifier" value=""/>
-    =
-  {{/if}}
+    <span class="input-group-btn">
+      {{#if thisFilterSchema.modifiers}}
+        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+          <span class="filter-modifier-label">{{displayModifier cur.modifier}}</span>
+          <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu pull-right">
+          {{#each thisFilterSchema.modifiers}}
+            <li>
+              <a href="#" onclick="htmlapi.filterModifierChange(this); return false;" data-value="{{.}}" data-label="{{displayModifier .}}">
+                {{displayModifier .}}
+              </a>
+            </li>
+          {{/each}}
+        </ul>
+      {{else}}
+        =
+      {{/if}}
+    </span>
+    <input type="hidden" class="filter-modifier-input" id="filter_{{cur.name}}_modifier" value="{{cur.modifier}}"/>
+  </div>
 
-  {{#if thisFilterSchema.options}}
-    <select class="filter-value" id="filter_{{cur.name}}_value">
+
+  {{#if options}}
+    <select class="form-control filter-value" id="filter_{{cur.name}}_value">
       <option value=""></option>
-      {{#eachProperty thisFilterSchema.options}}
+      {{#eachProperty options}}
         <option value="{{value}}" {{#ifEqual ../cur.value value}} SELECTED{{/ifEqual}}>{{value}}</option>
       {{/eachProperty}}
     </select>
   {{else}}
-    <input type="text" class="filter-value" id="filter_{{cur.name}}_value" value="{{cur.value}}" />
+    <input type="text" class="form-control input-sm filter-value" id="filter_{{cur.name}}_value" value="{{cur.value}}" />
   {{/if}}
 </div>

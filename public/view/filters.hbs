@@ -2,7 +2,9 @@
 </div>
 <div id="no-filters" class="inactive" {{#if hasFilters}}style="display: none;"{{/if}}>None</div>
 {{#if canFilter}}
-  <button type="button" class="btn btn-primary btn-sm" onclick="htmlapi.filterClear();"><span class="glyphicon glyphicon-ban-circle"></span> Clear</button>
-  <button type="button" class="btn btn-primary btn-sm" onclick="htmlapi.filterAdd();"><span class="glyphicon glyphicon-plus-sign"></span> Add</button>
-  <button type="submit" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-filter"></span> Apply</button>
+  <div class="filter-controls">
+    <button type="button" class="btn btn-primary btn-sm" onclick="htmlapi.filterClear();"><span class="glyphicon glyphicon-ban-circle"></span> Clear</button>
+    <button type="button" class="btn btn-primary btn-sm" onclick="htmlapi.filterAdd();"><span class="glyphicon glyphicon-plus-sign"></span> Add</button>
+    <button type="submit" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-filter"></span> Apply</button>
+  </div>
 {{/if}}

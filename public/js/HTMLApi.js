@@ -589,6 +589,7 @@ HTMLApi.prototype.filterInit = function(cb)
     html = Handlebars.templates['filter']({
       allFilterSchema: schema.collectionFilters,
       thisFilterSchema: schema.collectionFilters[v.name],
+      options: schema.collectionFilters[v.name].options || schema.resourceFields[v.name].options,
       cur: v
     });
     $elem = $(html);
@@ -627,6 +628,7 @@ HTMLApi.prototype.filterAdd = function(name, modifier, value, before)
   var html = Handlebars.templates['filter']({
     allFilterSchema: schemaFilters,
     thisFilterSchema: schemaFilters[name],
+      options: schemaFilters[name].options || schema.resourceFields[name].options,
     cur: cur
   });
 
@@ -648,6 +650,18 @@ HTMLApi.prototype.filterRemove = function(elem)
 
   var $rows = $('#filter-body DIV');
   $('#no-filters').toggle($rows.length == 0);
+}
+
+HTMLApi.prototype.filterModifierChange = function(elem)
+{
+  var $elem = $(elem);
+  var filter = $elem.closest('.filter');
+  var input = filter.find('.filter-modifier-input');
+  var label = filter.find('.filter-modifier-label');
+
+  input.val(elem.getAttribute('data-value'));
+  label.html(elem.getAttribute('data-label'));
+  this.modifierChange(filter);
 }
 
 HTMLApi.prototype.filterChange = function(elem)
