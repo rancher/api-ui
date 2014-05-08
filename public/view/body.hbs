@@ -46,15 +46,15 @@
             </select>
           </div>
           <div class="col-xs-5">
-            <label>Direction</label>
             {{#if data.sort.name }}
+              <label>Direction</label>
               <div class="btn-group btn-group-sm">
                 {{#ifEqual data.sort.order "desc"}}
-                  <button type="button" class="btn btn-default btn-sm active"><span class="glyphicon glyphicon-sort-by-attributes-alt"></span></button>
                   <button type="button" class="btn btn-default btn-sm" onclick="htmlapi.sortOrderChange();"><span class="glyphicon glyphicon-sort-by-attributes"></span></button>
+                  <button type="button" class="btn btn-default btn-sm active"><span class="glyphicon glyphicon-sort-by-attributes-alt"></span></button>
                 {{else}}
-                  <button type="button" class="btn btn-default btn-sm" onclick="htmlapi.sortOrderChange();"><span class="glyphicon glyphicon-sort-by-attributes-alt"></span></button>
                   <button type="button" class="btn btn-default btn-sm active"><span class="glyphicon glyphicon-sort-by-attributes"></span></button>
+                  <button type="button" class="btn btn-default btn-sm" onclick="htmlapi.sortOrderChange();"><span class="glyphicon glyphicon-sort-by-attributes-alt"></span></button>
                 {{/ifEqual}}
               </div>
             {{/if}}
