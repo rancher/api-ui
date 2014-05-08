@@ -720,11 +720,18 @@ HTMLApi.prototype.filterApply = function(clear)
       modifier  = $('#'+prefix+'_modifier').val();
       value     = $('#'+prefix+'_value').val();
 
-      // Null/NotNull have no value, otherwise if there's no value ignore the filter
-      if ( value === "" && (modifier != 'null' && modifier != 'notnull') )
+      // Null/NotNull have no value
+      if ( modifier === 'null' || modifier === 'notnull' )
+      {
+        value = '';
+      }
+      else  if ( !value )
+      {
+        // Ignore filters with empty values
         continue;
+      }
 
-      // Equals doesn't need an explicit modifier
+      // Equals doesn't need an explicit modifier name
       if ( modifier == 'eq' )
         modifier = false;
 
