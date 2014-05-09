@@ -374,7 +374,10 @@ HTMLApi.prototype.render = function(cb)
   }
 
   var actions = {};
-  var allActions = ( data.type == 'collection' ? schema.collectionActions : schema.resourceActions ) || {};
+  var allActions = {};
+  if ( schema )
+    allActions = ( data.type == 'collection' ? schema.collectionActions : schema.resourceActions ) || {};
+
   Object.keys(allActions).sort().forEach(function(key) {
     // Set the action to true if it's available on this object or false if it isn't
     actions[key] = !!data.actions[key];
