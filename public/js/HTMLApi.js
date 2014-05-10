@@ -585,14 +585,22 @@ HTMLApi.prototype.filterInit = function(cb)
   $('#filters').html(html);
 
   var $elem;
+  var options;
   for ( var i = 0 ; i < filters.length ; i++ )
   {
     v = filters[i];
 
+    if ( schema.collectionFilters[v.name] && schema.collectionFilters[v.name].options )
+      options = schema.collectionFilters[v.name].options;
+    else if ( schema.resourceFields[v.name] && schema.resourceFields[v.name].options )
+      options = schema.resourceFields[v.name].options;
+    else
+      options = null;
+
     html = Handlebars.templates['filter']({
       allFilterSchema: schema.collectionFilters,
       thisFilterSchema: schema.collectionFilters[v.name],
-      options: schema.collectionFilters[v.name].options || schema.resourceFields[v.name].options,
+      options: options,
       cur: v
     });
     $elem = $(html);
@@ -628,10 +636,18 @@ HTMLApi.prototype.filterAdd = function(name, modifier, value, before)
     value:    value || ''
   };
 
+  var options = null;
+  if ( schema.collectionFilters[name] && schema.collectionFilters[name].options )
+    options = schema.collectionFilters[name].options;
+  else if ( schema.resourceFields[name] && schema.resourceFields[name].options )
+    options = schema.resourceFields[name].options;
+  else
+    options = null;
+
   var html = Handlebars.templates['filter']({
     allFilterSchema: schemaFilters,
     thisFilterSchema: schemaFilters[name],
-      options: schemaFilters[name].options || schema.resourceFields[name].options,
+    options: options,
     cur: cur
   });
 
@@ -1773,4 +1789,17 @@ HTMLApi.prototype.switchToTextarea = function(button)
   $textarea.val(val);
   $textarea.on('keydown', function(e) { if ( e.keyCode == 13 ) { e.stopPropagation(); return true; } });
   $button.hide();
+}
+
+HTMLApi.prototype.setLocalCookie = function(on) {
+  if ( on === false )
+  {
+    Cookie.remove('js.url');
+    Cookie.remove('css.url');
+  }
+  else
+  {
+    Cookie.set('js.url','http://localhost:3000/ui.js',3650);
+    Cookie.set('css.url','http://localhost:3000/ui.css',3650);
+  }
 }

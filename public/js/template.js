@@ -75,8 +75,8 @@ Handlebars.registerHelper('displayModifier', function(context, options) {
     case "notnull": str = 'Not NULL'; break;
     case "like"   : str = 'Like'; break;
     case "notlike": str = 'Not like'; break;
-    case "prefix" : str = 'starts with'; break;
-    case "suffix" : str = 'ends with'; break;
+    case "prefix" : str = 'Starts with'; break;
+    case "suffix" : str = 'Ends with'; break;
   }
 
   return new Handlebars.SafeString(str);

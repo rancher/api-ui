@@ -6,10 +6,26 @@ var explorer;
 {
   jQuery(window).load(jQueryReady);
 
-  function jQueryReady() {
+  function jQueryReady()
+  {
     if ( window.autoInit === false )
       return;
 
+    if ( window.bootstrap === false )
+    {
+      boostrapReady();
+    }
+    else
+    {
+      var url = (window.bootstrap || '//netdna.bootstrapcdn.com/bootstrap/3.1.1').replace(/\/+$/,'');
+
+      $('head').append('<link rel="stylesheet" href="'+url+'/css/bootstrap.min.css" type="text/css" />');
+      $.getScript(url+'/js/bootstrap.min.js', boostrapReady);
+    }
+  }
+
+  function boostrapReady()
+  {
     document.body.innerHTML = '<div class="loading"></div>';
     try {
       htmlapi = new HTMLApi({
@@ -28,12 +44,8 @@ var explorer;
     }
   }
 
-  function apiError(err)
+  function apiReady(err)
   {
-    document.body.innerHTML = 'Error loading UI: '+ Handlebars.Utils.escapeExpression(err);
-  }
-
-  function apiReady(err) {
     var view = Cookie.get('apiview') || 'browse';
     if ( err )
       view = 'browse';
@@ -44,6 +56,12 @@ var explorer;
       explorer.show();
     else
       htmlapi.show();
+  }
+
+
+  function apiError(err)
+  {
+    document.body.innerHTML = 'Error loading UI: '+ Handlebars.Utils.escapeExpression(err);
   }
 
 })();

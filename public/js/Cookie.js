@@ -15,7 +15,7 @@ Cookie.set = function(name,value,expire,path,domain,secure)
   else if ( expire )
     expire_date = new Date( (new Date()).getTime() + (86400000 * expire));
 
-  var str = name +'=' + escape(value);
+  var str = name +'=' + value.replace(/ /g,'%20').replace(/,/g,'%2C').replace(/;/g,'%3B');
 
   if ( expire )
     str += ';expires=' + expire_date.toGMTString();
