@@ -46,9 +46,9 @@ app.get('/', function(req, res){
   res.send('Hello World');
 });
 
-var assets = require('gd-assets');
-var groups = assets.groups.load('/path/to/gdapi-ui//assets.json');
-assets.middleware(app, groups)
+var Assets = require('gd-assets');
+var config = Assets.Config.load('/path/to/gdapi-ui//assets.json');
+assets.middleware(app, config)
 
 app.listen(3000);
 ```
