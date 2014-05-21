@@ -157,7 +157,7 @@ LI {
 }
 
 .errormessage {
-  font-family: "Monaco", "Andale Mono", "Courier New", "Courier", monospace;  
+  font-family: "Monaco", "Andale Mono", "Courier New", "Courier", monospace;
 }
 
 .json {
@@ -270,11 +270,12 @@ text-align: left;
 #curl,
 #request,
 #response {
-  border: 1px solid #555;
-  background-color: #eee;
-  padding: 3px;
-  margin-bottom: 5px;
+  font-family: "Monaco", "Andale Mono", "Courier New", "Courier", monospace;
   word-wrap: break-word;
+}
+
+#response {
+  margin-bottom: 0;
 }
 
 .response-header-name {

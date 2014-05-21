@@ -1,6 +1,6 @@
 <b>cURL command line:</b>
 <br/>
-<div id="curl">
+<div id="curl" class="well">
   curl 
     {{#if curl_user}}-u <i>"{{curl_user}}"</i> \<br/>{{/if}}
     -X {{method}} \<br/>
@@ -25,7 +25,7 @@
 </div>
 
 <b>HTTP Request:</b><br/>
-<div id="request">
+<div id="request" class="well">
   HTTP/1.1 {{method}} {{path}}<br/>
   Host: {{host}}<br/>
   Accept: application/json<br/>
@@ -64,7 +64,7 @@
 </div>
 
 <b>HTTP Response:</b><br/>
-<div id="response">
+<div id="response" class="well">
   <div id="notsent" class="inactive" style="padding: 20px; text-align: center;">Click below to send request.</div>
   <div id="waiting" class="inactive" style="padding: 20px; text-align: center; display: none;">Waiting for response...</div>
   <div id="result" style="display: none;"></div>
