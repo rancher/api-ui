@@ -999,13 +999,19 @@ HTMLApi.prototype.request = function(method,body,opt,really)
 
   var html = Handlebars.templates['request'](tpl);
 
+  var actions = [];
+
+  actions.push({id: 'ok',      text: 'Send Request', primary: true, onClick: function() { self.request(method,body,opt,true); } });
+
+  if ( this._lastOpt && this._lastOpt.retry )
+    actions.push({id: 'edit', text: 'Back to Edit', onClick: this._lastOpt.retry.bind(this,body) });
+
+  actions.push({id: 'cancel',  text: 'Cancel', cancel: true});
+
   self.showModal(html, {
     destroyOnClose: false,
     title: 'API Request',
-    actions: [
-      {id: 'ok',      text: 'Send Request', primary: true, onClick: function() { self.request(method,body,opt,true); } },
-      {id: 'cancel',  text: 'Cancel', cancel: true}
-    ]
+    actions: actions,
   });
 }
 
@@ -1269,9 +1275,9 @@ HTMLApi.prototype.showEdit = function(data,update,schema,url)
       tpl.typeField = self._flattenField('create', 'type', typeField, self._lastType, 0);
     }
 
-    var retry = function()
+    var retry = function(body)
     {
-      self.showEdit(self._lastRequestBody||data, update, schema, url);
+      self.showEdit(body||self._lastRequestBody||data, update, schema, url);
     }
 
     var title = (update ? 'Edit' : 'Create') +' '+ schema.id;
