@@ -6,6 +6,16 @@ var explorer;
 {
   jQuery(window).load(jQueryReady);
 
+  function getScript(url, cb) {
+    return jQuery.ajax({
+      dataType: 'script',
+      cache: true,
+      type: 'GET',
+      url: url,
+      success: cb
+    });
+  }
+
   function jQueryReady()
   {
     if ( window.autoInit === false )
@@ -20,7 +30,7 @@ var explorer;
       var url = (window.bootstrap || '//netdna.bootstrapcdn.com/bootstrap/3.1.1').replace(/\/+$/,'');
 
       $('head').append('<link rel="stylesheet" href="'+url+'/css/bootstrap.min.css" type="text/css" />');
-      $.getScript(url+'/js/bootstrap.min.js', boostrapReady);
+      getScript(url+'/js/bootstrap.min.js', boostrapReady);
     }
   }
 
