@@ -20,7 +20,7 @@
           <span class="inactive">schema name</span>
         </td>
         <td>
-          {{>field}}
+          {{>field.hbs}}
         </td>
       </tr>
     {{/with}}
@@ -40,7 +40,7 @@
         </td>
         <td>
           {{#if writable}}
-            {{>field}}
+            {{>field.hbs}}
           {{else}}
             <span class="inactive">
               {{#if value}}

@@ -17,7 +17,7 @@ Explorer.prototype.show = function(cb)
     user: this._api._user
   };
 
-  document.body.innerHTML = Handlebars.templates['explorer'](tpl);
+  document.body.innerHTML = Handlebars.templates['explorer.hbs'](tpl);
   $('#explorer').css('top', $('#header')[0].offsetHeight + 'px');
 
   this.rootColumn();
@@ -88,7 +88,7 @@ Explorer.prototype.addPlaceholder = function()
     num: this._columns.length + 1
   };
 
-  var html = Handlebars.templates['column'](tpl);
+  var html = Handlebars.templates['column.hbs'](tpl);
   $('#explorer-wrapper').append(html);
 
   var elem = $('#column_'+ id);
@@ -153,7 +153,7 @@ Explorer.prototype.populateColumn = function(idOrElem, obj)
       hasLinks:   hasLinks
     };
 
-    var html = Handlebars.templates['column-collection'](tpl);
+    var html = Handlebars.templates['column-collection.hbs'](tpl);
     col.html(html);
 
     col.on('click', $.proxy(this.clickRow, this));
@@ -172,7 +172,7 @@ Explorer.prototype.populateColumn = function(idOrElem, obj)
       hasLinks:   hasLinks
     };
 
-    var html = Handlebars.templates['column-resource'](tpl);
+    var html = Handlebars.templates['column-resource.hbs'](tpl);
     col.html(html);
 
     $('.column-links',col).on('click', $.proxy(this.followLink, this));

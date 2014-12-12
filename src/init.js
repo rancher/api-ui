@@ -36,7 +36,7 @@ var explorer;
 
   function boostrapReady()
   {
-    document.body.innerHTML = '<div class="loading"></div>';
+    document.body.innerHTML = '<div class="loading"><i class="fa fa-2x fa-spinner fa-spin"></i></div>';
     try {
       htmlapi = new HTMLApi({
         data:       window.data,

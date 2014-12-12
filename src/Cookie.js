@@ -1,10 +1,3 @@
-/**
-* Cookie handling
-*
-* @package Base
-* @author Vincent Fiduccia <vincent@godaddy.com>
-* @since 1.0
-*/
 function Cookie() {};
 
 Cookie.set = function(name,value,expire,path,domain,secure)

@@ -1,8 +1,0 @@
-#!/usr/bin/env node
-
-var Assets = require('gd-assets');
-
-var config    = Assets.Config.load(__dirname+'/../assets.json');
-var pkg       = require('../package.json');
-
-Assets.Server(config, pkg, process.argv[2] || 3000);

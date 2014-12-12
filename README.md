@@ -1,54 +1,79 @@
-gdapi-ui
+api-ui
 ========
 
-An in-browser client for Go Daddy® REST API.
+An embedded UI for any service that implements the Rancher API spec.
 
 Integrating with your API
 -------
-See [HTML UI](https://github.com/godaddy/gdapi/blob/master/specification.md#html-ui) in the API specification.
+See [HTML UI](https://github.com/rancherio/api-spec/blob/master/specification.md#html-ui) in the API specification.  This also includes a link to the latest version hosted on our CDN.
 
 Install
 --------
 ```bash
-git clone https://github.com/godaddy/gdapi-ui
-cd gdapi-ui
+git clone https://github.com/rancherio/api-ui
+cd api-ui
 npm install
+bower install
+npm install -g broccoli-cli
 ```
 
 Usage
 --------
 
 ### Compiling into stand-alone CSS and JavaScript files
-This will write files to ./compiled/{version}/, suitable for publishing to a CDN.
+This will write files to `./dist/{version}/`, suitable for publishing to a CDN.
 
 ```bash
   ./bin/compile
 ```
-
 
 ### Running as a standalone server
 This will start a server on the given port number (default: 3000) that serves up the assets directly.
 This mode is mostly suitable for development of this library itself.
 
 ```bash
-  ./bin/gdapi-ui [port]
+  broccoli serve
 ```
 
-### Running as part of another Node.js Connect/Express service
-This will add a route into your Connect/Express service to respond with the appropriate asset.
-This mode is suitable for integrating with an existing project that already has a server running.
+Integrating with an API
+--------
+Wrap JSON responses with a bit of HTML (and return `Content-Type: text/html`):
+```
+<!DOCTYPE html>
+<!-- If you are reading this, there is a good chance you would prefer sending an
+"Accept: application/json" header and receiving actual JSON responses. -->
+<link rel="stylesheet" type="text/css" href="//cdn.rancher.io/api-ui/1.0.0/ui.css" />
+<script src="//cdn.rancher.io/api-ui/1.0.0/ui.js"></script>
+<script>
+var schemas = "http://url-to-your-api/v1/schemas";
+var data = {
+  /* ... JSON response ... */
+};
+/* ... additional options globals, see below ... */
+</script>
+```
+
+Options
+------
+Several options can be configured through additional globals:
+
 ```javascript
-var express = require('express');
-var app = express();
+// Adds a documentation link in the navigation area
+var docsPage = "http://url-to-your-docs/site";
 
-// Your existing routes
-app.get('/', function(req, res){
-  res.send('Hello World');
-});
+// URL to a documentation JSON file to add descriptions for types and fields.
+var docsJson = "http://url-to-your-docs.json";
 
-var Assets = require('gd-assets');
-var config = Assets.Config.load('/path/to/gdapi-ui//assets.json');
-assets.middleware(app, config)
+// Displays the username who is logged in next to the Log Out link so the user knows who you think they are
+var user = "jsmith";
 
-app.listen(3000);
+// Disables the display of the logout link
+var logout = false; // Disable the display of the Log Out link
+
+// Replaces the default "${API_ACCESS_KEY}:${API_SECRET_KEY}" string when displaying cURL commands.
+//   setting to false will omit the user/pass option from the command entirely.
+var curlUser = "some:thing";
+
+// Overrides the location where bootstrap is loaded from ('/css/boostrap.min.css' and '/js/bootstrap.min.js' will be appended to this)
+var bootstrap = "http://url/to/bootstrap/version";
 ```

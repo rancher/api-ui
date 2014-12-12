@@ -11,7 +11,7 @@ function HTMLApi(opt, cb)
   this._docsPage    = opt.docsPage;
   this._docsJson    = opt.docsJson;
   this._user        = opt.user;
-  this._curlUser    = opt.curlUser || '${GDAPI_ACCESS_KEY}:${GDAPI_SECRET_KEY}';
+  this._curlUser    = opt.curlUser || '${API_ACCESS_KEY}:${API_SECRET_KEY}';
   this._logout      = opt.logout !== false;
 
   this._filterId    = 0;
@@ -119,7 +119,7 @@ HTMLApi.prototype.showModal = function(body,opt,cb)
 
   opt.body = body;
 
-  var modalHtml = Handlebars.templates['modal'](opt);
+  var modalHtml = Handlebars.templates['modal.hbs'](opt);
   var modal = $(modalHtml);
   this._reqModal = modal;
   $('.modal-dialog',modal).css('width',opt.width||'750px');
@@ -395,7 +395,7 @@ HTMLApi.prototype.render = function(cb)
     explorer: Cookie.get('debug') || false
   };
 
-  document.body.innerHTML = Handlebars.templates['body'](tpl);
+  document.body.innerHTML = Handlebars.templates['body.hbs'](tpl);
   $('#json').html(jsonHtml);
 
   this._addCollapsers();
@@ -504,7 +504,7 @@ HTMLApi.prototype.actionLoad = function(name, obj, body)
         self.actionLoad(name, obj);
       }
 
-      var html = Handlebars.templates['edit'](tpl);
+      var html = Handlebars.templates['edit.hbs'](tpl);
       var popinActions = [
         {id: 'ok',      text: 'Show Request', primary: true, onClick: function() { self.showRequest(mode,'POST',actionInput,retry,url); }.bind(self) },
         {id: 'cancel',  text: 'Cancel', cancel: true }
@@ -578,7 +578,7 @@ HTMLApi.prototype.filterInit = function(cb)
     }
   }
 
-  var html = Handlebars.templates['filters']({
+  var html = Handlebars.templates['filters.hbs']({
     canFilter: canFilter,
     hasFilters: (filters.length > 0)
   });
@@ -597,7 +597,7 @@ HTMLApi.prototype.filterInit = function(cb)
     else
       options = null;
 
-    html = Handlebars.templates['filter']({
+    html = Handlebars.templates['filter.hbs']({
       allFilterSchema: schema.collectionFilters,
       thisFilterSchema: schema.collectionFilters[v.name],
       options: options,
@@ -644,7 +644,7 @@ HTMLApi.prototype.filterAdd = function(name, modifier, value, before)
   else
     options = null;
 
-  var html = Handlebars.templates['filter']({
+  var html = Handlebars.templates['filter.hbs']({
     allFilterSchema: schemaFilters,
     thisFilterSchema: schemaFilters[name],
     options: options,
@@ -997,7 +997,7 @@ HTMLApi.prototype.request = function(method,body,opt,really)
     tpl.contentType = 'application/json';
   }
 
-  var html = Handlebars.templates['request'](tpl);
+  var html = Handlebars.templates['request.hbs'](tpl);
 
   var actions = [];
 
@@ -1048,7 +1048,7 @@ HTMLApi.prototype.requestDone = function(err, body, res)
     tpl.responseHeaders = headers;
   }
 
-  var html = Handlebars.templates['response'](tpl);
+  var html = Handlebars.templates['response.hbs'](tpl);
 
   var out = '';
   var selfUrl = false;
@@ -1281,7 +1281,7 @@ HTMLApi.prototype.showEdit = function(data,update,schema,url)
     }
 
     var title = (update ? 'Edit' : 'Create') +' '+ schema.id;
-    var html = Handlebars.templates['edit'](tpl);
+    var html = Handlebars.templates['edit.hbs'](tpl);
     var method = (update ? 'PUT' : 'POST');
     var popinActions = [
       {id: 'ok',      text: 'Show Request', primary: true, onClick: function() { self.showRequest(mode, method,schema,retry,url); }.bind(self) },
@@ -1751,7 +1751,7 @@ HTMLApi.prototype.subAdd = function(button, name)
     children: [field]
   }
 
-  var html = Handlebars.templates['field'](par);
+  var html = Handlebars.templates['field.hbs'](par);
 
 //  html = '<div><input type="button" onclick="htmlapi.subRemove(this);" value="-">' + html + '</div>';
   $(button).before(html);

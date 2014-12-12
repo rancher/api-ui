@@ -1,7 +1,6 @@
-select {
+SELECT {
   width: auto;
 }
-
 
 HTML, BODY {
   color: black;
@@ -80,7 +79,6 @@ TABLE.fixed {
 }
 
 .loading {
-  background-image: url('image/loading.gif');
   background-position: center center;
   background-repeat: no-repeat;
   height: 100px;
@@ -290,7 +288,7 @@ text-align: left;
   margin-bottom: 2px;
 }
 
-.filter-novalue .filter-modifier: {
+.filter-novalue .filter-modifier {
   width: 80px;
 }
 
