@@ -13,6 +13,7 @@ var pkg = require('./package.json');
 
 var DIST = 'dist/';
 var VERSION_DIST = DIST+pkg.version+'/';
+var CDN = 'cdn.rancher.io/api-ui';
 
 gulp.task('default', ['build']);
 
@@ -57,7 +58,7 @@ gulp.task('js', ['templates','partials'], function() {
     .pipe(gulpConcat('ui.js'))
     .pipe(gulp.dest(VERSION_DIST))
     .pipe(gulpUglify())
-  .pipe(gulpMap.write())
+  .pipe(gulpMap.write('./'))
   .pipe(gulpRename({suffix: '.min'}))
   .pipe(gulp.dest(VERSION_DIST));
 });
@@ -84,7 +85,7 @@ gulp.task('css', function() {
   return gulp.src('styles/ui.scss')
     .pipe(gulpMap.init())
       .pipe(gulpSass())
-    .pipe(gulpMap.write())
+    .pipe(gulpMap.write('./'))
     .pipe(gulp.dest(VERSION_DIST))
     .pipe(gulpRename({suffix: '.min'}))
     .pipe(gulp.dest(VERSION_DIST));
