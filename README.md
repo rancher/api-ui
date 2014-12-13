@@ -13,8 +13,6 @@ Install
 git clone https://github.com/rancherio/api-ui
 cd api-ui
 npm install
-bower install
-npm install -g broccoli-cli
 ```
 
 Usage
@@ -24,7 +22,7 @@ Usage
 This will write files to `./dist/{version}/`, suitable for publishing to a CDN.
 
 ```bash
-  ./bin/compile
+  ./scripts/build
 ```
 
 ### Running as a standalone server
@@ -32,13 +30,13 @@ This will start a server on the given port number (default: 3000) that serves up
 This mode is mostly suitable for development of this library itself.
 
 ```bash
-  broccoli serve
+  ./scripts/serve
 ```
 
 Integrating with an API
 --------
 Wrap JSON responses with a bit of HTML (and return `Content-Type: text/html`):
-```
+```html
 <!DOCTYPE html>
 <!-- If you are reading this, there is a good chance you would prefer sending an
 "Accept: application/json" header and receiving actual JSON responses. -->
