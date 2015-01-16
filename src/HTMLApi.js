@@ -472,7 +472,6 @@ HTMLApi.prototype.actionLoad = function(name, obj, body)
   // The description of the input and output for this action
   var actionSchema = (isCollection ? objSchema.collectionActions[name] : objSchema.resourceActions[name]);
 
-
   // The schema for the input
   var actionInput = {};
   if ( actionSchema.input )
@@ -1349,117 +1348,129 @@ HTMLApi.prototype._flattenFields = function(mode,schema,data)
 
 HTMLApi.prototype._flattenField = function(mode, name, field, data, depth)
 {
+  if ( (mode != 'update') && (mode != 'action') && !(mode == 'create' && field.create) )
+  {
+    // This field is not set/changeable
+    return null;
+  }
+
   depth = depth || 0;
 
   var type = field._typeList[depth];
 
-  if ( mode == 'update' || (mode == 'create' && field.create) || (mode == 'action') )
+  var isEmbedded = false;
+  if ( ['string','password','float','int','date','blob','boolean','enum','reference','array','map'].indexOf(type) === -1 && this.getSchema(type) )
   {
-    // The value input's name
-    var formFieldName = name;
+    // Show embedded types as JSON, until proper support for embedded types is added.
+    type = 'json';
+    isEmbedded = true;
+  }
 
-    // The key input's name, for maps
-    var formFieldName2 = null;
-    var subType;
-    for ( var i = 0 ; i <= depth; i++ )
+
+  // The value input's name
+  var formFieldName = name;
+
+  // The key input's name, for maps
+  var formFieldName2 = null;
+  var subType;
+  for ( var i = 0 ; i <= depth; i++ )
+  {
+    subType = field._typeList[i];
+    if ( subType == 'array' )
     {
-      subType = field._typeList[i];
-      if ( subType == 'array' )
-      {
-        formFieldName += '[]';
-      }
-      else if ( subType == 'map' )
-      {
-        formFieldName2 = formFieldName+'.key{}';
-        formFieldName += '.value{}';
-      }
-
-      if ( subType == 'json' )
-      {
-        formFieldName += '.json{}';
-      }
+      formFieldName += '[]';
+    }
+    else if ( subType == 'map' )
+    {
+      formFieldName2 = formFieldName+'.key{}';
+      formFieldName += '.value{}';
     }
 
-    var row = {
-      name: name,
-      formFieldName: formFieldName,
-      formFieldName2: formFieldName2,
-      formFieldNameNull: formFieldName+this._magicNull,
-      required: field.required || false,
-      writable: (mode == 'action') || (mode == 'update' && field.update) || (mode != 'update' && field.create),
-      description: field.description,
-      placeholder: field.placeholder||"",
-      enlargeable: (type == 'string' && (!field.maxLength || field.maxLength > 63)),
-      nullCheck: (field.nullable && !field.options && ['string','data','password','number','int','float','reference'].indexOf(field.type) >= 0 ),
-      type: type,
-      field: field,
-      children: null,
-      value: ''
-    };
-
-    var displayType = field._typeList[ field._typeList.length - 1];
-    var parentType  = field._typeList[ field._typeList.length - 2];
-    if ( parentType && parentType == 'reference' )
+    if ( subType == 'json' || (isEmbedded && i === depth) )
     {
-      var link = null;
-      if ( field.referenceCollection )
-      {
-        link = field.referenceCollection;
-      }
-      else
-      {
-        var displaySchema = this.getSchema(displayType);
-        if ( displaySchema )
-        {
-          link = displaySchema.links['collection'] || displaySchema.links['self'];
-        }
-      }
-
-      if ( link )
-        displayType = '<a tabindex="-1" href="' + link + '" target="_blank">' + displayType + '</a>';
+      formFieldName += '.json{}';
     }
+  }
 
-    for ( var i = field._typeList.length - 2 ; i >= depth ; i-- )
-    {
-      displayType = field._typeList[i] + '[' + displayType + ']';
-    }
+  var row = {
+    name: name,
+    formFieldName: formFieldName,
+    formFieldName2: formFieldName2,
+    formFieldNameNull: formFieldName+this._magicNull,
+    required: field.required || false,
+    writable: (mode == 'action') || (mode == 'update' && field.update) || (mode != 'update' && field.create),
+    description: field.description,
+    placeholder: field.placeholder||"",
+    enlargeable: (type == 'string' && (!field.maxLength || field.maxLength > 63)),
+    nullCheck: (field.nullable && !field.options && ['string','data','password','number','int','float','reference'].indexOf(field.type) >= 0 ),
+    type: type,
+    field: field,
+    children: null,
+    value: ''
+  };
 
-    row.displayType = displayType;
-
-    if ( type == 'map' )
+  var displayType = field._typeList[ field._typeList.length - 1];
+  var parentType  = field._typeList[ field._typeList.length - 2];
+  if ( isEmbedded || (parentType && parentType == 'reference') )
+  {
+    var link = null;
+    if ( field.referenceCollection )
     {
-      row.children = [];
-      var keys = Object.keys(data||{});
-      var child;
-      for ( var i = 0 ; i < keys.length ; i++ )
-      {
-        child = this._flattenField(mode, name, field, data[keys[i]], depth+1);
-        child.value2 = keys[i];
-        child.parentIsMap = true;
-        row.children.push(child);
-      }
-    }
-    else if ( type == 'array' )
-    {
-      row.children = [];
-      for ( var i = 0 ; i < (data||[]).length ; i++ )
-      {
-        row.children.push( this._flattenField(mode, name, field, data[i], depth+1) );
-      }
-    }
-    else if ( type == 'json' )
-    {
-      row.value = JSON.stringify(data);
+      link = field.referenceCollection;
     }
     else
     {
-      row.value = data;
+      var displaySchema = this.getSchema(displayType);
+      if ( displaySchema )
+      {
+        link = displaySchema.links['collection'] || displaySchema.links['self'];
+      }
     }
 
-    return row;
+    if ( link )
+    {
+      displayType = '<a tabindex="-1" href="' + link + '" target="_blank">' + displayType + '</a>';
+    }
   }
 
-  return null;
+  for ( var i = field._typeList.length - 2 ; i >= depth ; i-- )
+  {
+    displayType = field._typeList[i] + '[' + displayType + ']';
+  }
+
+  row.displayType = displayType;
+
+  if ( type == 'map' )
+  {
+    row.children = [];
+    var keys = Object.keys(data||{});
+    var child;
+    for ( var i = 0 ; i < keys.length ; i++ )
+    {
+      child = this._flattenField(mode, name, field, data[keys[i]], depth+1);
+      child.value2 = keys[i];
+      child.parentIsMap = true;
+      row.children.push(child);
+    }
+  }
+  else if ( type == 'array' )
+  {
+    row.children = [];
+    for ( var i = 0 ; i < (data||[]).length ; i++ )
+    {
+      row.children.push( this._flattenField(mode, name, field, data[i], depth+1) );
+    }
+  }
+  else if ( type == 'json' )
+  {
+    row.value = JSON.stringify(data);
+  }
+  else
+  {
+    row.value = data;
+  }
+
+  return row;
 }
 
 
@@ -1751,7 +1762,7 @@ HTMLApi.prototype.subAdd = function(button, name)
     children: [field]
   }
 
-  var html = Handlebars.templates['field.hbs'](par);
+  var html = Handlebars.partials['field.hbs'](par);
 
 //  html = '<div><input type="button" onclick="htmlapi.subRemove(this);" value="-">' + html + '</div>';
   $(button).before(html);
