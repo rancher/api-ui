@@ -1808,7 +1808,7 @@ HTMLApi.prototype.switchToTextarea = function(button)
   $button.hide();
 }
 
-HTMLApi.prototype.setLocalCookie = function(on) {
+HTMLApi.prototype.setLocalCookie = function(on,min) {
   if ( on === false )
   {
     Cookie.remove('js.url');
@@ -1816,7 +1816,8 @@ HTMLApi.prototype.setLocalCookie = function(on) {
   }
   else
   {
-    Cookie.set('js.url','http://localhost:3000/ui.js',3650);
-    Cookie.set('css.url','http://localhost:3000/ui.css',3650);
+    var base = 'http://localhost:3000/ui' + (min === true ? '.min' : '');
+    Cookie.set('js.url', base + '.js', 3650);
+    Cookie.set('css.url', base + '.css', 3650);
   }
 }

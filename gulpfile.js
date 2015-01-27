@@ -17,7 +17,7 @@ var CDN = 'cdn.rancher.io/api-ui';
 
 gulp.task('default', ['build']);
 
-gulp.task('build', ['js','css']);
+gulp.task('build', ['js','minjs','css','mincss']);
 
 gulp.task('clean', function() {
   return del([
@@ -55,12 +55,18 @@ gulp.task('js', ['templates','partials'], function() {
     'src/init.js',
   ])
   .pipe(gulpMap.init())
-    .pipe(gulpConcat('ui.js'))
-    .pipe(gulp.dest(VERSION_DIST))
-    .pipe(gulpUglify())
+    .pipe(gulpConcat('ui.js',{newLine: ';\n'}))
   .pipe(gulpMap.write('./'))
-  .pipe(gulpRename({suffix: '.min'}))
   .pipe(gulp.dest(VERSION_DIST));
+});
+
+gulp.task('minjs', ['js'], function() {
+  return gulp.src([VERSION_DIST+'/ui.js'], {base: VERSION_DIST})
+    .pipe(gulpRename({suffix: '.min'}))
+    .pipe(gulpMap.init({loadMaps: true}))
+      .pipe(gulpUglify())
+    .pipe(gulpMap.write('./'))
+    .pipe(gulp.dest(VERSION_DIST));
 });
 
 gulp.task('templates', function() {
@@ -87,7 +93,13 @@ gulp.task('css', function() {
       .pipe(gulpSass())
     .pipe(gulpMap.write('./'))
     .pipe(gulp.dest(VERSION_DIST))
+});
+
+gulp.task('mincss', ['css'], function() {
+  return gulp.src([VERSION_DIST+'/ui.css'], {base: VERSION_DIST})
     .pipe(gulpRename({suffix: '.min'}))
+    .pipe(gulpMap.init({loadMaps: true}))
+    .pipe(gulpMap.write('./'))
     .pipe(gulp.dest(VERSION_DIST));
 });
 
