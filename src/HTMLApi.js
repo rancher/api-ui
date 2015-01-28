@@ -452,14 +452,12 @@ HTMLApi.prototype.getSchema = function(type, obj)
 
 HTMLApi.prototype.showAction = function(button)
 {
-  this.actionLoad(button.getAttribute('data-action'), undefined, {});
+  this.actionLoad(button.getAttribute('data-action'), undefined, null);
 }
 
 HTMLApi.prototype.actionLoad = function(name, obj, body)
 {
   var self = this;
-
-  this._lastRequestBody = body||this._lastRequestBody||{};
 
   if ( !obj )
     obj = this._data;
@@ -476,6 +474,31 @@ HTMLApi.prototype.actionLoad = function(name, obj, body)
   var actionInput = {};
   if ( actionSchema.input )
     actionInput = this.getSchema(actionSchema.input);
+
+  // undefined = use the previous body if available
+  if ( body === undefined && this._lastRequestBody )
+  {
+    body = this._lastRequestBody;
+  }
+
+  // null = explicitly create a new empty body
+  if ( body === null )
+  {
+    body = {};
+
+    // Apply schema defaults
+    for ( k in actionInput.resourceFields )
+    {
+      v = actionInput.resourceFields[k];
+      body[k] = (v['nullable'] ? null : '');
+      if ( v['default'] )
+      {
+        body[k] = v['default'];
+      }
+    }
+  }
+
+  this._lastRequestBody = body;
 
   this._editSchema = actionInput;
   var url = obj.actions[name];
@@ -790,7 +813,7 @@ HTMLApi.prototype.keyFormatter = function(key,obj, path)
       dataVar += "['"+ path[i] + "']";
     }
 
-    html = '<a class="keylink" href="#" onclick="htmlapi.actionLoad(\''+ key + '\',' + dataVar + ',{}); return false;">' + html + '</a>';
+    html = '<a class="keylink" href="#" onclick="htmlapi.actionLoad(\''+ key + '\',' + dataVar + ',null); return false;">' + html + '</a>';
   }
 
   return html;
@@ -1303,7 +1326,12 @@ HTMLApi.prototype.editOrActionShown = function() {
     input.focus();
 
   // Make the null checkboxes clear the field, and field clear null
-  $(htmlapi._reqModal).on('keyup','input[type="text"], input[type="number"], textarea', function(event) {
+  $(htmlapi._reqModal).on('keyup','input[type="text"], input[type="number"], textarea', onChange);
+  $(htmlapi._reqModal).on('change','input[type="text"], input[type="number"], textarea', onChange);
+
+  $('.tip').tooltip({placement: 'right'});
+
+  function onChange(event) {
     if ( event.keyCode < 32 )
       return;
 
@@ -1311,9 +1339,7 @@ HTMLApi.prototype.editOrActionShown = function() {
     var checks = $(selector, htmlapi._reqModal)
     if ( checks && checks[0] )
       checks[0].checked = false;
-  });
-
-  $('.tip').tooltip({placement: 'right'});
+  }
 }
 
 HTMLApi.prototype._escapeRegex = function(str)
@@ -1688,8 +1714,23 @@ HTMLApi.prototype.getFormValues = function(mode, method, schema)
     {
       if ( typeof v != 'undefined')
       {
-        body[k] = (v == 1);
+        if ( field.nullable && v === null )
+        {
+          body[k] = null;
+        }
+        else
+        {
+          body[k] = (v == 1);
+        }
       }
+    }
+    else if ( field.type == 'int' && v !== null)
+    {
+      body[k] = parseInt(v,10);
+    }
+    else if ( field.type == 'float' && v !== null)
+    {
+      body[k] = parseFloat(v);
     }
     else if ( typeof v != 'undefined' )
     {
