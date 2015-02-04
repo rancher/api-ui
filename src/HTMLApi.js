@@ -1726,11 +1726,11 @@ HTMLApi.prototype.getFormValues = function(mode, method, schema)
     }
     else if ( field.type == 'int' && v !== null)
     {
-      body[k] = parseInt(v,10);
+      body[k] = parseInt(v,10)||0;
     }
     else if ( field.type == 'float' && v !== null)
     {
-      body[k] = parseFloat(v);
+      body[k] = parseFloat(v)||0;
     }
     else if ( typeof v != 'undefined' )
     {

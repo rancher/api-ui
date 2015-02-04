@@ -88,6 +88,7 @@
   <select name="{{formFieldName}}" class="form-control" onchange="htmlapi.createTypeChanged($(this).val());">
     {{#each field.options}}
       <option value="{{this}}" {{#ifEqual this ../value}} SELECTED{{/ifEqual}}>{{this}}</option>
+      <!-- {{this}} , {{../value}} -->
     {{/each}}
   </select>
 {{/ifEqual}}
