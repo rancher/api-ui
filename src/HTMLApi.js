@@ -1437,7 +1437,7 @@ HTMLApi.prototype._flattenField = function(mode, name, field, data, depth)
 
   var displayType = field._typeList[ field._typeList.length - 1];
   var parentType  = field._typeList[ field._typeList.length - 2];
-  if ( isEmbedded || (parentType && parentType == 'reference') )
+  if ( isEmbedded || (parentType && (parentType == 'reference' || parentType == 'array' || parentType == 'map')) )
   {
     var link = null;
     if ( field.referenceCollection )
@@ -1576,6 +1576,16 @@ HTMLApi.prototype._flattenInputs = function($form)
     isMapValue = k.indexOf('.value{}') >= 0;
     isJsonValue = k.indexOf('.json{}') >= 0;
 
+    name = k;
+    if ( isJsonValue )
+      name = name.replace(/\.json\{\}$/,'');
+    if ( isMapKey )
+      name = name.replace(/\.key\{\}$/,'');
+    if ( isMapValue )
+      name = name.replace(/\.value\{\}$/,'');
+    if ( isArray )
+      name = name.replace(/\[\]$/,'');
+
     if ( isJsonValue )
     {
       try {
@@ -1589,7 +1599,6 @@ HTMLApi.prototype._flattenInputs = function($form)
 
     if ( isArray )
     {
-      name = k.replace(/\[\]$/,'');
       if ( typeof inputs[name] === "undefined" )
         inputs[name] = [];
 
@@ -1597,14 +1606,6 @@ HTMLApi.prototype._flattenInputs = function($form)
     }
     else if ( isMapKey || isMapValue )
     {
-      name = k;
-      if ( isJsonValue )
-        name = name.replace(/\.json\{\}$/,'');
-      if ( isMapKey )
-        name = name.replace(/\.key\{\}$/,'');
-      else if ( isMapValue )
-        name = name.replace(/\.value\{\}$/,'');
-
       if ( typeof maps[name] === 'undefined' )
       {
         maps[name] = {keys: [], values: []};
@@ -1617,8 +1618,6 @@ HTMLApi.prototype._flattenInputs = function($form)
     }
     else if ( isJsonValue )
     {
-      name = k;
-      name = name.replace(/\.json\{\}$/,'');
       inputs[name] = v;
     }
     else
