@@ -1,6 +1,6 @@
 {
   "name": "api-ui",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Embedded UI for any service that implements the Rancher API spec",
   "contributors": [
     "Go Daddy Operating Company, LLC. (http://godaddy.com)",
@@ -16,7 +16,8 @@
   "scripts": {
     "start": "./node_modules/.bin/gulp server",
     "clean": "./node_modules/.bin/gulp clean",
-    "build": "./node_modules/.bin/gulp build"
+    "build": "./node_modules/.bin/gulp build",
+    "upload": "./scripts/upload"
   },
   "devDependencies": {
     "del": "^1.1.0",
