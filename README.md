@@ -75,3 +75,8 @@ var curlUser = "some:thing";
 // Overrides the location where bootstrap is loaded from ('/css/boostrap.min.css' and '/js/bootstrap.min.js' will be appended to this)
 var bootstrap = "http://url/to/bootstrap/version";
 ```
+
+### Bugs & Issues
+Please submit bugs and issues to [rancherio/rancher](//github.com/rancherio/rancher/issues) with a title starting with `[API UI] `.
+
+Or just [click here](//github.com/rancherio/rancher/issues/new?title=%5BAPI%20UI%5D%20) to create a new issue.
