@@ -40,8 +40,8 @@ Wrap JSON responses with a bit of HTML (and return `Content-Type: text/html`):
 <!DOCTYPE html>
 <!-- If you are reading this, there is a good chance you would prefer sending an
 "Accept: application/json" header and receiving actual JSON responses. -->
-<link rel="stylesheet" type="text/css" href="//cdn.rancher.io/api-ui/1.0.0/ui.css" />
-<script src="//cdn.rancher.io/api-ui/1.0.0/ui.js"></script>
+<link rel="stylesheet" type="text/css" href="//releases.rancher.com/api-ui/1.0.4/ui.css" />
+<script src="//releases.rancher.com/api-ui/1.0.4/ui.js"></script>
 <script>
 var schemas = "http://url-to-your-api/v1/schemas";
 var data = {
