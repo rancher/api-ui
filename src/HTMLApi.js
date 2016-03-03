@@ -285,7 +285,7 @@ HTMLApi.prototype._schemaMunge = function(schema)
 
 HTMLApi.prototype._fieldMunge = function(field)
 {
-  field._typeList = field.type.replace(/\]+$/,'').split(/\[/);
+  field._typeList = field.type.replace(/\]+$/,'').split(/\[/); // vim can't color... ]
   return field;
 }
 
@@ -380,7 +380,7 @@ HTMLApi.prototype.render = function(cb)
 
   Object.keys(allActions).sort().forEach(function(key) {
     // Set the action to true if it's available on this object or false if it isn't
-    actions[key] = !!data.actions[key];
+    actions[key] = ((data && data.actions) ? !!data.actions[key] : false);
   });
 
   var tpl = {
@@ -1344,7 +1344,7 @@ HTMLApi.prototype.editOrActionShown = function() {
 
 HTMLApi.prototype._escapeRegex = function(str)
 {
-  return str.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')
+  return str.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'); // vim... ]
 }
 
 HTMLApi.prototype._flattenFields = function(mode,schema,data)
