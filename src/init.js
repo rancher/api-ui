@@ -16,6 +16,21 @@ var explorer;
     });
   }
 
+  function baseUrl() {
+    var out = null;
+    $('SCRIPT').each(function(idx, script) {
+      if ( script.src ) {
+        var match = script.src.match(/^(.*)\/ui\.(min\.)?js/);
+        if ( match )
+        {
+          out = match[1];
+        }
+      }
+    });
+
+    return out;
+  }
+
   function jQueryReady()
   {
     if ( window.autoInit === false )
@@ -27,8 +42,7 @@ var explorer;
     }
     else
     {
-      var url = (window.bootstrap || '//netdna.bootstrapcdn.com/bootstrap/3.1.1').replace(/\/+$/,'');
-
+      var url = baseUrl();
       $('head').append('<link rel="stylesheet" href="'+url+'/css/bootstrap.min.css" type="text/css" />');
       getScript(url+'/js/bootstrap.min.js', boostrapReady);
     }

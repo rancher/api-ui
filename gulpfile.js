@@ -17,7 +17,7 @@ var CDN = 'cdn.rancher.io/api-ui';
 
 gulp.task('default', ['build']);
 
-gulp.task('build', ['js','minjs','css','mincss']);
+gulp.task('build', ['js','minjs','css','mincss','bootstrap']);
 
 gulp.task('clean', function() {
   return del([
@@ -27,9 +27,17 @@ gulp.task('clean', function() {
 });
 
 gulp.task('server', ['build','livereload'], function() {
+  var cors = function(req, res, next) {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    next();
+  };
+
   return gulpConnect.server({
     root: [VERSION_DIST],
-    port: process.env.PORT || 3000
+    port: process.env.PORT || 3000,
+    middleware: function() {
+      return [cors];
+    },
   });
 });
 
@@ -100,6 +108,11 @@ gulp.task('mincss', ['css'], function() {
     .pipe(gulpRename({suffix: '.min'}))
     .pipe(gulpMap.init({loadMaps: true}))
     .pipe(gulpMap.write('./'))
+    .pipe(gulp.dest(VERSION_DIST));
+});
+
+gulp.task('bootstrap', function() {
+  return gulp.src(['node_modules/bootstrap/dist/**'])
     .pipe(gulp.dest(VERSION_DIST));
 });
 

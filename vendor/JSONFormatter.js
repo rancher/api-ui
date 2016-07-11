@@ -130,11 +130,11 @@ JSONFormatter.prototype = {
       path.push(prop);
       output += '<li>' + this.valueToHTML(json[prop],path);
 
+      cur++;
       if ( cur < total ) {
         output += ',';
       }
       output += '</li>';
-      cur++;
     }
     
     if ( hasContents ) {
@@ -187,11 +187,11 @@ JSONFormatter.prototype = {
       output += '<li><span class="prop"><span class="q">"</span>' + keyHtml +
                 '<span class="q">"</span></span>: ' + valueHtml;
 
+      cur++;
       if ( cur < total ) {
         output += ',';
       }
       output += '</li>';
-      cur++;
     }
     
     if ( hasContents ) {
