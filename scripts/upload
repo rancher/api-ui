@@ -19,7 +19,9 @@ function exec() {
 
 VERSION=$(cat package.json | grep version | cut -f4 -d'"' | sed 's/-/_/g')
 BUILD_DIR="dist/${VERSION}"
+TARBALL="dist/${VERSION}.tar.gz"
 CDN="releases.rancher.com/api-ui"
 
 echo "Uploading..."
 exec gsutil -m cp -R -z "js,css,map" $BUILD_DIR "gs://${CDN}/"
+exec gsutil -m cp -R -z "js,css,map" $TARBALL "gs://${CDN}/"

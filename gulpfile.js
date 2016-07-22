@@ -2,10 +2,12 @@ var gulp = require('gulp');
 var gulpConcat = require('gulp-concat');
 var gulpConnect = require('gulp-connect');
 var gulpExec = require('gulp-exec');
+var gulpGzip = require('gulp-gzip');
 var gulpHint = require('gulp-jshint');
 var gulpMap = require('gulp-sourcemaps');
 var gulpRename = require('gulp-rename');
 var gulpSass = require('gulp-sass');
+var gulpTar = require('gulp-tar');
 var gulpUglify = require('gulp-uglify');
 var del = require('del');
 
@@ -16,8 +18,9 @@ var VERSION_DIST = DIST+pkg.version+'/';
 var CDN = 'cdn.rancher.io/api-ui';
 
 gulp.task('default', ['build']);
+gulp.task('build', ['src','tarball']);
 
-gulp.task('build', ['js','minjs','css','mincss','bootstrap']);
+gulp.task('src', ['js','minjs','css','mincss','bootstrap']);
 
 gulp.task('clean', function() {
   return del([
@@ -114,6 +117,13 @@ gulp.task('mincss', ['css'], function() {
 gulp.task('bootstrap', function() {
   return gulp.src(['node_modules/bootstrap/dist/**'])
     .pipe(gulp.dest(VERSION_DIST));
+});
+
+gulp.task('tarball', ['src'], function() {
+  return gulp.src([VERSION_DIST+'/**'], {base: DIST})
+    .pipe(gulpTar(pkg.version+'.tar'))
+    .pipe(gulpGzip())
+    .pipe(gulp.dest(DIST));
 });
 
 gulp.task('livereload', function() {
