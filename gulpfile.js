@@ -6,6 +6,7 @@ var gulpGzip = require('gulp-gzip');
 var gulpHint = require('gulp-jshint');
 var gulpMap = require('gulp-sourcemaps');
 var gulpRename = require('gulp-rename');
+var gulpReplace = require('gulp-replace');
 var gulpSass = require('gulp-sass');
 var gulpTar = require('gulp-tar');
 var gulpUglify = require('gulp-uglify');
@@ -52,6 +53,7 @@ gulp.task('js', ['templates','partials'], function() {
   return gulp.src([
     'node_modules/jquery/dist/jquery.js',
     'vendor/jquery.scrollintoview.js',
+    'node_modules/bootstrap/dist/js/bootstrap.js',
     'vendor/async.js',
     'vendor/json2.js',
     'vendor/polyfill.js',
@@ -99,7 +101,13 @@ gulp.task('partials', function() {
 });
 
 gulp.task('css', function() {
-  return gulp.src('styles/ui.scss')
+  return gulp.src([
+    './node_modules/bootstrap/dist/css/bootstrap.css',
+    'styles/main.scss',
+    'styles/explorer.scss'
+  ])
+    .pipe(gulpReplace("/*# sourceMappingURL=bootstrap.css.map */",""))
+    .pipe(gulpConcat('ui.css'))
     .pipe(gulpMap.init())
       .pipe(gulpSass())
     .pipe(gulpMap.write('./'))

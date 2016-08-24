@@ -92,7 +92,10 @@ HTMLApi.prototype.showModal = function(body,opt,cb)
         for (var i = 0 ; i < actions.length ; i++ )
         {
           if ( actions[i].primary )
+          {
             self.modalAction(actions[i].id);
+            return false;
+          }
         }
       }
       else if ( e.keyCode == 27 )
@@ -101,7 +104,10 @@ HTMLApi.prototype.showModal = function(body,opt,cb)
         for (var i = 0 ; i < actions.length ; i++ )
         {
           if ( actions[i].cancel )
+          {
             self.modalAction(actions[i].id);
+            return false;
+          }
         }
       }
 
@@ -149,6 +155,7 @@ HTMLApi.prototype.modalAction = function(id) {
   if ( action && action.onClick)
   {
     action.onClick();
+    return false;
   }
   else if ( action && action.cancel )
   {
@@ -178,13 +185,16 @@ HTMLApi.prototype.setModalActions = function(actions)
   var html = '';
 
   actions.forEach(function(action) {
-    color = 'btn-default';
-    if ( action.primary )
+    var color = 'btn-default';
+    var btnType = 'button'
+    if ( action.primary ) {
       color = 'btn-primary';
-    else if ( action.cancel )
+      btnType = 'submit';
+    } else if ( action.cancel ) {
       color = 'btn-link';
+    }
 
-    html += '<button type="button" class="btn '+color+'" onclick="htmlapi.modalAction(\''+ action.id +'\');">'+ action.text + '</button>';
+    html += '<button type="'+btnType+'" class="btn '+color+'" onclick="htmlapi.modalAction(\''+ action.id +'\');">'+ action.text + '</button>';
   });
 
   $('.modal-footer', this._reqModal).html(html);

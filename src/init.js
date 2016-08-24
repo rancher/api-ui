@@ -36,16 +36,7 @@ var explorer;
     if ( window.autoInit === false )
       return;
 
-    if ( window.bootstrap === false )
-    {
-      boostrapReady();
-    }
-    else
-    {
-      var url = baseUrl();
-      $('head').append('<link rel="stylesheet" href="'+url+'/css/bootstrap.min.css" type="text/css" />');
-      getScript(url+'/js/bootstrap.min.js', boostrapReady);
-    }
+    boostrapReady();
   }
 
   function boostrapReady()
