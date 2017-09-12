@@ -218,8 +218,8 @@ HTMLApi.prototype.schemasLoad = function(link, cb)
     return async.nextTick(function() { cb("No data") });
 
   // Link may come from the page <script>, but override it if one is in the JSON body.
-  if ( this._data.links && this._data.links.schemas )
-    link = this._data.links.schemas;
+  //if ( this._data.links && this._data.links.schemas )
+  //  link = this._data.links.schemas;
 
   if ( link )
   {
