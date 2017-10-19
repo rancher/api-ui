@@ -1,0 +1,31 @@
+<nav class="clearfix" role="navigation">
+  <a class="nav-logo logo-{{app.mode}} btn bg-transparent"><span class="sr-only">{{settings.appName}}</span></a>
+
+  <ul class="nav-main nav-list no-inline-space">
+    <li class="nav-item">
+      {{#link-to "apis.api.browse"}}Browser{{/link-to}}
+    </li>
+
+    <li class="nav-item">
+      {{#link-to "apis.api.schemas"}}Schemas{{/link-to}}
+    </li>
+  </ul>
+
+
+  <ul class="nav-user dropdown">
+    {{#if user}}
+      <li>
+        <div>
+          {{user}}
+        </div>
+        <div>
+          <a {{action "logout"}}>Logout</a>
+        </div>
+      </li>
+    {{else}}
+      <li>
+        No Auth
+      </li>
+    {{/if}}
+  </ul>
+</nav>

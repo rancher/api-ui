@@ -1,40 +1,46 @@
 {
   "name": "api-ui",
-  "version": "1.1.0",
+  "version": "2.0.0",
   "description": "Embedded UI for any service that implements the Rancher API spec",
   "contributors": [
     "Go Daddy Operating Company, LLC. (http://godaddy.com)",
     "Rancher Labs, Inc. (http://rancher.com)"
   ],
   "license": "MIT",
-  "homepage": "http://github.com/rancherio/api-ui",
-  "bugs": "http://github.com/rancherio/api-ui/issues",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/rancherio/api-ui.git"
-  },
+  "homepage": "http://github.com/rancher/api-ui",
+  "bugs": "http://github.com/ranchero/api-ui/issues",
+  "repository": "",
   "scripts": {
-    "start": "./node_modules/.bin/gulp server",
-    "clean": "./node_modules/.bin/gulp clean",
-    "build": "./node_modules/.bin/gulp build",
-    "upload": "./scripts/upload"
+    "build": "./node_modules/.bin/ember build",
+    "start": "./node_modules/.bin/ember server",
+    "test": "./node_modules/.bin/ember test"
   },
   "devDependencies": {
-    "bootstrap": "^3.1.1",
-    "del": "^1.1.0",
-    "gulp": "^3.9.1",
-    "gulp-concat": "^2.6.0",
-    "gulp-connect": "^2.2.0",
-    "gulp-exec": "^2.1.1",
-    "gulp-gzip": "^1.4.0",
-    "gulp-jshint": "^1.9.0",
-    "gulp-rename": "^1.2.0",
-    "gulp-replace": "^0.5.4",
-    "gulp-sass": "^2.3.2",
-    "gulp-sourcemaps": "^1.6.0",
-    "gulp-tar": "^1.9.0",
-    "gulp-uglify": "^1.0.2",
-    "handlebars": "^2",
-    "jquery": "^1.11.1"
+    "broccoli-asset-rev": "^2.4.5",
+    "ember-ajax": "^3.0.0",
+    "ember-api-store": "2.3.0",
+    "ember-cli": "~2.16.2",
+    "ember-cli-app-version": "^3.0.0",
+    "ember-cli-babel": "^6.6.0",
+    "ember-cli-clipboard": "^0.8.0",
+    "ember-cli-dependency-checker": "^2.0.0",
+    "ember-cli-eslint": "^4.0.0",
+    "ember-cli-htmlbars": "^2.0.1",
+    "ember-cli-htmlbars-inline-precompile": "^1.0.0",
+    "ember-cli-inject-live-reload": "^1.4.1",
+    "ember-cli-qunit": "^4.0.0",
+    "ember-cli-sass": "^6.1.1",
+    "ember-cli-shims": "^1.1.0",
+    "ember-cli-sri": "^2.1.0",
+    "ember-cli-uglify": "^2.0.0",
+    "ember-export-application-global": "^2.0.0",
+    "ember-load-initializers": "^1.0.0",
+    "ember-resolver": "^4.0.0",
+    "ember-source": "~2.16.0",
+    "ember-truth-helpers": "^2.0.0",
+    "loader.js": "^4.2.3"
+  },
+  "engines": {
+    "node": "^4.5 || 6.* || >= 7.*"
   }
 }
