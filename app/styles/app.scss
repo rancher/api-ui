@@ -1,0 +1,47 @@
+@import "app/styles/abstracts/variables";
+@import "app/styles/themes/light";
+
+@import "app/styles/abstracts/decimal";
+@import "app/styles/abstracts/functions";
+@import "app/styles/abstracts/mixins";
+//@import "vendor/icons/variables";
+@import "app/styles/vendor/normalize";
+
+// Base
+// Includes boilerplate for the project. Inlcude things like typography, Normalize, etc.
+@import "app/styles/fonts/prompt";
+@import "app/styles/fonts/icons";
+@import "app/styles/fonts/zerowidthspace";
+@import "app/styles/base/base";
+@import "app/styles/base/color";
+@import "app/styles/base/typography";
+@import "app/styles/base/helpers";
+@import "app/styles/base/icons";
+
+// Layout
+// Layout specific files. Headers, footers, grids...
+@import "app/styles/layout/layout";
+@import "app/styles/layout/loading";
+@import "app/styles/layout/header";
+@import "app/styles/layout/footer";
+@import "app/styles/layout/grid";
+
+// Components
+// Component-specific files.
+@import "app/styles/components/tables";
+@import "app/styles/components/tooltip";
+@import "app/styles/components/modals";
+@import "app/styles/components/code";
+@import "app/styles/components/alerts";
+@import "app/styles/components/button";
+@import "app/styles/components/banners";
+@import "app/styles/components/tabs";
+@import "app/styles/components/forms";
+@import "app/styles/components/dropdown";
+@import "app/styles/components/page-header";
+
+// Vendor
+// Pretty much what it says. Vendor specific changes/overrides or includes.
+
+// Pages
+// Pages that have their own styles.

@@ -9,16 +9,13 @@ const Router = EmberRouter.extend({
 Router.map(function() {
   this.route('index', {path: '/'});
 
-  this.route('apis', function() {
-    this.route('api', {path: '/:name'}, function() {
+  this.route('api', function() {
+    this.route('schemas', function() {
+      this.route('schema', {path: '/:id'});
+    });
 
-      this.route('schemas', function() {
-        this.route('schema', {path: '/:id'});
-      });
-
-      this.route('browse', function() {
-        this.route('request', {path: '/:id'});
-      });
+    this.route('browse', function() {
+      this.route('call', {path: '/:id'});
     });
   });
 

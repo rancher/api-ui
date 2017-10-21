@@ -1,0 +1,246 @@
+// Tooltip text color
+$tooltip-color                       : white !default;
+// Tooltip background color
+$tooltip-bg                          : rgba(0,0,0,.9) !default;
+$tooltip-opacity                     : .9 !default;
+// Tooltip arrow color
+$tooltip-arrow-color                 : $tooltip-bg !default;
+
+@mixin tooltip-triangle {
+  content    : '';
+  background : transparent;
+  width      : 0;
+  height     : 0;
+  position   : absolute;
+}
+
+.tooltip-triangle {
+  @include tooltip-triangle
+}
+.tooltip-content {
+  display : none !important;
+}
+
+.tooltip-actions {
+  width: 245px;
+}
+
+.container-tooltip {
+  display: inline-block;
+  position: fixed;
+  background: $link-color;
+  padding: 5px;
+  padding-right: 25px;
+  min-width: 210px;
+  max-width: 95%;
+  z-index: 1000;
+  color: $body-bg;
+
+  .btn.more-actions {
+    border: none;
+    @extend .darken;
+    border-radius: 0;
+    color: $body-bg;
+  }
+
+  &.copy-clipboard {
+    text-align: center;
+  }
+
+  &.top > .tooltip-caret {
+    @include tooltip-triangle;
+    border-left  : 5px solid transparent;
+    border-right : 5px solid transparent;
+    border-top   : 5px solid $link-color;
+    bottom       : -5px;
+    left         : calc(50% - 5px);
+  }
+  &.bottom > .tooltip-caret {
+    @include tooltip-triangle;
+    border-left   : 5px solid transparent;
+    border-right  : 5px solid transparent;
+    border-bottom : 5px solid lighten($link-color, 20);
+    top           : -5px;;
+    left          : calc(50% - 5px);
+  }
+  &.left > .tooltip-caret {
+    @include tooltip-triangle;
+    border-top    : 5px solid transparent;
+    border-bottom : 5px solid transparent;
+    border-right  : 5px solid $link-color;
+    left          : -5px;
+    top           : calc(50% - 5px);
+  }
+  &.right > .tooltip-caret {
+    @include tooltip-triangle;
+    border-top    : 5px solid transparent;
+    border-bottom : 5px solid transparent;
+    border-left   : 5px solid $link-color;
+    right         : -5px;
+    top           : calc(50% - 5px);
+  }
+
+  .more-actions {
+    border     : 1px solid $primary-dark;
+    color      : white;
+    background : $primary-dark;
+
+    &::hover {
+      background: lighten($primary-dark, 15%);
+    }
+
+    .icon-chevron-down {
+      transition: ease all 350ms;
+    }
+
+    &.open {
+      .icon-chevron-down {
+        transform: rotate(-180deg);
+      }
+    }
+  }
+  .tooltip-content-inner {
+    padding: 5px;
+
+    &.warning {
+      font-size: 12px;
+    }
+
+    .dismiss {
+      @include hand;
+      height     : 100%;
+      background : $primary-dark;
+      margin     : -5px;
+      padding    : 3px;
+      border     : 1px solid $primary-dark;
+      float      : right;
+
+      & .icon-close {
+        font-size: 8px;
+      }
+    }
+  }
+
+
+  .resource-actions {
+    display: inline-block;
+    position : absolute;
+    top      : 0px;
+    right    : 0px;
+    height   : 100%;
+
+    .more-actions {
+      height: 100%;
+    }
+  }
+
+  .display-name {
+    font-size     : 14px;
+    font-weight   : bold;
+    text-overflow : ellipsis;
+    overflow      : hidden;
+
+    a {
+      color: white;
+    }
+  }
+
+  .display-ip {
+    font-size: 12px;
+    color: white;
+
+    .text-muted {
+      color: rgba($body-bg,.7);
+    }
+  }
+
+  .bottom-row {
+    width         : 190px;
+    font-size     : 12px;
+
+    .col {
+      @include clip;
+      display : inline-block;
+      width   : 50%;
+      float   : left;
+    }
+  }
+
+}
+
+.tooltip-warning-container {
+  background : $info;
+  color      : white;
+  cursor: pointer;
+  position: relative;
+
+  &.top::after {
+    border-top   : 5px solid $info;
+  }
+  &.bottom::after {
+    border-bottom : 5px solid $info;
+  }
+  &.left::after {
+    border-right  : 5px solid $info;
+  }
+  &.right::after {
+    border-left   : 5px solid $info;
+  }
+
+  .tooltip-content-inner {
+
+  }
+  .dismiss {
+    color : darken($info, 30%);
+    padding: 5px;
+
+    & .icon-close {
+      font-size: .75em;
+    }
+  }
+}
+
+//from lacsso
+.tooltip {
+  @extend .bg-default;
+  padding: 10px;
+  position: relative;
+
+  &:after {
+    content: "";
+    position: absolute;
+    bottom: -20px;
+    left: calc(50% - 10px);
+    border-style: solid;
+    border-color: transparent;
+    border-top-color: $light-grey;
+    border-width: 10px;
+  }
+
+  &.bg-default:after {
+    border-top-color: $light-grey;
+  }
+
+  &.bg-disabled:after {
+    border-top-color: $mid-grey;
+  }
+
+  &.bg-primary:after {
+    border-top-color: $primary;
+  }
+  &.bg-secondary:after {
+    border-top-color: $secondary;
+  }
+  &.bg-success:after {
+    border-top-color: $success;
+  }
+  &.bg-info:after {
+    border-top-color: $info;
+  }
+  &.bg-warning:after {
+    border-top-color: $warning;
+  }
+  &.bg-error:after {
+    border-top-color: $error;
+  }
+}

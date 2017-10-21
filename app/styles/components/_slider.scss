@@ -1,0 +1,53 @@
+.slider {
+  position: relative;
+  background: $accent-two;
+  border-radius: 5px;
+  cursor: pointer;
+  height: 7px;
+  margin: 10px 0;
+
+  .slider-handle {
+    position: absolute;
+    width: 15px;
+    height: 15px;
+    top: -4px;
+    margin-left: -10px;
+    border-radius: 50%;
+    background-color: $accent-one;
+    border: 1px solid $accent-two;
+  }
+
+  .slider-bar {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: $link-color;
+    border-radius: 3px;
+  }
+
+  &.disabled {
+    cursor: not-allowed;
+
+    .slider-handle {
+      border-color: $accent-two;
+      background-color: $accent-one;
+    }
+
+    .slider-bar {
+      background-color: $accent-two;
+      opacity: 0.6;
+    }
+  }
+
+  &.active {
+    .slider-handle {
+      background-color: $accent-one;
+    }
+  }
+}
+
+.theme-ui-dark {
+  .slider {
+    background: $accent-three;
+  }
+}

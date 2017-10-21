@@ -1,0 +1,65 @@
+///640
+// @media only screen and (max-width: map-get($breakpoints, small)) {
+// }
+
+// RANCHER MEDIA QUERIES
+/*xs*/
+// /*480px*/
+// @media (min-width: $screen-xs) {
+// }
+
+// /*small*/
+// @media (min-width: $screen-sm) {
+// }
+
+/*695-959*/
+@media only screen and (max-width: map-get($breakpoints, small)) {
+  .sortable-table {
+    table {
+      margin-top: 25px;
+    }
+    tbody {
+      margin-top: 50px;
+    }
+    .fixed-header-actions {
+      display: block;
+      visibility: visible;
+    }
+    .row-check, .actions {
+      text-align: left;
+    }
+  }
+  .fixed-header-placeholder {
+    height: 0;
+    display: none;
+  }
+  .fixed-header-actions {
+    display: block;
+    visibility: visible;
+    position: relative;
+  }
+
+    .hidden-sm {
+      display: none;
+    }
+
+    //catalog boxes
+    .catalog-box {
+      height: auto;
+      width: 100%;
+      margin: 15px 0 0 0;
+
+      .catalog-icon {
+        max-width: 100%;
+      }
+
+      .footer {
+        position: static;
+        margin-top: 10px;
+      }
+
+      &.cloud-host {
+        height: auto;
+      }
+    }
+}

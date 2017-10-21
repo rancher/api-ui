@@ -1,3 +1,11 @@
-<h2 id="title">Welcome to Ember</h2>
+{{#if isLoggedIn}}
+  <div id="application" class="container no-inline-space">
+    {{page-header}}
 
-{{outlet}}
+    <main>
+      {{outlet}}
+    </main>
+  </div>
+{{else}}
+  Login...
+{{/if}}

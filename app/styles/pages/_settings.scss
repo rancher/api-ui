@@ -1,0 +1,62 @@
+.auth-driver {
+  &.activedirectory {
+    background-image: url('images/providers/activedirectory.svg');
+  }
+
+  &.azuread {
+    background-image: url('images/providers/azuread.svg');
+  }
+
+  &.github {
+    background-image: url('images/providers/github.svg');
+  }
+
+  &.local {
+    background-image: url('images/logos/provider-local.svg');
+  }
+
+  &.openldap {
+    background-image: url('images/providers/openldap.svg');
+  }
+  &.shibboleth {
+    background-image: url('images/providers/shibboleth.svg');
+  }
+}
+
+.advanced-setting {
+  border: 1px solid darken($border, 5%);
+  background: $body-bg;
+  margin: 10px 0;
+  padding: 10px;
+  position: relative;
+
+  .force-wrap {
+    width: calc(100% - 60px);
+  }
+
+  p {
+    margin: 0;
+    @extend .text-small;
+    width: calc(100% - 60px);
+  }
+
+  .help-block {
+    margin: 5px 0 0 0;
+  }
+
+  .edit {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    width: 50px;
+    font-size: 1.5em;
+    text-align: center;
+    color: $body-bg;
+
+    i {
+      position: relative;
+      top: calc(50% - 12.5px);
+    }
+  }
+}

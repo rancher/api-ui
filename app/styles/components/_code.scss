@@ -1,0 +1,45 @@
+// Code
+$code-color                          : mix($warning, $error, 20%) !default;
+$code-bg                             : #fcf2e9 !default;
+
+$pre-bg                              : #f5f5f5 !default;
+$pre-color                           : $dark-grey !default;
+$pre-border-color                    : $light-grey !default;
+
+code {
+    padding: 2px 4px;
+    font-size: 90%;
+    color: $code-color;
+    background-color: $code-bg;
+    border-radius: 1px;
+    a {
+        color: inherit;
+        text-decoration: underline;
+    }
+}
+
+pre {
+    background-color: $dark-grey;
+    padding: 10px;
+    white-space: pre-wrap;
+
+    code {
+        color: $light-grey;
+        background-color: transparent;
+        padding: 0;
+    }
+}
+
+.bg-code {
+  @include bg-color($code-bg);
+  @include contrasted($code-bg);
+}
+
+.bg-code-dark {
+  background: $code-color;
+  color: white;
+
+  a {
+    color: white;
+  }
+}

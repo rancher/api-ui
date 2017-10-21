@@ -1,0 +1,50 @@
+.stack-app {
+  margin-bottom: 20px;
+  position: relative;
+  float: left;
+  width: calc(50% - 15px);
+  margin: 15px 0 15px 15px;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+  .stack-info {
+    display: table;
+    width: 100%;
+  }
+  .catalog-icon {
+    @include catalog-img(transparent);
+    background: rgba(255, 255, 255, .5);
+    border: 1px solid $accent-border;
+    display: table-cell;
+    vertical-align: middle;
+    width: 120px;
+    padding: 0 10px;
+    text-align: center;
+  }
+  .stack-info-row {
+    display: table-cell;
+    margin: 0 10px;
+    padding: 0 20px;
+    border-left: 0;
+    .stack-info-top,
+    .stack-info-bottom {
+      height: calc(105px/2);
+    }
+    .stack-info-bottom {
+      padding-top: 10px;
+
+      .multi-bar {
+        // margin-top: 10px;
+        float: right;
+        width: 150px;
+      }
+    }
+    .stack-info-top {
+      padding-top: 20px;
+      .badge-state {
+        padding: 2px 6px;
+      }
+    }
+  }
+}

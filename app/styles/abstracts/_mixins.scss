@@ -1,0 +1,92 @@
+// -----------------------------------------------------------------------------
+// This file contains all application-wide Sass mixins.
+// -----------------------------------------------------------------------------
+
+///Sets base color and darkens bg on hover
+@mixin bg-color($bg) {
+  background: $bg;
+  &.btn:hover{
+    background:darken($bg,10%);
+    transition: all 0.3s ease;
+  }
+  &.btn:active {
+    background:darken($bg,25%);
+  }
+}
+
+///Sets the specified background color and calculates a dark or light contrasted text color.
+@mixin contrasted($background-color, $dark: $contrasted-dark-default, $light: $contrasted-light-default, $threshold: null) {
+  @if $threshold {
+    // Deprecated in Compass 0.13
+    @warn "The $threshold argment to contrasted is no longer needed and will be removed in the next release.";
+  }
+  color: contrast-color($background-color, $dark, $light);
+
+  &:hover {
+    color: contrast-color($background-color, $dark, $light);
+  }
+}
+
+///Sets base color and darkens bg on hover
+@mixin bg-lighten($bg) {
+  background: $bg;
+  * {
+    background:lighten($bg,20%);
+  }
+}
+
+///from rancher (may not need all)
+@mixin diagonal-gradient-3($one, $two, $three) {
+  background: $one; /* Old browsers */
+  background: -webkit-gradient(linear, left top, right bottom, color-stop(0%,$one), color-stop(50%,$two), color-stop(100%,$three)); /* Chrome,Safari4+ */
+  background:    -moz-linear-gradient(-45deg,  $one 0%, $two 50%, $three 100%); /* FF3.6+ */
+  background: -webkit-linear-gradient(-45deg,  $one 0%, $two 50%, $three 100%); /* Chrome10+,Safari5.1+ */
+  background:      -o-linear-gradient(-45deg,  $one 0%, $two 50%, $three 100%); /* Opera 11.10+ */
+  background:     -ms-linear-gradient(-45deg,  $one 0%, $two 50%, $three 100%); /* IE10+ */
+  background:         linear-gradient(135deg,  $one 0%, $two 50%, $three 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='$one', endColorstr='$three',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+}
+
+@mixin link-color($color) {
+  color: $color;
+
+  &:visited,
+  &:focus,
+  &:hover,
+  &:active {
+    color: $color;
+  }
+}
+
+// Rotated
+@mixin icon-rotate($degrees, $rotation) {
+  filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=#{$rotation});
+  -webkit-transform: rotate($degrees);
+      -ms-transform: rotate($degrees);
+          transform: rotate($degrees);
+}
+
+@mixin icon-flip($horiz, $vert, $rotation) {
+  filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=#{$rotation});
+  -webkit-transform: scale($horiz, $vert);
+      -ms-transform: scale($horiz, $vert);
+          transform: scale($horiz, $vert);
+}
+
+
+/// Make a context based selector a little more friendly
+/// @author Hugo Giraudel
+/// @param {String} $context
+@mixin when-inside($context) {
+  #{$context} & {
+    @content;
+  }
+}
+
+///Place holder
+@mixin placeholder {
+  &.placeholder { @content; }
+  &:-moz-placeholder { @content; }
+  &::-moz-placeholder { @content; }
+  &::-webkit-input-placeholder { @content; }
+}

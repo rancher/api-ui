@@ -1,0 +1,12 @@
+.alert {
+  border: solid 2px $border;
+  padding: 40px;
+
+  .alert-header {
+    margin: 0;
+  }
+
+  hr {
+    margin: 20px 0;
+  }
+}

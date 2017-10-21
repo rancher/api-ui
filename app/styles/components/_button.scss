@@ -1,0 +1,231 @@
+$btn-padding: 5px 15px;
+$xs-padding: 2px 3px;
+$sm-padding: 5px 10px;
+$lg-padding: 18px 30px;
+
+// -----------------------------------------------------------------------------
+// This file contains all styles related to the button component.
+// -----------------------------------------------------------------------------
+button {
+  background: $bg-default;
+}
+
+.btn,
+button,
+[class^='btn-'] {
+    display: inline-block;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    border: 0 solid transparent;
+    padding: $btn-padding;
+    letter-spacing: .5px;
+    border-radius: 1.5px;
+    line-height: 1.5;
+
+    &.bg-transparent {
+        color: darken($link-color, 5);
+    }
+    &:hover {
+        text-decoration: none;
+    }
+    &.has-label {
+      text-align: left;
+      padding: 5px 0 5px 15px;
+      clear: both;
+
+      .btn-label {
+        @extend .pull-right;
+        text-align: center;
+        min-width:60px;
+        padding: 5px 10px;
+        border-radius : 0 3px 3px 0;
+        background: rgba($accent-two, .3);
+        margin-top: -5px;
+      }
+
+      .clip {
+        max-width: calc(100% - 75px);
+        display: inline-block;
+        vertical-align: middle;
+      }
+    }
+
+    &.more-actions {
+        background: lighten($link-color,35);
+        &.bg-transparent:hover {
+            color: lighten($link-color,20);
+        }
+        &:focus {
+            outline: 0;
+        }
+        &:hover {
+          background: lighten($link-color,10);
+        }
+    }
+}
+
+
+//icon button
+.icon-btn {
+    padding: 0;
+    &.btn-sm {
+      padding: 0;
+    }
+
+    .darken {
+        padding: 5px 10px;
+        display: inline-block;
+
+        i {
+          position: relative;
+          top: -1px;
+        }
+    }
+    span {
+        padding: 0 10px 0 5px;
+        vertical-align: middle;
+    }
+}
+
+.dropdown-menu {
+    max-width: 200px;
+    &.hidden {
+        display: none;
+    }
+    li {
+        a {
+            text-decoration: none;
+        }
+    }
+}
+
+//btn sizes
+.btn-xs,
+.btn-group-xs > .btn,
+.btn-xs .btn-label {
+    padding: $xs-padding;
+    font-size: .65em;
+    line-height: 1.5em;
+}
+
+.btn-sm,
+.btn-group-sm .btn,
+.btn-sm .btn-label {
+    padding: $sm-padding;
+    font-size: 0.87em;
+
+}
+.btn-group-sm .btn {
+  margin-left: -3px;
+}
+
+.btn-lg,
+.btn-group-lg > .btn,
+.btn-lg .btn-label {
+    padding: $lg-padding;
+    font-size: 1.2em;
+}
+
+//diabled
+.btn-disabled,
+.btn.disabled,
+.btn[disabled],
+fieldset[disabled] .btn {
+    @extend .bg-disabled;
+    cursor: not-allowed;
+
+    &:hover {
+        background: $bg-disabled;
+    }
+}
+
+.btn-disabled-transparent {
+  background-color: transparent !important;
+
+  a {
+    &:before {
+      display: none;
+    }
+
+    border-bottom: none;
+    padding: 0;
+  }
+  cursor: not-allowed;
+
+  &:hover {
+    background: $bg-disabled;
+  }
+}
+
+//button group
+[class^='btn-group'] {
+    position: relative;
+    display: inline-block;
+    vertical-align: middle;
+    text-align: center;
+
+    :first-child .btn {
+      border-radius: 1.5px 0 0 1.5px;
+      margin-left: 2px;
+    }
+
+    :last-child .btn {
+      border-radius: 0 1.5px 1.5px 0;
+    }
+
+     .btn,   .btn-xs{
+        position: relative;
+        display: inline-block;
+
+      > &:first-child {
+          border-radius: 1.5px 0 0 1.5px;
+          margin-left: 2px;
+      }
+      > &:last-child {
+          border-radius: 0 1.5px 1.5px 0;
+      }
+
+        &.active {
+            @extend .bg-primary;
+        }
+        &:focus {
+            z-index: 2;
+        }
+    }
+    &.no-space {
+
+    }
+    &.action-menu {
+        .btn {
+            font-size: .75em;
+            margin-left: -6px;
+            .dropdown {
+                &:first-child {
+                    margin-left: 0;
+                }
+                &:last-child {
+                    position: relative;
+                    &:before {
+                        content: "";
+                        background: rgba(0, 0, 0, .5);
+                        position: absolute;
+                        left: 0;
+                        right: 0;
+                        bottom: 0;
+                        top: 0;
+                    }
+                }
+            }
+        }
+    }
+}
+
+.copy-btn.small {
+  color: inherit;
+}

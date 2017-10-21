@@ -1,0 +1,99 @@
+$accordion-header: lighten($bg-default, 2) !default;
+$accordion-header-border: darken($bg-default, 5) !default;
+$acc-label                           : $text-muted !default;
+
+.accordion-wrapper {
+  margin-bottom: 10px;
+}
+
+.accordion {
+  @extend .accordion-wrapper;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  .accordion-header {
+    @include no-select;
+    @extend .hand;
+    @extend .clearfix;
+    background: $accordion-header;
+    border: solid $accordion-header-border thin;
+    padding: 5px;
+    display: table;
+    vertical-align: middle;
+    width: 100%;
+
+    .expand,
+    .title,
+    .badge-state, {
+      display: table-cell;
+      height: 100%;
+      vertical-align: middle;
+      background: transparent;
+    }
+
+    .expand {
+      width: 30px;
+      text-align: center;
+
+      I {
+        margin: 0;
+        padding: 0;
+        font-size: 10px;
+      }
+    }
+
+    .help-block {
+      margin: 0;
+    }
+
+    .badge-state {
+      padding: 10px;
+      width: 140px;
+      text-align: right;
+    }
+  }
+
+  .accordion-content {
+    position: relative;
+    padding: 20px;
+    border: solid 1px $border;
+    border-top: 0;
+
+    .radio {
+      padding: 5px 0;
+    }
+    .search-group {
+      display: none;
+      position: relative;
+
+      > .input-group-btn {
+        position: absolute;
+      }
+    }
+  }
+}
+
+.physical-attrs {
+  .accordion-content {
+    > .row > .col.span-6 > .col.span-12 {
+      padding: 10px;
+      border-bottom: 1px solid $accent-border;
+    }
+  }
+}
+
+.acc-label {
+  color: $acc-label;
+  padding-bottom: 5px;
+  font-size: .85em;
+
+  .acc-label-hover {
+    display: none;
+  }
+
+  &:hover .acc-label-hover {
+    display: inline-block;
+  }
+}

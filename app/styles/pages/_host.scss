@@ -1,0 +1,239 @@
+.dot {
+  margin: 0;
+  font-size: 13px;
+  line-height: 18px;
+}
+
+.dot-group {
+  display: inline-block;
+  border: 1px solid $border;
+  margin: 0 5px 0 0;
+  line-height: 0;
+  padding: 0 3px;
+}
+
+//scale
+.scale-arrow {
+  position: relative;
+  &:before {
+    content: "";
+    position: absolute;
+    border-style: solid;
+    border-width: 7px;
+    border-color: transparent;
+    border-bottom-color: $bg-default;
+    top: -13px;
+    left: calc(50% - 7px);
+  }
+}
+
+.modal-shell {
+  width: 600px;
+}
+
+.machine-host {
+  min-height: 168px;
+
+  .machine-info {
+    vertical-align: middle;
+    text-align: center;
+    padding: 10px;
+    white-space: normal;
+    color: $info;
+  }
+}
+
+.machine-driver {
+  &.amazonec2 { @include amazonec2; }
+  &.azure { @include azure; }
+  &.digitalocean { @include digitalocean; }
+  &.exoscale { @include exoscale; }
+  &.openstack { @include openstack; }
+  &.packet { @include packet; }
+  &.rackspace { @include rackspace; }
+  &.vmwarevsphere { @include vmwarevsphere; }
+  &.other { @include other; }
+  &.custom { @include custom; }
+  &.aliyunecs { @include aliyunecs; }
+}
+
+.api-field LABEL {
+  text-transform: initial;
+  display: block;
+}
+
+/**********
+* Nav boxes (chooes a host/registry driver)
+**********/
+.nav-boxes {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+
+  & > .nav-box-item {
+    min-height       : 110px;
+    flex             : 0 1 auto;
+    position         : relative;
+    outline          : 0;
+    opacity          : 0.5;
+    background-color : $light-grey;
+    border           : 2px solid $light-grey;
+    color            : $mid-grey;
+    text-align       : center;
+    padding          : 0;
+
+    &:focus {
+      outline: -webkit-focus-ring-color auto 5px;
+      filter         : none;
+      -webkit-filter : none;
+      -moz-filter    : none;
+      -ms-filter     : none;
+      -o-filter      : none;
+    }
+
+    &.active {
+      opacity           : 1;
+      background-color  : white;
+      border-color      : $light-grey;
+      border-width      : 2px;
+    }
+  }
+
+  .driver {
+    background-position : center center;
+    // background-size     : 30%;
+    background-repeat   : no-repeat;
+    filter              : grayscale(100%);
+    -webkit-filter : grayscale(100%);
+    -moz-filter    : grayscale(100%);
+    -ms-filter     : grayscale(100%);
+    -o-filter      : grayscale(100%);
+    position       : relative;
+
+    &.active {
+      filter         : none;
+      -webkit-filter : none;
+      -moz-filter    : none;
+      -ms-filter     : none;
+      -o-filter      : none;
+    }
+
+    p {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      margin: 10px 0;
+    }
+  }
+
+  .driver-coming-soon {
+    opacity : 0.5;
+    border: 0;
+    background-color: transparent;
+
+    &:after {
+      content: 'Coming Soon';
+      position: absolute;
+      bottom: -10px;
+      left: 0;
+      right: 0;
+    }
+  }
+
+  &.checked-active .active:after {
+    content          : $icon-check;
+    top              : -15px;
+    right            : -15px;
+    font-family      : 'rancher-icons';
+    font-size        : 18px;
+    position         : absolute;
+    background-color : $info;
+    height           : 29px;
+    width            : 29px;
+    line-height      : 30px;
+    border-radius    : 50%;
+    color            : white;
+  }
+}
+
+ol {
+  counter-reset: li;
+  margin: 20px 0;
+  padding-left: 0;
+}
+ol > li {
+    position: relative;
+    margin: 0 0 25px 2em;
+    padding: 10px 20px 10px 40px;
+    list-style: none;
+    background: $accent-bg;
+    border: solid $accent-border 1px;
+}
+ol > li::before {
+    content: counter(li);
+    counter-increment: li;
+    position: absolute;
+    top: calc(50% - 20px);
+    left: -20px;
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    margin-right: 8px;
+    border-radius: 50%;
+    text-align: center;
+    background: $info;
+    color: white;
+  }
+
+.box ol > li {
+    background: lighten($accent-bg, 2);
+    border: solid $accent-border 1px;
+}
+
+.host-blurb {
+  margin-right: 10px;
+}
+
+
+.hosts-cloud-add {
+  .addtl-info {
+    .nav-boxes {
+      .nav-box-item {
+        height: 250px;
+        width: 250px;
+        border: none;
+      }
+    }
+    .price {
+      font-size: 4em;
+      line-height: 1em;
+      color:$success;
+      .addon {
+        font-size: .3em;
+        white-space: nowrap;
+      }
+    }
+  }
+}
+
+.hosts-cloud-new {
+  padding-bottom: 0px;
+  margin-bottom: 0px;
+  .tabs {
+    ul.tab-header {
+      li.active {
+        a {
+          background-color: transparent;
+          border-bottom: 2px solid $link-color;
+        }
+      }
+      li {
+        a {
+          font-size: 18px;
+          border: 0px;
+          background-color: transparent;
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,186 @@
+//** Background color for `<body>`.
+$body-bg                             : $black;
+//** Global text color on `<body>`.
+$text-color                          : mix($mid-grey, $light-grey);
+$text-muted                          : darken($mid-grey, 20%);
+
+$primary                             : $primary; //button non state
+$primary-dark                        : darken($primary, 20%);
+
+$darken-helper                       : rgba($black, .3);
+$lighten-helper                      : rgba(white, 10);
+
+//states
+$success                             : desaturate($success, .75); //good
+$info                                : desaturate($info, .75); //transitioning
+$warning                             : desaturate($warning, .75); // orange degraded
+$error                               : desaturate($error, .75); // stopped inactive bad
+
+$bg-default                          : mix($mid-grey, $dark-grey);
+$bg-disabled                         : desaturate($mid-grey, .65);
+$bg-primary                          : desaturate($primary, 20%);
+$bg-secondary                        : desaturate($secondary, 20%);
+$bg-success                          : desaturate($success, 20%);
+$bg-info                             : desaturate($info, 20%);
+$bg-warning                          : desaturate($warning, 20%);
+$bg-error                            : desaturate($error, 5%);
+
+//** Global textual link color.
+$link-color                          : desaturate($link-color, 10%);
+//** Link hover color set via `darken()` function.
+$link-hover-color                    : lighten($primary, 15%);
+
+//accent colors
+$accent-one                          : $mid-grey;
+$accent-two                          : $dark-grey;
+$accent-three                        : darken($black, 3);
+
+$accent-bg                           : $accent-two;
+$accent-border                       : rgba($light-grey,.05);
+
+/*header*/
+$header                              : $bg-primary;
+$header-link                         : $light-grey;
+$header-link-active                  : $primary;
+$user-btn                            : darken($header, 5%);
+
+$header-text                         : mix($mid-grey, $light-grey);
+
+/*footer*/
+$footer                              : darken($black, 20%);
+
+
+// Horizontal line color.
+$border                              : $dark-grey;
+
+/*shadow colors*/
+$shadow                              : rgba($black, .75);
+
+//table variables
+$table-bg                            : rgba($dark-grey, .7);
+$table-header                        : $body-bg;
+$table-nested-header                 : $accent-two;
+$table-bg-accent                     : rgba($mid-grey, .1);
+$table-bg-hover                      : rgba($info, .25);
+$table-bg-active                     : $table-bg-hover;
+$table-bg-selected                   : rgba($info, .20);
+$table-border-color                  : darken($mid-grey, 30);
+$table-body-separation               : 50px;
+$table-body-separation               : 25px;
+$group-row-height                    : 40px;
+
+// banners
+$banner-default                      : $light-grey;
+$banner-disabled                     : rgba($mid-grey, .65);
+$banner-primary                      : rgba($primary, .3);
+$banner-secondary                    : rgba($secondary, .3);
+$banner-success                      : rgba($success, .3);
+$banner-info                         : rgba($info, .3);
+$banner-warning                      : rgba($warning, .3);
+$banner-error                        : rgba($error, .3);
+$banner-color                        : white;
+
+/*Forms*/
+//** Placeholder text color
+$input-color-placeholder             : darken($light-grey, 50%);
+
+//** `<input>` background color
+$input-bg                            : lighten($dark-grey, 5);
+$input-bg-hover                      : $light-grey;
+
+
+//** `<input disabled>` background color
+$input-bg-disabled                   : #f3f4f8;
+
+//** Text color for `<input>`s
+$input-color                         : $text-color;
+
+//** `<input>` border color
+$input-border                        : transparent;
+//** Border color for textual input addons
+$input-group-addon-border-color      : $input-border;
+
+//** Border color for inputs on focus
+$input-border-focus                  : #66afe9;
+
+$legend-color                        : $text-color;
+$legend-border-color                 : #e5e5e5;
+
+//** Background color for textual input addons
+$input-group-addon-bg                : $mid-grey;
+
+$select                              : $body-bg;
+
+
+$dropdown-bg                         : $accent-two;
+
+//** Dropdown menu `border-color`.
+$dropdown-border                     : transparent;
+//** Dropdown menu `border-color` **for IE8**.
+$dropdown-fallback-border            : transparent;
+//** Divider color for between dropdown items.
+$dropdown-divider-bg                 : rgba($black,.55);
+
+//** Dropdown link text color.
+$dropdown-link-color                 : white;
+//** Hover color for dropdown links.
+$dropdown-link-hover-color           : $light-grey;
+
+//** Active dropdown menu item text color.
+$dropdown-link-active-color          : white;
+
+//** Disabled dropdown menu item background color.
+$dropdown-link-disabled-color        : $mid-grey;
+
+//** Text color for headers within dropdown menus.
+$dropdown-header-color               : $mid-grey;
+
+//** Deprecated `$dropdown-caret-color` as of v3.1.0
+$dropdown-caret-color                : #000;
+
+
+
+//** Tooltip text color
+$tooltip-color                       : white;
+//** Tooltip background color
+$tooltip-bg                          : rgba($black,.9);
+$tooltip-opacity                     : .9;
+//** Tooltip arrow color
+$tooltip-arrow-color                 : $tooltip-bg;
+
+
+//** Background color of modal content area
+$modal-content-bg                    : $dark-grey;
+$modal-content-border-color          : transparent;
+$modal-content-fallback-border-color : #999;
+$modal-overlay                       : rgba($black, 0.85);
+
+//** Default label text color
+$label-color                         : lighten($mid-grey, 20%);
+
+/*Tabs*/
+$tab-bg                              : lighten($dark-grey, 5%);
+$tab-active-bg                       : lighten($dark-grey, 5%);
+$tab-hover                           : darken($primary, 5%);
+$tab-color                           : $primary;
+$tab-accent                          : $dark-grey;
+
+$close-color                         : white;
+$close-text-shadow                   : 0 1px 0 white;
+
+//accordions
+$accordion-header                    : $tab-accent;
+$accordion-header-border             : $bg-default;
+$acc-label                           : $info;
+
+/*Code*/
+$code-color                          : #fcf2e9;
+$code-bg                             : mix($warning, $error, 20%);
+
+$pre-bg                              : rgba($light-grey, .1);
+$pre-color                           : $input-color;
+$pre-border-color                    : $light-grey;
+
+$stroke-color                        : black;
+$stroke-fill                         : black;
+$stroke-text                         : white;

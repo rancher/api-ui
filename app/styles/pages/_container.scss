@@ -1,0 +1,33 @@
+.log-body {
+  .log-msg {
+    color: $success;
+    line-height: initial;
+  }
+
+  &.hide-stdout .log-stdout,
+  &.hide-stderr .log-stderr {
+    display: none;
+   }
+
+  .log-msg.log-stderr {
+    color: $error;
+  }
+
+  .log-date {
+    @include no-select;
+    color: $text-muted;
+    padding-right: 10px;
+  }
+}
+.child-loading {
+  >.liquid-child {
+    // height: 30px;
+  }
+}
+
+.header-sidekick {
+  H2 {
+    margin: 0;
+    padding: 5px;
+  }
+}

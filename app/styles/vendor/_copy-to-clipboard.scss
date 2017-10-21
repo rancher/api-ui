@@ -1,0 +1,72 @@
+
+.copy-pre {
+  position: relative;
+}
+
+.copy-pre PRE {
+  font-size        : 11px;
+  margin           : 10px 1px 0 0;
+  white-space      : pre-wrap;
+  padding-right    : 60px;
+  // background-color : $pre-bg;
+  color            : $info;
+}
+
+.copy-button-container {
+  display: inline-block;
+}
+
+.copy-pre {
+  .copy-to-pre {
+    float: right;
+    height: 62px;
+    width: 50px;
+  }
+  .copy-button-container {
+    position : absolute;
+    top      : 0;
+    right    : 0;
+    bottom   : 0;
+    width    : 50px;
+
+    i {
+      text-align: right;
+    }
+  }
+
+  button {
+    height                    : 100%;
+    border-top-left-radius    : 0;
+    border-bottom-left-radius : 0;
+    background                : $primary;
+    border-color              : $primary;
+    width                     : 50px;
+
+    i {
+      color                   : white;
+    }
+
+    &:hover {
+      background : $primary-dark;
+      color      : white;
+    }
+  }
+
+}
+
+.copy-btn.small {
+  color: $text-muted;
+  padding: 0;
+
+  &:hover {
+    background: transparent;
+  }
+
+  &.btn-success {
+    color: $success;
+  }
+}
+
+.copy-btn.with-clip {
+  display: inline-block
+}

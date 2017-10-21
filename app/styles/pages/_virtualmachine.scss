@@ -1,0 +1,15 @@
+.console-body {
+  margin: 20px auto;
+  width: 540px;
+  min-height: 360px;
+  padding: 5px;
+  background-color: black;
+}
+
+.console-status {
+  text-align: left;
+}
+
+.grid > TBODY > TR > TD.valign-top {
+  vertical-align: top;
+}
