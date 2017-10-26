@@ -18,8 +18,10 @@ export default Ajax.extend({
   }),
 
   isSuccess(status, headers, payload ) {
-    Object.defineProperty(payload, '_statusCode', {value: status});
-    Object.defineProperty(payload, '_headers', {value: headers});
+    if ( (headers['content-type']||'').toLowerCase().includes('/json') ) {
+      Object.defineProperty(payload, '_statusCode', {value: status});
+      Object.defineProperty(payload, '_headers', {value: headers});
+    }
 
     return this._super(...arguments);
   },

@@ -25,10 +25,10 @@ module.exports = function(app, options) {
     proxy.ws(req, socket, head);
   });
 
-  app.use('/v*', function(req, res, next) {
+  app.use(config.apiProxy, function(req, res, next) {
     req.headers['x-forwarded-proto'] = req.protocol;
     req.headers['user-agent'] = 'API UI ' + pkg.version;
-    req.url = req.baseUrl + req.url;
+    //req.url = req.baseUrl + req.url;
     proxyLog('API', req);
     proxy.web(req, res);
   });

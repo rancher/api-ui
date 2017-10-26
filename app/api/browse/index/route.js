@@ -6,13 +6,7 @@ export default Ember.Route.extend({
   redirect() {
     let call = this.get('history.last');
     if ( !call ) {
-      call = this.get('store').createRecord({
-        type: 'call',
-        path: '/',
-      });
-
-      this.get('history').add(call);
-      call.go();
+      call = this.get('history').follow('/', false);
     }
 
     if ( this.get('history.length') ) {

@@ -175,6 +175,14 @@
   word-wrap     : break-word;
 }
 
+@mixin clip-left {
+  text-overflow : ellipsis;
+  overflow      : hidden;
+  white-space   : nowrap;
+  word-wrap     : break-word;
+  direction     : rtl;
+}
+
 @mixin force-wrap {
   word-wrap : break-word;
   white-space: normal;
@@ -185,8 +193,12 @@
 .no-resize { @include no-resize }
 .hand { @include hand }
 .fixed { @include fixed }
-.clip { @include clip }
 .force-wrap { @include force-wrap }
+.clip { @include clip }
+.clip-left { @include clip-left }
+
+.clip-parent { position: reative; }
+.clip-test { position: absolute; visibility: hidden; color: red; }
 
 // Only display content to screen readers
 //

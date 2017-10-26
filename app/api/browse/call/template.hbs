@@ -1,12 +1,64 @@
-<div class="box mb-20">
-  <h4>Request</h4>
-  {{#if model.requestBodyStr}}
-    <pre><code>{{model.requestBodyStr}}</code></pre>
-  {{/if}}
+<div class="col span-3">
+  <div class="box p-10">
+    <h1>Requests ({{history.length}})</h1>
+    <div class="call-list">
+      {{#each history.list as |c|}}
+        {{call-row
+          model=c
+          active=(eq c model)
+        }}
+      {{/each}}
+    </div>
+  </div>
 </div>
-<div class="box">
-  <h4>Response</h4>
-  {{#if model.responseBodyStr}}
-    <pre><code>{{model.responseBodyStr}}</code></pre>
-  {{/if}}
+<div class="col span-9">
+
+  <div class="clearfix mb-10">
+    <button class="btn bg-primary" {{action "back"}} disabled={{not canBack}}><i class="icon icon-chevron-left"/> Back</button>
+    <button class="btn bg-primary" {{action "forward"}} disabled={{not canForward}}><i class="icon icon-chevron-right"/> Forward</button>
+    <button class="btn bg-primary" {{action "up"}} disabled={{not canUp}}><i class="icon icon-chevron-up"/> Up</button>
+    <button class="btn bg-primary" {{action "reload"}} disabled={{not canReload}}><i class="icon icon-refresh"/> Reload</button>
+    <div class="pull-right">
+      <button class="btn bg-primary" {{action "edit"}} disabled={{not canEdit}}><i class="icon icon-edit"/> Edit&hellip;</button>
+      <button class="btn bg-primary" {{action "delete"}} disabled={{not canEdit}}><i class="icon icon-trash"/> Delete&hellip;</button>
+    </div>
+  </div>
+
+  <div class="box mb-20">
+    {{#if model.requestBodyStr}}
+      <h4 class="clearfix">
+        {{model.method}} {{model.path}}
+        <div class="pull-right">
+          Request
+        </div>
+      </h4>
+      <pre><code>{{model.requestBodyStr}}</code></pre>
+    {{else}}
+      <h3 class="clearfix mb-0">
+        {{model.method}} {{model.path}}
+        <div class="pull-right">
+          Request
+        </div>
+      </h3>
+    {{/if}}
+  </div>
+
+  <div class="box">
+    {{#if model.loading}}
+      <div class="text-center"><i class="icon icon-spinner icon-spin"/> Waiting...</div>
+    {{else}}
+      <h4 class="clearfix">
+        <span class="badge {{model.badgeColor}}" style="margin-left: -10px;">{{model.statusCode}} {{model.statusText}}</span>
+        <div class="pull-right">
+          Response
+        </div>
+      </h4>
+    {{/if}}
+    {{#unless model.loading}}
+      <div class="json">
+        {{json-value model=model.responseBody collapsible=false expanded=true}}
+      </div>
+    {{/unless}}
+  </div>
+
 </div>

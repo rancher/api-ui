@@ -8,6 +8,7 @@ BODY {
   min-height       : 100%;
   // font-weight      : normal;
   position         : relative;
+  overflow-y       : scroll;
 
   &.no-spin .icon-spin {
     -webkit-animation : none;

@@ -1,0 +1,18 @@
+<div class="left">
+  {{model.method}}
+</div>
+
+<div class="middle clip-parent">
+  <div class="clip-test">{{model.path}}</div>
+  <div class="clip clip-target">{{model.path}}</div>
+</div>
+
+<div class="right">
+  {{#if model.statusCode}}
+    <span class="badge badge-xs {{model.badgeColor}}">{{model.statusCode}}</span>
+  {{else}}
+    <div class="text-center">
+      <i class="icon icon-spinner icon-spin"/>
+    </div>
+  {{/if}}
+</div>

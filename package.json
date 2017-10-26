@@ -36,9 +36,10 @@
     "ember-export-application-global": "^2.0.0",
     "ember-load-initializers": "^1.0.0",
     "ember-resolver": "^4.0.0",
-    "ember-source": "~2.16.0",
+    "ember-source": "2.17.0-beta.3",
     "ember-truth-helpers": "^2.0.0",
-    "loader.js": "^4.2.3"
+    "loader.js": "^4.2.3",
+    "rancher-icons": "^1.0.4"
   },
   "engines": {
     "node": "^4.5 || 6.* || >= 7.*"

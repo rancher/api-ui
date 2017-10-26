@@ -1,0 +1,41 @@
+.call-list {
+  display: table;
+  table-layout: fixed;
+  width: 100%;
+
+  .call-row {
+    display: table-row;
+    border: 1px solid $accent-border;
+    margin-top: 5px;
+    cursor: pointer;
+
+    &:first-child {
+      margin-top: 0;
+    }
+
+    &.active {
+      background-color: $link-color;
+      color: white;
+
+      .badge {
+        color: white;
+      }
+    }
+
+    .left {
+      display: table-cell;
+      width: 50px;
+      padding-left: 5px;
+    }
+
+    .middle {
+      display: table-cell;
+    }
+
+    .right {
+      display: table-cell;
+      text-align: right;
+      width: 50px;
+    }
+  }
+}

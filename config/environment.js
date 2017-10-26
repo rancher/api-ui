@@ -42,6 +42,7 @@ module.exports = function(environment) {
     APP: {
       version: pkg.version,
       apiServer: 'http://localhost:8080',
+      apiProxy: '/api-proxy',
     }
   };
 

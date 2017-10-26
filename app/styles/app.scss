@@ -4,7 +4,7 @@
 @import "app/styles/abstracts/decimal";
 @import "app/styles/abstracts/functions";
 @import "app/styles/abstracts/mixins";
-//@import "vendor/icons/variables";
+@import "vendor/icons/variables";
 @import "app/styles/vendor/normalize";
 
 // Base
@@ -28,6 +28,7 @@
 
 // Components
 // Component-specific files.
+@import "app/styles/components/badges";
 @import "app/styles/components/tables";
 @import "app/styles/components/tooltip";
 @import "app/styles/components/modals";
@@ -39,9 +40,11 @@
 @import "app/styles/components/forms";
 @import "app/styles/components/dropdown";
 @import "app/styles/components/page-header";
+@import "app/styles/components/json";
 
 // Vendor
 // Pretty much what it says. Vendor specific changes/overrides or includes.
 
 // Pages
-// Pages that have their own styles.
+// Pages that have their own strles.
+@import "app/styles/pages/browse";

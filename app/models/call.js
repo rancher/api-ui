@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import { randomStr , randomCharsets} from 'api-ui/utils/util';
+import { randomStr } from 'api-ui/utils/util';
 import Resource from 'ember-api-store/models/resource';
 
 export default Resource.extend({
@@ -12,12 +12,13 @@ export default Resource.extend({
 
   _ajax: null,
 
-  status: null,
+  statusCode: null,
   responseBody: null,
+  loading: null,
 
   init() {
     this._super();
-    this.set('id', randomStr(16, 'loweralphanum'));
+    this.set('id', randomStr(8, 'loweralphanum') + '$' + this.get('method') + '$' + this.get('path'));
   },
 
   go() {
@@ -27,15 +28,37 @@ export default Resource.extend({
     });
 
     this.set('_ajax', req);
+    this.set('loading', true);
 
-    return req.then((res) => {
-      this.set('status', res._statusCode);
+    let promise = req.then((res) => {
       this.set('responseBody', res);
-      this.set('responseBodyStr', JSON.stringify(res, null, 2));
     }).catch((err) => {
-      this.set('status', err._statusCode);
-      this.set('responseBody', err);
-      this.set('responseBodyStr', JSON.stringify(err, null, 2));
+      this.set('responseBody', err.payload);
+    }).finally(() => {
+      this.setProperties({
+        statusCode: promise.xhr.status,
+        statusText: promise.xhr.statusText,
+        loading: false
+      });
     });
-  }
+
+    return promise;
+  },
+
+  isSuccess: Ember.computed('statusCode', function() {
+    const status = this.get('statusCode');
+    if ( !status || (status >= 200 && status <= 399) ) {
+      return true;
+    }
+
+    return false;
+  }),
+
+  badgeColor: Ember.computed('isSuccess', function() {
+    if ( this.get('isSuccess') ) {
+      return 'bg-transparent text-success';
+    } else {
+      return 'bg-transparent text-error';
+    }
+  }),
 });

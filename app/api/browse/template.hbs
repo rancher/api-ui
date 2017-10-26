@@ -1,13 +1,1 @@
-<div class="col span-3">
-  <div class="box">
-    <h1>Requests ({{history.length}})</h1>
-    <ul>
-      {{#each history.list as |c|}}
-        <li>{{#link-to "api.browse.call" c.id}}{{c.method}} {{c.path}} {{c.statusCode}}{{/link-to}}</li>
-      {{/each}}
-    </ul>
-  </div>
-</div>
-<div class="col span-9">
-  {{outlet}}
-</div>
+{{outlet}}

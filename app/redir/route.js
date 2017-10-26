@@ -1,6 +1,7 @@
 import Ember from 'ember';
 
 export default Ember.Route.extend({
-  model(/*params*/) {
+  model(params) {
+    console.log('Redir:', params);
   },
 });

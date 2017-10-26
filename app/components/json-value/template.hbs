@@ -1,0 +1,15 @@
+{{#if (eq kind 'array')}}
+  {{json-array model=model collapsible=collapsible expanded=expanded}}
+{{else if (eq kind 'map')}}
+  {{json-map model=model collapsible=collapsible expanded=expanded}}
+{{else if (eq kind 'null')}}
+  <span class="null">{{strVal}}</span>
+{{else if (eq kind 'keyword')}}
+  <span class="keyword">{{strVal}}</span>
+{{else if (eq kind 'string')}}
+  <span class="string">&quot;{{strVal}}&quot;</span>
+{{else if (eq kind 'number')}}
+  <span class="number">{{strVal}}</span>
+{{else}}
+  Unknown value kind: {{kind}}
+{{/if}}

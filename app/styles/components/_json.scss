@@ -1,0 +1,64 @@
+.json {
+  @include no-inline-monospace;
+  font-size: 12px;
+  line-height: initial;
+
+  .obj-summary {
+    margin: 0 10px;
+    cursor: pointer;
+    font-style: italic;
+  }
+
+  .obj-field {
+    @include no-inline-monospace;
+  }
+
+  .obj-value {
+    @include no-inline-monospace;
+  }
+
+  .obj-syntax {
+    font-weight: bold;
+  }
+
+  .obj-field:last-child .comma {
+    display: none;
+  }
+
+  .collapsible-body {
+    margin-left: 20px;
+  }
+
+  .obj-key {
+    font-weight: bold;
+  }
+
+  .obj-value {
+    margin-left: 10px;
+  }
+
+  .keyword, .number {
+    color: #0000aa;
+  }
+
+  .null {
+    color: red;
+  }
+
+  .string {
+    color: green;
+  }
+
+  .link, .action {
+    color: $primary;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+
+  .schema {
+    color: darken($warning, 20%);
+    text-decoration: underline;
+    cursor: pointer;
+  }
+
+}

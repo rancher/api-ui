@@ -1,0 +1,38 @@
+<span class="obj-syntax">&#123;</span>
+{{#if collapsible}}
+  {{#if (and length expanded)}}
+    <span class="obj-summary" {{action "collapse"}}><i class="icon icon-minus-circle"/></span>
+  {{else}}
+    {{#if (and model.type model.id)}}
+      <span class="obj-summary collapsed" {{action "expand"}}><i class="icon icon-plus-circle"/> <i>{{model.type}}: {{model.id}}</i></span>
+    {{else if length}}
+      <span class="obj-summary collapsed" {{action "expand"}}><i class="icon icon-plus-circle"/> {{length}} keys</span>
+    {{/if}}
+  {{/if}}
+{{/if}}
+
+{{#if (and length expanded)}}
+  <div class="obj-body">
+    {{#each-in model as |k v|}}
+      <div class="obj-field">
+        <span class="obj-key">{{k}}</span>
+        <span class="obj-syntax">:</span>
+        <span class="obj-value no-inline-monospace">
+          {{#if (eq k "links")}}
+            {{json-links model=v expanded=true}}
+          {{else if (eq k "actions")}}
+            {{json-actions model=v expanded=true}}
+          {{else if (array-includes typeKeys k)}}
+            {{json-schema name=v}}
+          {{else}}
+            <span class="no-inline-monospace">{{json-value model=v expanded=true}}</span>
+          {{/if}}
+        </span>
+        <span class="obj-syntax comma">,</span>
+      </div>
+    {{/each-in}}
+  </div>
+{{/if}}
+
+<span class="obj-syntax">&#125;</span>
+
