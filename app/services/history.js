@@ -1,7 +1,6 @@
 import Ember from 'ember';
 
 export default Ember.Service.extend({
-  ajax: Ember.inject.service(),
   router: Ember.inject.service(),
   store: Ember.inject.service(),
 

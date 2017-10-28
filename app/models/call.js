@@ -1,20 +1,23 @@
 import Ember from 'ember';
 import { randomStr } from 'api-ui/utils/util';
 import Resource from 'ember-api-store/models/resource';
+import { parseHeaders } from 'api-ui/utils/parse-headers';
 
 export default Resource.extend({
   ajax: Ember.inject.service(),
+  schemasService: Ember.inject.service('schemas'),
 
   id: null,
   method: 'GET',
   path: null,
   requestBody: null,
 
-  _ajax: null,
+  loading: null,
 
   statusCode: null,
   responseBody: null,
-  loading: null,
+  responseHeaders: null,
+  schemas: null,
 
   init() {
     this._super();
@@ -27,11 +30,18 @@ export default Resource.extend({
       data: this.get('requestBody'),
     });
 
-    this.set('_ajax', req);
     this.set('loading', true);
 
     let promise = req.then((res) => {
       this.set('responseBody', res);
+      this.set('responseHeaders', parseHeaders(promise.xhr.getAllResponseHeaders()));
+
+      let schemaUrl = promise.xhr.getResponseHeader('x-api-schemas');
+      if ( schemaUrl ) {
+        return this.get('schemasService').allFor(schemaUrl).then((schemas) => {
+          this.set('schemas', schemas);
+        });
+      }
     }).catch((err) => {
       this.set('responseBody', err.payload);
     }).finally(() => {
@@ -42,6 +52,7 @@ export default Resource.extend({
       });
     });
 
+    this.set('promise', promise);
     return promise;
   },
 

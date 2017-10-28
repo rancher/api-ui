@@ -16,6 +16,7 @@
     "test": "./node_modules/.bin/ember test"
   },
   "devDependencies": {
+    "@html-next/vertical-collection": "^1.0.0-beta.8",
     "broccoli-asset-rev": "^2.4.5",
     "ember-ajax": "^3.0.0",
     "ember-api-store": "2.3.0",

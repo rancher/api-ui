@@ -1,18 +1,20 @@
-<span class="obj-syntax">{{{open}}}</span>
+<span class="obj-syntax">{{open}}</span>
 {{#if (and collapsible length)}}
   {{#if expanded}}
     <span class="obj-summary" {{action "collapse"}}><i class="icon icon-minus-circle"/></span>
   {{else}}
     <span class="obj-summary collapsed" {{action "expand"}}>
-    {{yield "summary"}}
+      <i class="icon icon-plus-circle"/>
+      {{yield "summary"}}
+    </span>
   {{/if}}
 {{/if}}
 
 {{#if (and expanded length)}}
-  <div class="collapsible-body">
+  <div class="collapsible">
     {{yield "body"}}
   </div>
 {{/if}}
 
-<span class="obj-syntax">{{{close}}}</span>
+<span class="obj-syntax">{{close}}</span>
 

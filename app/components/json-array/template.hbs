@@ -10,14 +10,18 @@
 
 {{#if expanded}}
   <div class="obj-body">
-    {{#each model as |v|}}
-      <div class="obj-field">
-        <span class="obj-value no-inline-monospace">
-          {{json-value model=v expanded=true}}
-        </span>
-        <span class="obj-syntax comma">,</span>
-      </div>
-    {{/each}}
+    {{#if hasBlock}}
+      {{yield}}
+    {{else}}
+      {{#each model as |v|}}
+        <div class="obj-field">
+          <span class="obj-value no-inline-monospace">
+            {{json-value model=v}}
+          </span>
+          <span class="obj-syntax comma">,</span>
+        </div>
+      {{/each}}
+    {{/if}}
   </div>
   <span class="obj-syntax">&#93;</span>
 {{/if}}

@@ -1,18 +1,16 @@
-<span class="obj-syntax">&#123;</span>
-
-{{#if expanded}}
-  <span class="obj-summary" {{action "collapse"}}><i class="icon icon-minus-circle"/></span>
-{{else}}
-  <span class="obj-summary collapsed" {{action "expand"}}><i class="icon icon-plus-circle"/> {{length}} keys</span>
-  <span class="obj-syntax">&#125;</span>
-{{/if}}
-
-{{#if expanded}}
-  <div class="links">
+{{#json-collapsible
+  open='{'
+  close='}'
+  length=length
+  expanded=true
+  as |block|
+}}
+  {{#if (eq block "summary")}}
+    {{length}} links
+  {{else}}
     {{#each-in model as |k v|}}
       <a class="link" {{action "follow" v}}>{{k}}</a>
     {{/each-in}}
-  </div>
-  <span class="obj-syntax">&#125;</span>
-{{/if}}
+  {{/if}}
+{{/json-collapsible}}
 

@@ -10,7 +10,7 @@ export default Ember.Route.extend({
       return call;
     }
 
-    const [rand, method, path] = params.id.split('$');
+    const [, method, path] = params.id.split('$');
     if ( method === 'GET' ) {
       history.follow(path);
     }

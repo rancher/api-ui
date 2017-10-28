@@ -1,0 +1,56 @@
+{{#json-collapsible
+  open='{'
+  close='}'
+  length=length
+  as |block|
+}}
+  {{#if (eq block "summary")}}
+    {{model.data.length}} resources
+  {{else}}
+    {{#each-in model as |k v|}}
+      {{#if (eq k "data")}}
+        <div class="obj-field">
+          <span class="obj-key">{{k}}</span>
+          <span class="obj-syntax">:</span>
+          <span class="obj-value no-inline-monospace">
+            {{#json-array
+              key=k
+              model=v
+              parent=model
+            }}
+              {{#vertical-collection
+                items=v
+                estimateHeight=500
+                containerSelector="body"
+                as |item index|
+              }}
+                <div class="obj-field">
+                  <span class="obj-value no-inline-monospace">
+                    {{json-value model=item expanded=true}}
+                  </span>
+                  <span class="obj-syntax comma">,</span>
+                </div>
+              {{/vertical-collection}}
+            {{/json-array}}
+          </span>
+        </div>
+      {{else if (get componentForKey k)}}
+        <div class="obj-field">
+          <span class="obj-key">{{k}}</span>
+          <span class="obj-syntax">:</span>
+          <span class="obj-value no-inline-monospace">
+            {{component
+              (get componentForKey k)
+              key=k
+              model=v
+              parent=model
+              expanded=expanded
+            }}
+          </span>
+          <span class="obj-syntax comma">,</span>
+        </div>
+      {{/if}}
+    {{/each-in}}
+  {{/if}}
+{{/json-collapsible}}
+

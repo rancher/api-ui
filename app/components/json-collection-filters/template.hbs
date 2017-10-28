@@ -2,7 +2,7 @@
   open='{'
   close='}'
   length=length
-  expanded=expanded
+  expanded=false
   as |block|
 }}
   {{#if (eq block "summary")}}
@@ -15,12 +15,8 @@
         <span class="obj-value no-inline-monospace">
           {{#if hasBlock}}
             {{yield k v}}
-          {{else if (eq (base-type-of v) 'string')}}
-            <span class="string">&quot;{{v}}&quot;</span>
-          {{else if (eq (base-type-of v) 'object')}}
-            {{json-value model=v}}
           {{else}}
-            <span class="{{baseType}}">{{v}}</span>
+            {{json-value model=v expanded=true}}
           {{/if}}
         </span>
         <span class="obj-syntax comma">,</span>

@@ -1,0 +1,20 @@
+.http-headers {
+  margin-bottom: 20px;
+}
+
+.http-header {
+  font-size: 12px;
+  line-height: initial;
+
+  .key, .separator {
+    font-weight: bold;
+  }
+
+  .separator {
+    margin-right: 10px;
+  }
+}
+
+.http-header-toggle {
+  font-size: 12px;
+}

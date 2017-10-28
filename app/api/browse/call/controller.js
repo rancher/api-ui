@@ -5,6 +5,8 @@ export default Ember.Controller.extend({
 
   model: null,
 
+  showHeaders: false,
+
   canBack: Ember.computed('model.id', function() {
     return !this.get('history').isFirst(this.get('model'));
   }),
@@ -49,6 +51,10 @@ export default Ember.Controller.extend({
     },
 
     delete() {
+    },
+
+    toggleHeaders() {
+      this.toggleProperty('showHeaders');
     },
   }
 });

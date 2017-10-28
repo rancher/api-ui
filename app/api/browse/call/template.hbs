@@ -49,14 +49,18 @@
     {{else}}
       <h4 class="clearfix">
         <span class="badge {{model.badgeColor}}" style="margin-left: -10px;">{{model.statusCode}} {{model.statusText}}</span>
+        <a class="http-header-toggle" {{action "toggleHeaders"}}>{{if showHeaders 'Hide Headers' 'Show Headers'}}</a>
         <div class="pull-right">
           Response
         </div>
       </h4>
     {{/if}}
+    {{#if showHeaders}}
+      {{http-headers model=model.responseHeaders}}
+    {{/if}}
     {{#unless model.loading}}
       <div class="json">
-        {{json-value model=model.responseBody collapsible=false expanded=true}}
+        {{json-value model=model.responseBody collapsible=false expanded=true schemas=model.schemas}}
       </div>
     {{/unless}}
   </div>

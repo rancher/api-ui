@@ -2,11 +2,14 @@
   open='{'
   close='}'
   length=length
-  expanded=expanded
   as |block|
 }}
   {{#if (eq block "summary")}}
-    {{length}} keys
+    {{#if (and model.type model.id)}}
+      {{model.type}}: {{model.id}}
+    {{else}}
+      {{length}} keys
+    {{/if}}
   {{else}}
     {{#each-in model as |k v|}}
       <div class="obj-field">
@@ -17,11 +20,11 @@
             {{yield k v}}
           {{else if (eq (base-type-of v) 'string')}}
             <span class="string">&quot;{{v}}&quot;</span>
-          {{else if (eq (base-type-of v) 'object')}}
-            {{json-value model=v}}
           {{else}}
-            <span class="{{baseType}}">{{v}}</span>
+            {{component (get componentForKey k) key=k model=v parent=model}}
           {{/if}}
+        </span>
+        <span class="obj-value no-inline-monospace">
         </span>
         <span class="obj-syntax comma">,</span>
       </div>

@@ -1,9 +1,8 @@
 import Ember from 'ember';
 
 export default Ember.Component.extend({
-  model: null,
-  open: '&#123;',
-  close: '&#125;',
+  open: '<',
+  close: '>',
   length: 0,
   collapsible: true,
   expanded: true,

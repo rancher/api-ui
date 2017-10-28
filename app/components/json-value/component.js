@@ -1,35 +1,38 @@
 import Ember from 'ember';
-let { isArray } = Ember
+let { get, isArray } = Ember
+import { baseTypeOf } from 'api-ui/helpers/base-type-of';
 
 export default Ember.Component.extend({
   model: null,
   collapsible: true,
-  expanded: false,
+  expanded: true,
 
   tagName: '',
 
-  kind: Ember.computed('model', function() {
-    let model = this.get('model');
-    let type = typeof model;
+  baseType: Ember.computed('model', function() {
+    return baseTypeOf(this.get('model'));
+  }),
 
-    if ( type === 'object' ) {
-      if ( model ) {
-        if ( isArray(model) ) {
-          return 'array';
-        } else {
-          return 'map'
-        }
+  objectClass: Ember.computed('model', function() {
+    const model = this.get('model');
+    const objType = typeof model;
+
+    if ( objType === 'object' ) {
+      const type = get(model,'type');
+      const id = get(model,'id');
+
+      if ( type === 'collection' ) {
+        return 'collection';
+      } else if ( type && id ) {
+        return 'resource';
+      } else if ( isArray(model) ) {
+        return 'array';
+      } else {
+        return 'map';
       }
-
-      return 'null';
-    } else if ( type === 'undefined' ) {
-      return 'null';
-    } else if ( type === 'boolean' ) {
-      return 'keyword';
-    } else {
-      // number, string
-      return type;
     }
+
+    return 'unknown';
   }),
 
   strVal: Ember.computed('model', function() {
