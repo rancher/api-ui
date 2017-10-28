@@ -2,26 +2,23 @@
   open='{'
   close='}'
   length=length
-  expanded=false
+  initExpanded=model.partial
   as |block|
 }}
   {{#if (eq block "summary")}}
-    {{length}} keys
+    {{#if model.partial}}
+      <b>Partial response</b>
+    {{else}}
+      <i>Full response</i>
+    {{/if}}
   {{else}}
-    {{#each-in model as |k v|}}
-      <div class="obj-field">
-        <span class="obj-key">{{k}}</span>
-        <span class="obj-syntax">:</span>
-        <span class="obj-value no-inline-monospace">
-          {{#if hasBlock}}
-            {{yield k v}}
-          {{else}}
-            {{json-value model=v expanded=true}}
-          {{/if}}
-        </span>
-        <span class="obj-syntax comma">,</span>
-      </div>
-    {{/each-in}}
+    <div>
+      <button class="btn bg-primary" {{action "follow" model.first}} disabled={{not model.first}}>First</button>
+      <button class="btn bg-primary" {{action "follow" model.previous}} disabled={{not model.prev}}>Prev</button>
+      <button class="btn bg-primary" {{action "follow" model.next}} disabled={{not model.next}}>Next</button>
+      <button class="btn bg-primary" {{action "follow" model.last}} disabled={{not model.last}}>Last</button>
+      {{input-integer value=limit classNames="inline-block" safeStyle="width: 80px;"}} per page <button class="btn bg-primary" {{action "changeLimit"}}>Set</button>
+    </div>
   {{/if}}
 {{/json-collapsible}}
 

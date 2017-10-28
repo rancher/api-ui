@@ -5,9 +5,16 @@ export default Ember.Component.extend({
   close: '>',
   length: 0,
   collapsible: true,
-  expanded: true,
+  initExpanded: true,
 
   tagName: '',
+
+  expanded: null,
+
+  init() {
+    this._super(...arguments);
+    this.set('expanded', this.get('initExpanded'));
+  },
 
   actions: {
     expand() {

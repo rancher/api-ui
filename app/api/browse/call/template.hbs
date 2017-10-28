@@ -60,7 +60,7 @@
     {{/if}}
     {{#unless model.loading}}
       <div class="json">
-        {{json-value model=model.responseBody collapsible=false expanded=true schemas=model.schemas}}
+        {{json-value model=model.responseBody collapsible=false initExpanded=true schemas=model.schemas}}
       </div>
     {{/unless}}
   </div>

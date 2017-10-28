@@ -2,7 +2,7 @@
   open='{'
   close='}'
   length=length
-  expanded=false
+  initExpanded=false
   as |block|
 }}
   {{#if (eq block "summary")}}
@@ -16,7 +16,7 @@
           {{#if hasBlock}}
             {{yield k v}}
           {{else}}
-            {{json-value model=v expanded=true}}
+            {{json-value model=v initExpanded=true}}
           {{/if}}
         </span>
         <span class="obj-syntax comma">,</span>
