@@ -10,7 +10,7 @@
     {{#each-in model as |k v|}}
       <div class="obj-field">
         <span class="obj-key">{{k}}</span>
-        <span class="obj-syntax">:</span>
+        <span class="obj-syntax separator">:</span>
         <span class="obj-value no-inline-monospace">
           {{#if hasBlock}}
             {{yield k v}}

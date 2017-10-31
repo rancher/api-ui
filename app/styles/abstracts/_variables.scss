@@ -11,7 +11,7 @@ $base-line-height         : 1.4em;
 
 /// Code (monospace) font family
 /// @type List
-$code-font-stack          : Monaco, "Andale Mono", "Courier New", Courier,  monospace !default;
+$code-font-stack          : "Inconsolata", Monaco, "Andale Mono", "Courier New", Courier,  monospace !default;
 
 /// Theme colors
 $primary                  : #0075A8 !default;

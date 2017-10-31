@@ -11,7 +11,7 @@
       {{#if (eq k "data")}}
         <div class="obj-field">
           <span class="obj-key">{{k}}</span>
-          <span class="obj-syntax">:</span>
+          <span class="obj-syntax separator">:</span>
           <span class="obj-value no-inline-monospace">
             {{#json-array
               key=k
@@ -37,7 +37,7 @@
       {{else if (get componentForKey k)}}
         <div class="obj-field">
           <span class="obj-key">{{k}}</span>
-          <span class="obj-syntax">:</span>
+          <span class="obj-syntax separator">:</span>
           <span class="obj-value no-inline-monospace">
             {{component
               (get componentForKey k)

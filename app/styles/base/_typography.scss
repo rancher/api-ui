@@ -47,6 +47,10 @@ h6 {
   font-size: .67em;
 }
 
+.text-regular {
+  font-family : $text-font-stack;
+}
+
 .text-mono {
   font-family : $code-font-stack;
 }

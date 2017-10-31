@@ -10,9 +10,11 @@ export default Ember.Component.extend({
   tagName: '',
 
   limit: null,
+  originalLimit: null,
 
   init() {
     this._super(...arguments);
+    this.set('originalLimit', this.get('model.limit'));
     this.set('limit', this.get('model.limit'));
   },
 

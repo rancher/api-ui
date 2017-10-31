@@ -1,28 +1,21 @@
-<span class="obj-syntax">&#91;</span>
-{{#if collapsible}}
-  {{#if expanded}}
-    <span class="obj-summary" {{action "collapse"}}><i class="icon icon-minus-circle"/></span>
+{{#json-collapsible
+  open='['
+  close=']'
+  length=length
+  as |block|
+}}
+  {{#if (eq block "summary")}}
+    {{length}} items
   {{else}}
-    <span class="obj-summary collapsed" {{action "expand"}}><i class="icon icon-plus-circle"/> {{length}} items</span>
-    <span class="obj-syntax">&#93;</span>
-  {{/if}}
-{{/if}}
-
-{{#if expanded}}
-  <div class="obj-body">
     {{#if hasBlock}}
       {{yield}}
     {{else}}
       {{#each model as |v|}}
-        <div class="obj-field">
-          <span class="obj-value no-inline-monospace">
-            {{json-value model=v}}
-          </span>
+        <span class="array-value no-inline-monospace">
+          {{json-value model=v}}
           <span class="obj-syntax comma">,</span>
-        </div>
+        </span>
       {{/each}}
     {{/if}}
-  </div>
-  <span class="obj-syntax">&#93;</span>
-{{/if}}
-
+  {{/if}}
+{{/json-collapsible}}

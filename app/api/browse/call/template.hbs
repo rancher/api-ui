@@ -49,7 +49,7 @@
     {{else}}
       <h4 class="clearfix">
         <span class="badge {{model.badgeColor}}" style="margin-left: -10px;">{{model.statusCode}} {{model.statusText}}</span>
-        <a class="http-header-toggle" {{action "toggleHeaders"}}>{{if showHeaders 'Hide Headers' 'Show Headers'}}</a>
+        <button class="btn btn-sm bg-transparent http-header-toggle" {{action "toggleHeaders"}}>{{if showHeaders 'Hide Headers' 'Show Headers'}}</button>
         <div class="pull-right">
           Response
         </div>

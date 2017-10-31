@@ -1,6 +1,4 @@
 .json {
-  @include no-inline-monospace;
-  font-size: 12px;
   line-height: initial;
 
   .obj-summary {
@@ -19,22 +17,27 @@
 
   .obj-syntax {
     font-weight: bold;
+
+    &.separator {
+      margin-right: 10px;
+    }
   }
 
-  .obj-field:last-child .comma {
+  .array-item {
+    @include no-inline-monospace;
+  }
+
+  .array-value:last-child > .comma,
+  .obj-field:last-child > .comma {
     display: none;
   }
 
   .collapsible {
-    margin-left: 20px;
+    margin-left: 10px;
   }
 
   .obj-key {
     font-weight: bold;
-  }
-
-  .obj-value {
-    margin-left: 10px;
   }
 
   .keyword, .number {

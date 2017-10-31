@@ -12,12 +12,15 @@
       <i>Full response</i>
     {{/if}}
   {{else}}
-    <div>
-      <button class="btn bg-primary" {{action "follow" model.first}} disabled={{not model.first}}>First</button>
+    <div class="text-regular">
+      <button class="btn bg-primary" {{action "follow" model.first}}    disabled={{not model.first}}>First</button>
       <button class="btn bg-primary" {{action "follow" model.previous}} disabled={{not model.prev}}>Prev</button>
-      <button class="btn bg-primary" {{action "follow" model.next}} disabled={{not model.next}}>Next</button>
-      <button class="btn bg-primary" {{action "follow" model.last}} disabled={{not model.last}}>Last</button>
-      {{input-integer value=limit classNames="inline-block" safeStyle="width: 80px;"}} per page <button class="btn bg-primary" {{action "changeLimit"}}>Set</button>
+      <button class="btn bg-primary" {{action "follow" model.next}}     disabled={{not model.next}}>Next</button>
+      <button class="btn bg-primary" {{action "follow" model.last}}     disabled={{not model.last}}>Last</button>
+
+      {{input-integer value=limit classNames="input-sm inline-block ml-20" safeStyle="width: 80px;"}}
+      per page
+      <button class="btn bg-primary" {{action "changeLimit"}}>Go</button>
     </div>
   {{/if}}
 {{/json-collapsible}}
