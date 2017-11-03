@@ -6,6 +6,7 @@ export default Ember.Component.extend({
   length: 0,
   collapsible: true,
   initExpanded: true,
+  expandedClassNames: '',
 
   tagName: '',
 

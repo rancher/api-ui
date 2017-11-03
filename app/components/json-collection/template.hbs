@@ -18,19 +18,14 @@
               model=v
               parent=model
             }}
-              {{#vertical-collection
-                items=v
-                estimateHeight=500
-                containerSelector="body"
-                as |item index|
-              }}
+              {{#each v as |item|}}
                 <div class="obj-field">
                   <span class="obj-value no-inline-monospace">
                     {{json-value model=item initExpanded=true}}
                   </span>
                   <span class="obj-syntax comma">,</span>
                 </div>
-              {{/vertical-collection}}
+              {{/each}}
             {{/json-array}}
           </span>
         </div>

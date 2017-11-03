@@ -11,7 +11,7 @@ $base-line-height         : 1.4em;
 
 /// Code (monospace) font family
 /// @type List
-$code-font-stack          : "Inconsolata", Monaco, "Andale Mono", "Courier New", Courier,  monospace !default;
+$code-font-stack          : Consolas, "Andale Mono", "Lucida Console", Monaco, "Courier New", Courier,  monospace !default;
 
 /// Theme colors
 $primary                  : #0075A8 !default;
@@ -54,7 +54,7 @@ $accent                   : $light-grey !default;
 
 /// Container's maximum width
 /// @type Length
-$max-width                : 2560px !default;
+$max-width                : 1280px !default;
 $min-width                : 75% !default;
 
 /// Relative or absolute URL where all assets are served from

@@ -30,10 +30,10 @@ module.exports = function(defaults) {
   app.import('vendor/prompt/prompt-v1-latin-600.woff', { destDir: 'assets/fonts/'});
   app.import('vendor/prompt/prompt-v1-latin-600.woff2',{ destDir: 'assets/fonts/'});
 
-  app.import('vendor/inconsolata/inconsolata-v16-latin-regular.woff', { destDir: 'assets/fonts/'});
-  app.import('vendor/inconsolata/inconsolata-v16-latin-regular.woff2',{ destDir: 'assets/fonts/'});
-  app.import('vendor/inconsolata/inconsolata-v16-latin-700.woff', { destDir: 'assets/fonts/'});
-  app.import('vendor/inconsolata/inconsolata-v16-latin-700.woff2',{ destDir: 'assets/fonts/'});
+//  app.import('vendor/inconsolata/inconsolata-v16-latin-regular.woff', { destDir: 'assets/fonts/'});
+//  app.import('vendor/inconsolata/inconsolata-v16-latin-regular.woff2',{ destDir: 'assets/fonts/'});
+//  app.import('vendor/inconsolata/inconsolata-v16-latin-700.woff', { destDir: 'assets/fonts/'});
+//  app.import('vendor/inconsolata/inconsolata-v16-latin-700.woff2',{ destDir: 'assets/fonts/'});
 
   return app.toTree();
 };

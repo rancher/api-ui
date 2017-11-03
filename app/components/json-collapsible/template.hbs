@@ -11,7 +11,7 @@
 {{/if}}
 
 {{#if (and expanded length)}}
-  <div class="collapsible">
+  <div class="collapsible {{expandedClassNames}}">
     {{yield "body"}}
   </div>
 {{/if}}

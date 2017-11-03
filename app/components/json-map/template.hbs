@@ -16,6 +16,8 @@
             {{yield k v}}
           {{else if (eq (base-type-of v) 'string')}}
             <span class="string">&quot;{{v}}&quot;</span>
+          {{else if (eq v null)}}
+            <span class="null">null</span>
           {{else if (eq (base-type-of v) 'object')}}
             {{json-value model=v}}
           {{else}}
