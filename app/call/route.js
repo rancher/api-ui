@@ -3,6 +3,12 @@ import Ember from 'ember';
 export default Ember.Route.extend({
   history: Ember.inject.service(),
 
+  queryParams: {
+    id: {
+      refreshModel: true,
+    }
+  },
+
   model(params) {
     let history = this.get('history');
     let call = history.getById(params.id);
@@ -10,15 +16,6 @@ export default Ember.Route.extend({
       return call;
     }
 
-    const [, method, path] = params.id.split('$');
-    if ( method === 'GET' ) {
-      history.follow(path);
-    }
-  },
-
-  redirect(model) {
-    if ( !model ) {
-      this.transitionTo('api.browse');
-    }
+    return history.follow('/' + (params.path || ''));
   },
 });

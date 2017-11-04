@@ -37,6 +37,28 @@ export default Ember.Service.extend({
     return call;
   },
 
+  goTo(idOrCall) {
+    let call;
+    if ( typeof idOrCall === 'object' ) {
+      call = idOrCall;
+    } else {
+      call = this.getById(idOrCall);
+    }
+
+    if ( call ) {
+      const queryParams = {
+        id: call.get('id'),
+      };
+
+      /*this.get('router').*/
+      return window.l('router:main').transitionTo(
+        'call',
+        call.get('path').replace(/^\//,''),
+        { queryParams }
+      );
+    }
+  },
+
   follow(path, andTransitionTo=true) {
     // Relative-ize links so the namespace will be prepended
     if ( path.indexOf(window.location.origin) === 0 ) {
@@ -46,13 +68,14 @@ export default Ember.Service.extend({
     const call = this.get('store').createRecord({
       type: 'call',
       path: path,
+      method: 'GET',
     });
 
     this.add(call);
     call.go();
 
     if ( andTransitionTo ) {
-      this.get('router').transitionTo('api.browse.call', call.get('id'));
+      this.goTo(call);
     }
 
     return call;

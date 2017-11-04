@@ -4,6 +4,7 @@ export default Ember.Controller.extend({
   history: Ember.inject.service(),
 
   model: null,
+  id: 0,
 
   showHeaders: false,
 

@@ -7,19 +7,7 @@ const Router = EmberRouter.extend({
 });
 
 Router.map(function() {
-  this.route('index', {path: '/'});
-
-  this.route('api', function() {
-    this.route('schemas', function() {
-      this.route('schema', {path: '/:id'});
-    });
-
-    this.route('browse', function() {
-      this.route('call', {path: '/:id'});
-    });
-  });
-
-  this.route('redir', {path: '/*path'});
+  this.route('call', {path: '/*path'});
 });
 
 export default Router;

@@ -3,6 +3,7 @@ import ThrottledResize from 'api-ui/mixins/throttled-resize';
 
 export default Ember.Component.extend(ThrottledResize, {
   router: Ember.inject.service(),
+  history: Ember.inject.service(),
 
   model: null,
   active: null,
@@ -23,6 +24,6 @@ export default Ember.Component.extend(ThrottledResize, {
   },
 
   click() {
-    this.get('router').transitionTo('api.browse.call', this.get('model.id'));
+    this.get('history').goTo(this.get('model'));
   },
 });

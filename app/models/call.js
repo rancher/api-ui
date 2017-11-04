@@ -1,7 +1,8 @@
 import Ember from 'ember';
-import { randomStr } from 'api-ui/utils/util';
 import Resource from 'ember-api-store/models/resource';
 import { parseHeaders } from 'api-ui/utils/parse-headers';
+
+let lastId = 0;
 
 export default Resource.extend({
   ajax: Ember.inject.service(),
@@ -21,7 +22,7 @@ export default Resource.extend({
 
   init() {
     this._super();
-    this.set('id', randomStr(8, 'loweralphanum') + '$' + this.get('method') + '$' + this.get('path'));
+    this.set('id', lastId++);
   },
 
   go() {

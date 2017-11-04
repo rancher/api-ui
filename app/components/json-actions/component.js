@@ -6,6 +6,7 @@ export default JsonMap.extend({
 
   actions: {
     generate(actionName) {
+      console.log('generate', actionName);
     },
   }
 });
