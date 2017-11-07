@@ -19,7 +19,7 @@
     "@html-next/vertical-collection": "^1.0.0-beta.8",
     "broccoli-asset-rev": "^2.4.5",
     "ember-ajax": "^3.0.0",
-    "ember-api-store": "2.3.0",
+    "ember-api-store": "*",
     "ember-cli": "~2.16.2",
     "ember-cli-app-version": "^3.0.0",
     "ember-cli-babel": "^6.6.0",

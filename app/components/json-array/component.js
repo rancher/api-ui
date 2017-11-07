@@ -18,6 +18,6 @@ export default Ember.Component.extend({
   },
 
   length: Ember.computed('model', function() {
-    return Object.keys(this.get('model')).length;
+    return this.get('model.length');
   }),
 });

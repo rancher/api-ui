@@ -18,12 +18,12 @@
         <span class="obj-value no-inline-monospace">
           {{#if hasBlock}}
             {{yield k v}}
-          {{else if (eq (base-type-of v) 'string')}}
+          {{else if (and (eq (get componentForKey k) 'json-value') (eq (base-type-of v) 'string'))}}
             <span class="string">&quot;{{v}}&quot;</span>
           {{else if (eq v null)}}
             <span class="null">null</span>
           {{else}}
-            {{component (get componentForKey k) key=k model=v parent=model}}
+            {{component (get componentForKey k) key=k model=v parent=model schemas=schemas}}
           {{/if}}
         </span>
         <span class="obj-value no-inline-monospace">

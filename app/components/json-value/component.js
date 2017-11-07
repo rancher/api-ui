@@ -4,6 +4,7 @@ import { baseTypeOf } from 'api-ui/helpers/base-type-of';
 
 export default Ember.Component.extend({
   model: null,
+  schemas: null,
   collapsible: true,
   expanded: true,
 

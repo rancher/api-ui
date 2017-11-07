@@ -1,35 +1,14 @@
 {{#json-collapsible
   open='{'
   close='}'
-  length=length
+  length=model.length
   as |block|
 }}
   {{#if (eq block "summary")}}
-    {{model.data.length}} resources
+    {{model.length}} resources
   {{else}}
-    {{#each-in model as |k v|}}
-      {{#if (eq k "data")}}
-        <div class="obj-field">
-          <span class="obj-key">{{k}}</span>
-          <span class="obj-syntax separator">:</span>
-          <span class="obj-value no-inline-monospace">
-            {{#json-array
-              key=k
-              model=v
-              parent=model
-            }}
-              {{#each v as |item|}}
-                <div class="obj-field">
-                  <span class="obj-value no-inline-monospace">
-                    {{json-value model=item initExpanded=true}}
-                  </span>
-                  <span class="obj-syntax comma">,</span>
-                </div>
-              {{/each}}
-            {{/json-array}}
-          </span>
-        </div>
-      {{else if (get componentForKey k)}}
+    {{#each mapKeys as |k|}}
+      {{#if (get componentForKey k)}}
         <div class="obj-field">
           <span class="obj-key">{{k}}</span>
           <span class="obj-syntax separator">:</span>
@@ -37,7 +16,7 @@
             {{component
               (get componentForKey k)
               key=k
-              model=v
+              model=(get model k)
               parent=model
               expanded=expanded
             }}
@@ -45,7 +24,28 @@
           <span class="obj-syntax comma">,</span>
         </div>
       {{/if}}
-    {{/each-in}}
+    {{/each}}
+
+    <div class="obj-field">
+      <span class="obj-key">data</span>
+      <span class="obj-syntax separator">:</span>
+      <span class="obj-value no-inline-monospace">
+        {{#json-array
+          key=k
+          model=model
+          parent=model
+        }}
+          {{#each model as |item|}}
+            <div class="obj-field">
+              <span class="obj-value no-inline-monospace">
+                {{json-value model=item initExpanded=true schemas=schemas}}
+              </span>
+              <span class="obj-syntax comma">,</span>
+            </div>
+          {{/each}}
+        {{/json-array}}
+      </span>
+    </div>
   {{/if}}
 {{/json-collapsible}}
 

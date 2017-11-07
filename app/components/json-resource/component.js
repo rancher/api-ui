@@ -4,18 +4,15 @@ const { get } = Ember;
 
 const TYPE_KEYS = ['type','baseType','resourceType'];
 
-export function resourceComponentFor(key,value) {
+export function resourceComponentFor(key, value, schema) {
   let c = 'json-value';
   if ( value ) {
     switch ( key ) {
       case 'id':
-        c = 'json-reference';
-        break;
-
       case 'type':
       case 'baseType':
       case 'resourceType':
-        c = 'json-schema';
+        c = 'json-reference';
         break;
 
       case 'links':
@@ -28,11 +25,19 @@ export function resourceComponentFor(key,value) {
     }
   }
 
+  if ( schema ) {
+    const types = schema.typesFor(key);
+    if ( types && types[0] === 'reference' && types[1] ) {
+      c = 'json-reference';
+    }
+  }
+
   return c;
 }
 
 export default JsonMap.extend({
   model: null,
+  schemas: null,
   collapsible: true,
   expanded: true,
 
@@ -47,8 +52,10 @@ export default JsonMap.extend({
   componentForKey: Ember.computed('model', function() {
     const out = {};
     const model = this.get('model');
+    const schema = this.get('schemas').findBy('id', model.get('type'));
+
     Object.keys(model).forEach((key) => {
-      out[key] = resourceComponentFor(key, get(model,key));
+      out[key] = resourceComponentFor(key, get(model,key), schema);
     });
     return out;
   }),

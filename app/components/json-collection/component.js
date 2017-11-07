@@ -33,15 +33,9 @@ export default JsonResource.extend({
   collapsible: true,
   expanded: true,
 
-  didReceiveAttrs() {
-    this._super();
-
-    // Move data to the bottom
-    let model = this.get('model');
-    let data = model.data;
-    delete model.data;
-    model.data = data;
-  },
+  mapKeys: Ember.computed('model', function() {
+    return this.get('model').allKeys();
+  }),
 
   componentForKey: Ember.computed('model', function() {
     const out = {};

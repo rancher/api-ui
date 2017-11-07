@@ -1,7 +1,7 @@
 {{#if (eq baseType 'string')}}
   <span class="string">&quot;{{strVal}}&quot;</span>
 {{else if (eq baseType 'object')}}
-  {{component (concat 'json-' objectClass) model=model}}
+  {{component (concat 'json-' objectClass) model=model schemas=schemas}}
 {{else if baseType}}
   <span class="{{baseType}}">{{strVal}}</span>
 {{else}}

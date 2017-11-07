@@ -1,7 +1,10 @@
 import Ember from 'ember';
 import Ajax from 'ember-ajax/services/ajax';
+import AjaxErrors from 'ember-ajax/errors';
 
 export default Ajax.extend({
+  store: Ember.inject.service(),
+
   contentType: 'application/json; charset=utf-8',
 
   namespace: Ember.computed('app.apiServer', function() {
@@ -25,4 +28,13 @@ export default Ajax.extend({
 
     return this._super(...arguments);
   },
+
+  handleResponse() {
+    let payload = this._super(...arguments);
+    if ( payload instanceof AjaxErrors.AjaxError ) {
+      return payload;
+    } else {
+      return this.get('store')._typeify(payload, { updateStore: false });
+    }
+  }
 });
