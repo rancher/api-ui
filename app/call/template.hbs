@@ -19,50 +19,78 @@
     <button class="btn bg-primary" {{action "up"}} disabled={{not canUp}}><i class="icon icon-chevron-up"/> Up</button>
     <button class="btn bg-primary" {{action "reload"}} disabled={{not canReload}}><i class="icon icon-refresh"/> Reload</button>
     <div class="pull-right">
+      <button class="btn bg-primary" {{action "create"}} disabled={{not canCreate}}><i class="icon icon-plus"/> Create&hellip;</button>
       <button class="btn bg-primary" {{action "edit"}} disabled={{not canEdit}}><i class="icon icon-edit"/> Edit&hellip;</button>
       <button class="btn bg-primary" {{action "delete"}} disabled={{not canEdit}}><i class="icon icon-trash"/> Delete&hellip;</button>
     </div>
   </div>
 
-  <div class="box mb-20">
-    {{#if model.requestBodyStr}}
-      <h4 class="clearfix">
-        {{model.method}} {{model.path}}
-        <div class="pull-right">
-          Request
-        </div>
-      </h4>
-      <pre><code>{{model.requestBodyStr}}</code></pre>
-    {{else}}
-      <h3 class="clearfix mb-0">
-        {{model.method}} {{model.path}}
-        <div class="pull-right">
-          Request
-        </div>
-      </h3>
-    {{/if}}
-  </div>
+  <div class="box mb-20 pt-0">
+    <section class="{{if model.requestBody 'header has-tabs clearfix p-0 m-0'}}">
+      {{#if model.requestBody}}
+        <ul class="tab-nav pull-right">
+          {{#if model.prepare}}
+            <li><a class="{{if (eq requestMode 'editor') 'active'}}" {{action "setRequestMode" "editor"}}>Editor</a></li>
+          {{/if}}
+          <li><a class="{{if (eq requestMode 'json') 'active'}}" {{action "setRequestMode" "json"}}>JSON</a></li>
+          <li><a class="{{if (eq requestMode 'curl') 'active'}}" {{action "setRequestMode" "curl"}}>cURL</a></li>
+        </ul>
+      {{else}}
+        <div class="pull-right/pt-20"></div>
+      {{/if}}
+      <div class="pt-20" style="margin-righ: 175px;">{{model.method}} {{model.fullPath}}</div>
+    </section>
 
-  <div class="box">
-    {{#if model.loading}}
-      <div class="text-center"><i class="icon icon-spinner icon-spin"/> Waiting...</div>
-    {{else}}
-      <h4 class="clearfix">
-        <span class="badge {{model.badgeColor}}" style="margin-left: -10px;">{{model.statusCode}} {{model.statusText}}</span>
-        <button class="btn btn-sm bg-transparent http-header-toggle" {{action "toggleHeaders"}}>{{if showHeaders 'Hide Headers' 'Show Headers'}}</button>
-        <div class="pull-right">
-          Response
+    {{#if model.requestBody}}
+      {{#if (eq requestMode "editor")}}
+        {{input-resource model=model.requestBody schemas=model.schemas}}
+      {{else if (eq requestMode "curl")}}
+        <div class="text-mono">
+          curl -v -u "${ACCESS_KEY}:${SECRET_KEY}" {{#unless (eq model.method 'GET')}}-X {{model.method}}{{/unless}} {{#if model.requestBodyStr}}-H 'Content-Type: application/json' -d '{{model.requestBodyStr}}'{{/if}} {{baseHref}}{{model.fullPath}}
         </div>
-      </h4>
+      {{else}}
+        <div class="json">
+          {{json-value
+            model=model.requestBody
+            schemas=model.schemas
+            initExpanded=(not-eq model.state "done")
+          }}
+        </div>
+      {{/if}}
     {{/if}}
-    {{#if showHeaders}}
-      {{http-headers model=model.responseHeaders}}
-    {{/if}}
-    {{#unless model.loading}}
-      <div class="json">
-        {{json-value model=model.responseBody collapsible=false initExpanded=true schemas=model.schemas}}
+
+    {{#if model.prepare}}
+      <div class="mt-20">
+        <button class="btn bg-primary" {{action "submit"}}>Send Request</button>
       </div>
-    {{/unless}}
+    {{/if}}
   </div>
 
+  {{#if (or model.loading model.done)}}
+    <div class="box">
+      {{#if model.loading}}
+        <div class="text-center"><i class="icon icon-spinner icon-spin"/> Waiting...</div>
+      {{else}}
+        <h4 class="clearfix">
+          <span class="badge {{model.badgeColor}}" style="margin-left: -10px;">{{model.statusCode}} {{model.statusText}}</span>
+          <button class="btn btn-sm bg-transparent http-header-toggle" {{action "toggleHeaders"}}>{{if showHeaders 'Hide Headers' 'Show Headers'}}</button>
+          <div class="pull-right">
+            Response
+          </div>
+        </h4>
+      {{/if}}
+      {{#if showHeaders}}
+        {{http-headers model=model.responseHeaders}}
+      {{/if}}
+      {{#unless model.loading}}
+        <div class="json">
+          {{json-value
+            model=model.responseBody
+            schemas=model.schemas
+            initExpanded=true
+          }}
+        </div>
+      {{/unless}}
+    </div>
+  {{/if}}
 </div>

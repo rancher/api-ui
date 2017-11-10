@@ -18,4 +18,11 @@ export default Ember.Route.extend({
 
     return history.follow('/' + (params.path || ''));
   },
+
+  setupController(controller, model) {
+    this._super(...arguments);
+    if ( model.method !== 'GET' ) {
+      controller.set('requestMode', 'editor');
+    }
+  },
 });

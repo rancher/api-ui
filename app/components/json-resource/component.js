@@ -39,7 +39,7 @@ export default JsonMap.extend({
   model: null,
   schemas: null,
   collapsible: true,
-  expanded: true,
+  initExpanded: true,
 
   tagName: '',
 

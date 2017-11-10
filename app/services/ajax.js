@@ -32,7 +32,11 @@ export default Ajax.extend({
   handleResponse() {
     let payload = this._super(...arguments);
     if ( payload instanceof AjaxErrors.AjaxError ) {
-      return payload;
+      if ( payload.payload ) {
+        return this.get('store')._typeify(payload.payload, { updateStore: false });
+      } else {
+        return payload;
+      }
     } else {
       return this.get('store')._typeify(payload, { updateStore: false });
     }

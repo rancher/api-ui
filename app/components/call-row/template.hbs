@@ -3,14 +3,14 @@
 </div>
 
 <div class="middle clip-parent">
-  <div class="clip-test">{{model.path}}</div>
-  <div class="clip clip-target">{{model.path}}</div>
+  <div class="clip-test">{{model.fullPath}}</div>
+  <div class="clip clip-target">{{model.fullPath}}</div>
 </div>
 
 <div class="right">
-  {{#if model.statusCode}}
+  {{#if model.done}}
     <span class="badge badge-xs {{model.badgeColor}}">{{model.statusCode}}</span>
-  {{else}}
+  {{else if model.loading}}
     <div class="text-center">
       <i class="icon icon-spinner icon-spin"/>
     </div>

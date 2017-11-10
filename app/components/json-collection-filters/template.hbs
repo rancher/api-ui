@@ -1,27 +1,64 @@
 {{#json-collapsible
   open='{'
   close='}'
-  length=length
-  initExpanded=false
+  length=allKeys.length
+  initExpanded=(gt length 0)
+  expandedClassNames="filters"
   as |block|
 }}
   {{#if (eq block "summary")}}
-    {{length}} keys
+    {{#if (gt length 1)}}
+      <b>{{length}} filters applied</b>
+    {{else if (eq length 1)}}
+      <b>1 filter applied</b>
+    {{else}}
+      No filters applied
+    {{/if}}
   {{else}}
-    {{#each-in model as |k v|}}
-      <div class="obj-field">
-        <span class="obj-key">{{k}}</span>
-        <span class="obj-syntax separator">:</span>
-        <span class="obj-value no-inline-monospace">
-          {{#if hasBlock}}
-            {{yield k v}}
-          {{else}}
-            {{json-value model=v initExpanded=true}}
-          {{/if}}
-        </span>
-        <span class="obj-syntax comma">,</span>
-      </div>
-    {{/each-in}}
+    <div class="text-regular">
+      {{#if list.length}}
+        <table>
+          <tr>
+            <th>Field</th>
+            <th>Modifier</th>
+            <th>Value</th>
+            <th width="30">&nbsp;</th>
+          </tr>
+          {{#each list as |f|}}
+            <tr>
+              <td>
+                <select onchange={{action (mut f.field) value="target.value"}}>
+                  {{#each allKeys as |k|}}
+                    <option value={{k}} selected={{eq f.field k}}>{{k}}</option>
+                  {{/each}}
+                </select>
+              </td>
+              <td>
+                <select onchange={{action (mut f.modifier) value="target.value"}}>
+                  {{#each (get this (concat "all." f.field ".modifiers")) as |obj|}}
+                    <option value={{obj.value}} selected={{eq f.modifier obj.value}}>{{{obj.label}}}</option>
+                  {{/each}}
+                </select>
+              </td>
+              <td>
+                {{#if (get all (concat f.field ".options"))}}
+                  <select onchange={{action (mut f.value) value="target.value"}}>
+                    {{#each (get this (concat "all." f.field ".options")) as |k|}}
+                      <option value={{k}} selected={{eq f.field k}}>{{k}}</option>
+                    {{/each}}
+                  </select>
+                {{else}}
+                  {{input value=f.value}}
+                {{/if}}
+              </td>
+              <td><button class="btn bg-primary" {{action "remove" f}}><i class="icon icon-minus"/></button></td>
+            </tr>
+          {{/each}}
+        </table>
+      {{/if}}
+      <button class="btn bg-primary" {{action "add"}}><i class="icon icon-plus"/> Add Filter</button>
+      <button class="btn bg-primary" {{action "go"}}>Go</button>
+    </div>
   {{/if}}
 {{/json-collapsible}}
 

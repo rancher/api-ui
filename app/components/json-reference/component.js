@@ -7,12 +7,16 @@ export default Ember.Component.extend({
   parent: null,
 
   tagName: 'a',
-  classNames: ['link'],
+  classNameBindings: ['followUrl:link:string'],
 
   followUrl: Ember.computed('key','parent.type', function() {
-    const parentSchema = this.get('schemas').findBy('id', this.get('parent.type'));
     const key = this.get('key');
     const value = this.get('model');
+    const parentSchema = this.get('schemas').findBy('id', this.get('parent.type'));
+
+    if ( !parentSchema ) {
+      return null;
+    }
 
     let url;
 
@@ -25,11 +29,11 @@ export default Ember.Component.extend({
       if ( types ) {
         if ( types[0] === 'reference' ) {
           const targetSchema = this.get('schemas').findBy('id', parentSchema.subTypeFor(key));
-          url = targetSchema.linkFor('collection') + '/' + value;;
+          url = targetSchema.linkFor('collection') + '/' + value;
         } else {
           const namedSchema = this.get('schemas').findBy('id', types[0]);
           if ( namedSchema ) {
-            url = namedSchema.linkFor('collection') + '/' + value;;
+            url = namedSchema.linkFor('collection') + '/' + value;
           }
         }
       }

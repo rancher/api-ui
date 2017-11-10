@@ -11,9 +11,14 @@ export default Resource.extend({
   id: null,
   method: 'GET',
   path: null,
+  query: null,
   requestBody: null,
 
-  loading: null,
+  state: 'prepare',
+
+  prepare:   Ember.computed.equal('state','prepare'),
+  loading:   Ember.computed.equal('state','loading'),
+  done:      Ember.computed.equal('state','done'),
 
   statusCode: null,
   responseBody: null,
@@ -26,30 +31,32 @@ export default Resource.extend({
   },
 
   go() {
-    const req = this.get('ajax').request(this.get('path'), {
+    const req = this.get('ajax').request(this.get('fullPath'), {
       method: this.get('method'),
       data: this.get('requestBody'),
     });
 
-    this.set('loading', true);
+    this.set('state', 'loading');
 
-    let promise = req.then((res) => {
-      this.set('responseBody', res);
-      this.set('responseHeaders', parseHeaders(promise.xhr.getAllResponseHeaders()));
+    const self = this;
+    function done(res) {
+      self.set('responseBody', res);
+      self.set('responseHeaders', parseHeaders(promise.xhr.getAllResponseHeaders()));
 
       let schemaUrl = promise.xhr.getResponseHeader('x-api-schemas');
       if ( schemaUrl ) {
-        return this.get('schemasService').allFor(schemaUrl).then((schemas) => {
-          this.set('schemas', schemas);
+        return self.get('schemasService').allFor(schemaUrl).then(function(schemas) {
+          self.set('schemas', schemas);
+          return self;
         });
       }
-    }).catch((err) => {
-      this.set('responseBody', err.payload);
-    }).finally(() => {
+    }
+
+    let promise = req.then(done).catch(done).finally(() => {
       this.setProperties({
         statusCode: promise.xhr.status,
         statusText: promise.xhr.statusText,
-        loading: false
+        state: 'done'
       });
     });
 
@@ -72,5 +79,23 @@ export default Resource.extend({
     } else {
       return 'bg-transparent text-error';
     }
+  }),
+
+  fullPath: Ember.computed('path','query', function() {
+    let out = this.get('path');
+    let query = this.get('query');
+    if ( query ) {
+      out += '?' + query;
+    }
+    return out;
+  }),
+
+  requestBodyStr: Ember.computed('requestBody', function() {
+    const body = this.get('requestBody');
+    if ( body ) {
+      return JSON.stringify(body);
+    }
+
+    return ''
   }),
 });

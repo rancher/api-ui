@@ -6,11 +6,11 @@
   as |block|
 }}
   {{#if (eq block "summary")}}
-    {{length}} links
+    {{length}} link{{unless (eq length 1) 's'}}
   {{else}}
-    {{#each-in model as |k v|}}
-      <a class="link" {{action "follow" v}}>{{k}}</a>
-    {{/each-in}}
+    {{#each list as |obj|}}
+      <a class="link" {{action "follow" obj.value}}>{{obj.key}}</a>
+    {{/each}}
   {{/if}}
 {{/json-collapsible}}
 

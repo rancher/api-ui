@@ -8,7 +8,7 @@ export function collectionComponentFor(key, value) {
   if ( value ) {
     switch ( key ) {
       case 'sort':
-        c = 'json-collection-sort';
+//        c = 'json-collection-sort';
         break;
 
       case 'sortLinks':

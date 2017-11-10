@@ -59,16 +59,32 @@ export default Ember.Service.extend({
     }
   },
 
-  follow(path, andTransitionTo=true) {
+  normalize(path) {
+    path = path || '';
+
     // Relative-ize links so the namespace will be prepended
     if ( path.indexOf(window.location.origin) === 0 ) {
       path = path.substr(window.location.origin.length);
     }
 
+    const idx = path.indexOf('?');
+    let query = '';
+    if ( idx >= 0 ) {
+      query = path.substr(idx+1);
+      path = path.substr(0,idx);
+    }
+
+    return [path, query];
+  },
+
+  follow(url, andTransitionTo=true) {
+    const [path, query] = this.normalize(url);
+
     const call = this.get('store').createRecord({
       type: 'call',
-      path: path,
       method: 'GET',
+      path: path,
+      query: query,
     });
 
     this.add(call);
@@ -79,5 +95,21 @@ export default Ember.Service.extend({
     }
 
     return call;
+  },
+
+  create(opt) { /* method, path, query, body, schemas, parent */
+    const [path, query] = this.normalize(opt.path);
+    const call = this.get('store').createRecord({
+      type: 'call',
+      method: opt.method || 'GET',
+      path: path,
+      query: query || '',
+      requestBody: opt.body,
+      schemas: opt.schemas,
+      parent: opt.parent
+    });
+
+    this.add(call);
+    this.goTo(call);
   }
 });
