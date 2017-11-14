@@ -28,8 +28,10 @@ export default Ember.Component.extend({
       const types = parentSchema.typesFor(key);
       if ( types ) {
         if ( types[0] === 'reference' ) {
-          const targetSchema = this.get('schemas').findBy('id', parentSchema.subTypeFor(key));
-          url = targetSchema.linkFor('collection') + '/' + value;
+          const targetSchema = this.get('schemas').findBy('id', types[1]);
+          if ( targetSchema ) {
+            url = targetSchema.linkFor('collection') + '/' + value;
+          }
         } else {
           const namedSchema = this.get('schemas').findBy('id', types[0]);
           if ( namedSchema ) {

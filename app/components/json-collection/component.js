@@ -22,6 +22,10 @@ export function collectionComponentFor(key, value) {
       case 'filters':
         c = 'json-collection-filters';
         break;
+
+      case 'createType':
+        c = 'json-collection-create-types';
+        break;
     }
   }
 

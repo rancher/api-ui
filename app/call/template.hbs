@@ -19,14 +19,14 @@
     <button class="btn bg-primary" {{action "up"}} disabled={{not canUp}}><i class="icon icon-chevron-up"/> Up</button>
     <button class="btn bg-primary" {{action "reload"}} disabled={{not canReload}}><i class="icon icon-refresh"/> Reload</button>
     <div class="pull-right">
-      <button class="btn bg-primary" {{action "create"}} disabled={{not canCreate}}><i class="icon icon-plus"/> Create&hellip;</button>
-      <button class="btn bg-primary" {{action "edit"}} disabled={{not canEdit}}><i class="icon icon-edit"/> Edit&hellip;</button>
-      <button class="btn bg-primary" {{action "delete"}} disabled={{not canEdit}}><i class="icon icon-trash"/> Delete&hellip;</button>
+      <button class="btn bg-primary" {{action "create"}} disabled={{not canCreate}}><i class="icon icon-plus"/> Create</button>
+      <button class="btn bg-primary" {{action "edit"}} disabled={{not canEdit}}><i class="icon icon-edit"/> Edit</button>
+      <button class="btn bg-primary" {{action "delete"}} disabled={{not canEdit}}><i class="icon icon-trash"/> Delete</button>
     </div>
   </div>
 
-  <div class="box mb-20 pt-0">
-    <section class="{{if model.requestBody 'header has-tabs clearfix p-0 m-0'}}">
+  <div class="box mb-10 pt-0">
+    <section class="{{if model.requestBody 'header has-tabs clearfix p-0'}}">
       {{#if model.requestBody}}
         <ul class="tab-nav pull-right">
           {{#if model.prepare}}
@@ -36,14 +36,21 @@
           <li><a class="{{if (eq requestMode 'curl') 'active'}}" {{action "setRequestMode" "curl"}}>cURL</a></li>
         </ul>
       {{else}}
-        <div class="pull-right/pt-20"></div>
+        <div class="pull-right pt-20">Request</div>
       {{/if}}
       <div class="pt-20" style="margin-righ: 175px;">{{model.method}} {{model.fullPath}}</div>
     </section>
 
     {{#if model.requestBody}}
       {{#if (eq requestMode "editor")}}
-        {{input-resource model=model.requestBody schemas=model.schemas}}
+        {{input-resource
+          initialModel=model.requestBody
+          schemas=model.schemas
+          parent=model.parent
+          method=model.method
+          path=model.path
+          create=(action "create")
+        }}
       {{else if (eq requestMode "curl")}}
         <div class="text-mono">
           curl -v -u "${ACCESS_KEY}:${SECRET_KEY}" {{#unless (eq model.method 'GET')}}-X {{model.method}}{{/unless}} {{#if model.requestBodyStr}}-H 'Content-Type: application/json' -d '{{model.requestBodyStr}}'{{/if}} {{baseHref}}{{model.fullPath}}

@@ -1,0 +1,11 @@
+<label class="mr-20 hand">
+  {{radio-button selection=value value=true}} True
+</label>
+<label class="mr-20 hand">
+  {{radio-button selection=value value=false}} False
+</label>
+{{#if nullable}}
+  <label class="hand">
+    {{radio-button selection=value value=null}} NULL
+  </label>
+{{/if}}

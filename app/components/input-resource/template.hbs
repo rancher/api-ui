@@ -1,2 +1,46 @@
-Resource...
-{{model}}
+<table class="fixed">
+  <thead>
+    <tr>
+      <th>Field</th>
+      <th>Type</th>
+      <th width="50%">Value</th>
+      <th width="80"></th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each editableFields as |field|}}
+      <tr>
+        <td>
+          {{field.name}} {{#if field.required}}{{field-required}}{{/if}}
+        </td>
+        <td>
+          {{field.type}}
+        </td>
+        <td>
+          <div class="hide">{{field.component}} -- {{field.primaryType}} -- {{field.subType}} => {{field.value}}</div>
+          {{component field.component
+            value=field.value
+            options=field.options
+            schema=field.subSchema
+            subType=field.subType
+          }}
+        </td>
+        <td class="text-right">
+          {{#if field.nullable}}
+            <label>{{input type="checkbox" checked=field.isNull}} NULL</label>
+          {{/if}}
+        </td>
+      </tr>
+      {{#if field.description}}
+        <tr class="field-description">
+          <td colspan="4">{{field.description}}</td>
+        </tr>
+      {{/if}}
+    {{/each}}
+  </tbody>
+</table>
+
+<p>Model: {{model}}</p>
+<p>Schemas: {{schemas}}</p>
+<p>Parent: {{parent}}</p>
+<p>CreateTypes: {{parent.createTypes}}</p>

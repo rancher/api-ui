@@ -35,12 +35,15 @@ export default Ember.Controller.extend({
       this.get('history').follow(path);
     },
 
-    create() {
+    create(type) {
+      const [path, body] = this.prepareCreate(type);
+
       this.get('history').create({
         method: 'POST',
-        path: this.get('response.links.self'),
-        body: this.createBody(),
+        path: path,
+        body: body,
         schemas: this.get('schemas'),
+        parent: this.get('response'),
       });
     },
 
@@ -75,6 +78,10 @@ export default Ember.Controller.extend({
       this.set('requestMode', mode);
     },
   },
+
+  json: Ember.computed('model._propertyChanged', function() {
+    return this.get('model').serialize();
+  }),
 
   canBack: Ember.computed('model.id', function() {
     return !this.get('history').isFirst(this.get('model'));
@@ -148,7 +155,24 @@ export default Ember.Controller.extend({
     return false;
   },
 
-  createBody() {
-    
+  prepareCreate(type) {
+    const createTypes = this.get('response.createTypes')||{};
+    const createTypeArray = Object.keys(createTypes);
+    const createDefaults = this.get('response.createDefaults')||{};
+
+    let resourceType = type || this.get('response.resourceType');
+    let path = this.get('response.links.self');
+
+    if ( createTypeArray.length && !createTypeArray.includes(resourceType) ) {
+      resourceType = createTypeArray[0];
+      path = createTypes[resourceType];
+    }
+
+    const body = Object.assign({}, createDefaults);
+    body.type = resourceType;
+
+    const resource = this.get('store')._typeify(body, { updateStore: false });
+
+    return [path, resource];
   },
 });
