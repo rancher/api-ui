@@ -141,12 +141,12 @@ export default Ember.Controller.extend({
     }
 
     if ( response.get('type') === 'collection' ) {
-      const schema = schemas.findBy('id', response.get('resourceType'));
+      const schema = schemas.findBy('id', (response.get('resourceType')||'').toLowerCase());
       if ( schema ) {
         return insensitiveIncludes(schema.collectionMethods, method);
       }
     } else {
-      const schema = schemas.findBy('id', response.get('type'));
+      const schema = schemas.findBy('id', (response.get('type')||'').toLowerCase());
       if ( schema ) {
         return insensitiveIncludes(schema.resourceMethods, method);
       }

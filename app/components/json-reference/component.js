@@ -12,7 +12,7 @@ export default Ember.Component.extend({
   followUrl: Ember.computed('key','parent.type', function() {
     const key = this.get('key');
     const value = this.get('model');
-    const parentSchema = this.get('schemas').findBy('id', this.get('parent.type'));
+    const parentSchema = this.get('schemas').findBy('id', (this.get('parent.type')||'').toLowerCase());
 
     if ( !parentSchema ) {
       return null;
@@ -28,12 +28,12 @@ export default Ember.Component.extend({
       const types = parentSchema.typesFor(key);
       if ( types ) {
         if ( types[0] === 'reference' ) {
-          const targetSchema = this.get('schemas').findBy('id', types[1]);
+          const targetSchema = this.get('schemas').findBy('id', (types[1]||'').toLowerCase());
           if ( targetSchema ) {
             url = targetSchema.linkFor('collection') + '/' + value;
           }
         } else {
-          const namedSchema = this.get('schemas').findBy('id', types[0]);
+          const namedSchema = this.get('schemas').findBy('id', (types[0]||'').toLowerCase());
           if ( namedSchema ) {
             url = namedSchema.linkFor('collection') + '/' + value;
           }

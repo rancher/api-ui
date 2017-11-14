@@ -78,7 +78,7 @@ export default Ember.Component.extend({
   init() {
     this._super(...arguments);
 
-    const schema = this.get('schemas').findBy('id', this.get('parent.resourceType'));
+    const schema = this.get('schemas').findBy('id', (this.get('parent.resourceType')||'').toLowerCase());
     const definitions = schema.collectionFilters;
     const applied = this.get('model');
     const allKeys = Object.keys(definitions);

@@ -10,22 +10,30 @@
   <tbody>
     {{#each editableFields as |field|}}
       <tr>
-        <td>
+        <td valign="top">
           {{field.name}} {{#if field.required}}{{field-required}}{{/if}}
         </td>
-        <td>
+        <td valign="top">
           {{field.type}}
         </td>
-        <td>
+        <td valign="top">
           <div class="hide">{{field.component}} -- {{field.primaryType}} -- {{field.subType}} => {{field.value}}</div>
-          {{component field.component
-            value=field.value
-            options=field.options
-            schema=field.subSchema
-            subType=field.subType
-          }}
+          {{#if field.isResource}}
+            {{#if field.isNull}}
+              Uncheck NULL to define --&gt;
+            {{/if}}
+          {{else if field.component}}
+            {{component field.component
+              value=field.value
+              options=field.options
+              schemaType=field.subType
+              schema=field.subSchema
+            }}
+          {{else}}
+            Unknown Type: {{field.type}}
+          {{/if}}
         </td>
-        <td class="text-right">
+        <td valign="top" class="text-right">
           {{#if field.nullable}}
             <label>{{input type="checkbox" checked=field.isNull}} NULL</label>
           {{/if}}
@@ -36,11 +44,20 @@
           <td colspan="4">{{field.description}}</td>
         </tr>
       {{/if}}
+      {{#if (and field.isResource (not field.isNull))}}
+        <tr>
+          <td colspan="4" class="p-20">
+            {{input-resource
+              initialModel=field.value
+              valueChanged=(action (mut field.value))
+              schemas=schemas
+              schema=field.primarySchema
+              method=method
+              path=path
+            }}
+          </td>
+        </tr>
+      {{/if}}
     {{/each}}
   </tbody>
 </table>
-
-<p>Model: {{model}}</p>
-<p>Schemas: {{schemas}}</p>
-<p>Parent: {{parent}}</p>
-<p>CreateTypes: {{parent.createTypes}}</p>

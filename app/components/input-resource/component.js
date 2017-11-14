@@ -46,7 +46,14 @@ export default Ember.Component.extend({
 
   init() {
     this._super(...arguments);
-    this.set('model', this.get('initialModel').clone());
+    if ( this.get('initialModel') ) {
+      this.set('model', this.get('initialModel').clone());
+    } else {
+      this.set('model', this.get('store').createRecord({
+        type: this.get('schema._id'),
+      }));
+    }
+
     this.updateSchema();
 
     if ( !this.get('isUpdate') ) {
@@ -84,8 +91,8 @@ export default Ember.Component.extend({
 
   updateSchema: Ember.observer('model.type', function() {
     if ( !this.get('schema') ) {
-      const type = this.get('model.type');
-      const schema = this.get('schemas').findBy('id', type);
+      const type = this.get('model.type')||'';
+      const schema = this.get('schemas').findBy('id', type.toLowerCase());
       this.set('schema', schema);
     }
   }),
@@ -111,10 +118,10 @@ export default Ember.Component.extend({
       }
 
       const primary = schema.primaryTypeFor(key);
-      let primarySchema = schemas.findBy('id', primary);
+      let primarySchema = schemas.findBy('id', (primary||'').toLowerCase());
 
       const sub = schema.subTypeFor(key);
-      let subSchema = schemas.findBy('id', sub);
+      let subSchema = schemas.findBy('id', (sub||'').toLowerCase());
 
       let value = model.get(key);
       if ( value === undefined ) {
@@ -125,11 +132,13 @@ export default Ember.Component.extend({
         }
       }
 
-      let component = 'input-string';
+      let component = null;
+      let isResource = false;
       if ( SIMPLE_COMPONENTS.includes(primary) ) {
         component = 'input-' + primary;
-      } else if ( schemas.findBy('id', primary) ) {
-        component = 'input-resource'; 
+      } else if ( schemas.findBy('id', (primary||'').toLowerCase()) ) {
+        component = 'input-resource';
+        isResource = true;
       }
 
 
@@ -149,6 +158,7 @@ export default Ember.Component.extend({
           primarySchema: primarySchema,
           subSchema: subSchema,
           component: component,
+          isResource: isResource,
         }));
       }
     });
@@ -188,6 +198,8 @@ export default Ember.Component.extend({
         model.set(field.name, neu);
       }
     });
+
+    this.sendAction('valueChanged', model);
   },
 
 });

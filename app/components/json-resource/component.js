@@ -52,7 +52,7 @@ export default JsonMap.extend({
   componentForKey: Ember.computed('model', function() {
     const out = {};
     const model = this.get('model');
-    const schema = this.get('schemas').findBy('id', model.get('type'));
+    const schema = this.get('schemas').findBy('id', (model.get('type')||'').toLowerCase());
 
     Object.keys(model).forEach((key) => {
       out[key] = resourceComponentFor(key, get(model,key), schema);
