@@ -556,6 +556,10 @@ HTMLApi.prototype.sortChange = function(elem)
   var name = $(elem).val();
 
   var links = this._data.sortLinks;
+  if ( !links && this._data.sort ) {
+    links = this._data.sort.links;
+  }
+
   if ( links && links[name] )
     window.location.href = links[name];
 }
@@ -1404,7 +1408,7 @@ HTMLApi.prototype._flattenField = function(mode, name, field, data, depth)
 
 
   // The value input's name
-  var formFieldName = name;
+  var formFieldName = 'field_'+name;
 
   // The key input's name, for maps
   var formFieldName2 = null;
@@ -1579,7 +1583,7 @@ HTMLApi.prototype._flattenInputs = function($form)
   for ( i = 0 ; i < serialized.length ; i++ )
   {
     field = serialized[i];
-    k = field.name;
+    k = field.name.replace(/^field_/,'');
     v = field.value;
     isArray = k.indexOf('[]') >= 0;
     isMapKey = k.indexOf('.key{}') >= 0;
