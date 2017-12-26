@@ -17,7 +17,7 @@
   {{/if}}
 {{/if}}
 
-{{#ifInList type 'string,date'}}
+{{#ifInList type 'string,date,base64'}}
   <input type="text" class="form-control" name="{{formFieldName}}" value="{{value}}" placeholder="{{placeholder}}"/>
 {{/ifInList}}
 
@@ -25,9 +25,9 @@
   <textarea class="form-control" name="{{formFieldName}}">{{value}}</textarea>
 {{/ifEqual}}
 
-{{#ifEqual type 'password'}}
+{{#ifInList type 'password,masked'}}
   <input type="password" class="form-control" name="{{formFieldName}}" value="{{value}} placeholder="{{placeholder}}" />
-{{/ifEqual}}
+{{/ifInList}}
 
 {{#ifInList type 'number,int,float'}}
   <input 
