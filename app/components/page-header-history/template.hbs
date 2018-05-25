@@ -1,0 +1,27 @@
+<a class="dropdown-toggle text-white" aria-haspopup="true" aria-expanded="false" aria-label="History" data-toggle="history">
+  {{call.method}}
+  {{call.fullPath}}
+  {{#if call.done}}
+    <span class="badge badge-xs {{call.badgeColor}}">{{call.statusCode}}</span> 
+  {{else if call.loading}}
+    <i class="icon icon-spinner icon-spin"/>
+  {{/if}}
+
+  <i class="icon icon-chevron-down chevron"></i>
+  <span class="sr-only">Toggle Dropdown</span>
+</a>
+
+<ul class="dropdown-menu cluster-menu" role="menu" data-dropdown-id="environment">
+  {{#each history.list as |c|}}
+    <li class="{{if (eq call c) 'active selected'}}">
+      {{#link-to "call" c.id class="clip"}}
+        {{c.method}} {{c.fullPath}}
+        {{#if c.done}}
+          <span class="badge badge-xs {{model.badgeColor}}">{{c.statusCode}}</span> 
+        {{else if c.loading}}
+          <i class="icon icon-spinner icon-spin"/>
+        {{/if}}
+      {{/link-to}}
+    </li>
+  {{/each}}
+</ul>

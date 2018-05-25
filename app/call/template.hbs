@@ -1,18 +1,6 @@
-<div class="col span-3">
-  <div class="box p-10">
-    <h1>Requests ({{history.length}})</h1>
-    <div class="call-list">
-      {{#each history.list as |c|}}
-        {{call-row
-          model=c
-          active=(eq c model)
-        }}
-      {{/each}}
-    </div>
-  </div>
-</div>
-<div class="col span-9">
+{{page-header call=model}}
 
+<main>
   <div class="clearfix mb-10">
     <button class="btn bg-primary" {{action "back"}} disabled={{not canBack}}><i class="icon icon-chevron-left"/> Back</button>
     <button class="btn bg-primary" {{action "forward"}} disabled={{not canForward}}><i class="icon icon-chevron-right"/> Forward</button>
@@ -50,6 +38,7 @@
           method=model.method
           path=model.path
           create=(action "create")
+          valueChanged=(action (mut model.requestBody))
         }}
       {{else if (eq requestMode "curl")}}
         <div class="text-mono">
@@ -100,4 +89,4 @@
       {{/unless}}
     </div>
   {{/if}}
-</div>
+</main>

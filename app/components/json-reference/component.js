@@ -6,15 +6,21 @@ export default Ember.Component.extend({
   model: null,
   parent: null,
 
-  tagName: 'a',
-  classNameBindings: ['followUrl:link:string'],
+  tagName: '',
+
+  highlight: Ember.computed('key','followUrl', function() {
+    const key = this.get('key');
+    const url = this.get('followUrl');
+    return !!url && !['baseType','type','resourceType'].includes(key);
+  }),
 
   followUrl: Ember.computed('key','parent.type', function() {
     const key = this.get('key');
     const value = this.get('model');
-    const parentSchema = this.get('schemas').findBy('id', (this.get('parent.type')||'').toLowerCase());
+    const parentType = (this.get('parent.type')||'').toLowerCase();
+    const parentSchema = this.get('schemas').findBy('id', parentType);
 
-    if ( !parentSchema ) {
+    if ( !parentSchema && parentType !== 'collection' ) {
       return null;
     }
 
@@ -24,9 +30,14 @@ export default Ember.Component.extend({
       url = parentSchema.linkFor('collection') + '/' + value;
     } else if ( key === 'type' ) {
       url = parentSchema.linkFor('self');
+    } else if ( key === 'baseType' || key === 'resourceType' ) {
+      const targetSchema = this.get('schemas').findBy('id', (value+'').toLowerCase());
+      if ( targetSchema ) {
+        url = targetSchema.linkFor('self');
+      }
     } else {
       const types = parentSchema.typesFor(key);
-      if ( types ) {
+      if ( types && types.length ) {
         if ( types[0] === 'reference' ) {
           const targetSchema = this.get('schemas').findBy('id', (types[1]||'').toLowerCase());
           if ( targetSchema ) {
@@ -44,10 +55,12 @@ export default Ember.Component.extend({
     return url;
   }),
 
-  click() {
-    const url = this.get('followUrl');
-    if ( url ) {
-      this.get('history').follow(url);
+  actions: {
+    click() {
+      const url = this.get('followUrl');
+      if ( url ) {
+        this.get('history').follow(url);
+      }
     }
   },
 

@@ -18,22 +18,23 @@ const SORT_ORDER = {
 
 
 function displayModifier(modifier) {
-  let str = '';
-  switch (modifier)
-  {
-    case ""       : str = '='; break;
-    case "eq"     : str = '='; break;
-    case "ne"     : str = '&ne;'; break;
-    case "lt"     : str = '&lt;'; break;
-    case "lte"    : str = '&le;'; break;
-    case "gt"     : str = '&gt;'; break;
-    case "gte"    : str = '&ge;'; break;
-    case "null"   : str = 'NULL'; break;
-    case "notnull": str = 'Not NULL'; break;
-    case "like"   : str = 'Like'; break;
-    case "notlike": str = 'Not like'; break;
-    case "prefix" : str = 'Starts with'; break;
-    case "suffix" : str = 'Ends with'; break;
+  let str = modifier;
+  switch (modifier) {
+    case ""       : str = '=';            break;
+    case "eq"     : str = '=';            break;
+    case "ne"     : str = '&ne;';         break;
+    case "lt"     : str = '&lt;';         break;
+    case "lte"    : str = '&le;';         break;
+    case "gt"     : str = '&gt;';         break;
+    case "gte"    : str = '&ge;';         break;
+    case "null"   : str = 'NULL';         break;
+    case "notnull": str = 'Not NULL';     break;
+    case "in"     : str = 'in';           break;
+    case "notin"  : str = 'Not in';       break;
+    case "like"   : str = 'Like';         break;
+    case "notlike": str = 'Not like';     break;
+    case "prefix" : str = 'Starts with';  break;
+    case "suffix" : str = 'Ends with';    break;
   }
 
   return str;
@@ -76,34 +77,38 @@ export default Ember.Component.extend({
   list: null,
 
   init() {
+    const all = {};
+    const list = [];
+    let allKeys = [];
+
     this._super(...arguments);
 
     const schema = this.get('schemas').findBy('id', (this.get('parent.resourceType')||'').toLowerCase());
-    const definitions = schema.collectionFilters;
-    const applied = this.get('model');
-    const allKeys = Object.keys(definitions);
-    const all = {};
-    const list = [];
+    if ( schema ) {
+      const definitions = schema.collectionFilters;
+      const applied = this.get('model');
+      allKeys = Object.keys(definitions);
 
-    allKeys.forEach((key) => {
-      const definition = definitions[key];
-      const entry = applied[key];
+      allKeys.forEach((key) => {
+        const definition = definitions[key];
+        const entry = applied[key];
 
-      all[key] = {
-        modifiers: mapModifiers(definition.modifiers||{}),
-        options: definition.options
-      };
+        all[key] = {
+          modifiers: mapModifiers(definition.modifiers||{}),
+          options: definition.options
+        };
 
-      if ( entry ) {
-        entry.forEach((item) => {
-          list.push({
-            field: key,
-            modifier: item.modifier||'eq',
-            value: item.value,
+        if ( entry ) {
+          entry.forEach((item) => {
+            list.push({
+              field: key,
+              modifier: item.modifier||'eq',
+              value: item.value,
+            });
           });
-        });
-      }
-    });
+        }
+      });
+    }
 
     this.setProperties({
       allKeys,

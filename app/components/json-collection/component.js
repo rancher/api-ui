@@ -8,7 +8,7 @@ export function collectionComponentFor(key, value) {
   if ( value ) {
     switch ( key ) {
       case 'sort':
-//        c = 'json-collection-sort';
+        c = 'json-collection-sort';
         break;
 
       case 'sortLinks':
@@ -23,8 +23,8 @@ export function collectionComponentFor(key, value) {
         c = 'json-collection-filters';
         break;
 
-      case 'createType':
-        c = 'json-collection-create-types';
+      case 'createTypes':
+//        c = 'json-collection-create-types';
         break;
     }
   }

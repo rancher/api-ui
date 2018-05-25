@@ -10,11 +10,11 @@ function normalizeHost(host,defaultPort) {
   {
     if ( host.indexOf(':') === -1 )
     {
-      host = 'http://' + host + (defaultPort ? ':'+defaultPort : '');
+      host = 'https://' + host + (defaultPort ? ':'+defaultPort : '');
     }
     else
     {
-      host = 'http://' + host;
+      host = 'https://' + host;
     }
   }
 
@@ -41,18 +41,15 @@ module.exports = function(environment) {
 
     APP: {
       version: pkg.version,
-      apiServer: 'http://localhost:8080',
+      apiServer: 'https://localhost:8000',
       apiProxy: '/api-proxy',
     }
   };
 
   var server = process.env.API;
-  if ( server )
-  {
-    ENV.APP.apiServer = normalizeHost(server,8080);
-  }
-  else if (environment === 'production')
-  {
+  if ( server ) {
+    ENV.APP.apiServer = normalizeHost(server,443);
+  } else if (environment === 'production') {
     ENV.APP.apiServer = '';
   }
 

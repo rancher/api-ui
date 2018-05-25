@@ -1,7 +1,12 @@
 <span class="obj-syntax open">{{open}}</span>
 {{#if (and collapsible length)}}
   {{#if expanded}}
-    <span class="obj-summary" {{action "collapse"}}><i class="icon icon-minus-circle"/></span>
+    <span class="obj-summary" {{action "collapse"}}>
+      <i class="icon icon-minus-circle"/>
+      {{#if showSummaryWhenExpanded}}
+        {{yield "summary"}}
+      {{/if}}
+    </span>
   {{else}}
     <span class="obj-summary collapsed" {{action "expand"}}>
       <i class="icon icon-plus-circle"/>

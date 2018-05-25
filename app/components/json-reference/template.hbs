@@ -1,1 +1,5 @@
-<i>(ref):</i> {{~model~}}
+{{~#if followUrl~}}
+  <span class="link"><a {{action "click"}} class="{{if highlight 'bg-info'}}" href="{{followUrl}}">{{~model~}}</a></span>
+{{~else~}}
+  <span class="string bg-warning">{{~model~}}</span> ({{parent}})
+{{~/if~}}

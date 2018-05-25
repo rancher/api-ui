@@ -9,6 +9,7 @@ const PRIORITY_FIELDS = {
 }
 
 const SIMPLE_COMPONENTS = [
+  'base64',
   'blob',
   'boolean',
   'date',
@@ -33,9 +34,11 @@ export default Ember.Component.extend({
   parent: null,
   method: null,
   path: null,
+  depth: 1,
 
   // Component Options
   classNames: ['box'],
+  classNameBindings: ['oddDepth:box-alt'],
 
   // Locals
   model: null,
@@ -43,6 +46,14 @@ export default Ember.Component.extend({
   editableFields: null,
 
   isUpdate: Ember.computed.equal('method','PUT'),
+
+  deeper: Ember.computed('depth', function() {
+    return this.get('depth')+1;
+  }),
+
+  oddDepth: Ember.computed('depth', function() {
+    return this.get('depth') % 2 === 1;
+  }),
 
   init() {
     this._super(...arguments);
@@ -170,16 +181,23 @@ export default Ember.Component.extend({
     this.get('editableFields').filterBy('nullable').forEach((field) => {
       if ( field.isNull && field.value !== null) {
         field.set('value', null);
-        this.valueChanged();
+        this.scheduleSync();
       }
     });
   }),
 
-  valueChanged: Ember.observer('editableFields.@each.value', function() {
-    Ember.run.debounce(this, 'syncEditableFields', 1000);
+  syncTimer: null,
+  boundSync: null,
+  scheduleSync: Ember.observer('editableFields.@each.value', function() {
+    console.log('schedule');
+    clearTimeout(this.get('syncTimer'));
+    this.set('syncTimer', setTimeout(() => {
+      this.syncEditableFields();
+    }, 500));
   }),
 
   syncEditableFields() {
+    console.log('sync');
     const model = this.get('model');
     this.get('editableFields').forEach((field) => {
       const cur = model[field.name];

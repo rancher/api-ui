@@ -93,7 +93,7 @@ export default Resource.extend({
   requestBodyStr: Ember.computed('requestBody', function() {
     const body = this.get('requestBody');
     if ( body ) {
-      return JSON.stringify(body);
+      return JSON.stringify(body, null, 2);
     }
 
     return ''

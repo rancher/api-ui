@@ -1,10 +1,6 @@
 {{#if isLoggedIn}}
   <div id="application" class="container no-inline-space">
-    {{page-header}}
-
-    <main>
-      {{outlet}}
-    </main>
+    {{outlet}}
   </div>
 {{else}}
   Login...
