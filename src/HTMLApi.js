@@ -1603,11 +1603,15 @@ HTMLApi.prototype._flattenInputs = function($form)
     if ( isJsonValue )
     {
       try {
-        v = JSON.parse(v);
+        if (v) {
+          v = JSON.parse(v);
+        } else {
+          v = null
+        }
       }
       catch(e)
       {
-        alert(e);
+        alert(e + ' in ' + name);
       }
     }
 
