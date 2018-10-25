@@ -910,6 +910,13 @@ HTMLApi.prototype.ajax = function(method, url, body, cb)
     success: function(data, msg, jqxhr) { cb(null,data, jqxhr); },
     error: function(jqxhr, msg, exception) {
       var body = null;
+
+      if (jqxhr.status === 200 && !jqxhr.responseText) {
+        body = jqxhr.responseText;
+        cb(null, body, jqxhr);
+        return
+      }
+
       try {
         body = jQuery.parseJSON(jqxhr.responseText);
       }
