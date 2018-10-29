@@ -17,7 +17,7 @@
   {{/if}}
 {{/if}}
 
-{{#ifInList type 'string,date,base64,dnsLabel,hostname'}}
+{{#ifInList type 'string,date,base64,dnsLabel,dnsLabelRestricted,hostname'}}
   <input type="text" class="form-control" name="{{formFieldName}}" value="{{value}}" placeholder="{{placeholder}}"/>
 {{/ifInList}}
 
