@@ -4,7 +4,7 @@ var htmlapi;
 var explorer;
 (function()
 {
-  jQuery(window).load(jQueryReady);
+  jQuery(window).ready(jQueryReady);
 
   function getScript(url, cb) {
     return jQuery.ajax({

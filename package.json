@@ -20,7 +20,7 @@
     "upload": "./scripts/upload"
   },
   "devDependencies": {
-    "bootstrap": "^3.1.1",
+    "bootstrap": "^3",
     "del": "^1.1.0",
     "gulp": "^3.9.1",
     "gulp-concat": "^2.6.0",
@@ -34,7 +34,7 @@
     "gulp-sourcemaps": "^1.6.0",
     "gulp-tar": "^1.9.0",
     "gulp-uglify": "^1.0.2",
-    "handlebars": "^2",
-    "jquery": "^1.11.1"
+    "handlebars": "^4",
+    "jquery": "^3"
   }
 }
