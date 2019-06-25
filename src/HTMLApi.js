@@ -1340,8 +1340,8 @@ HTMLApi.prototype.editOrActionShown = function() {
     input.focus();
 
   // Make the null checkboxes clear the field, and field clear null
-  $(htmlapi._reqModal).on('keyup','input[type="text"], input[type="number"], textarea', onChange);
-  $(htmlapi._reqModal).on('change','input[type="text"], input[type="number"], textarea', onChange);
+  $(htmlapi._reqModal).on('keyup','input[type="text"], input[type="number"], input[type="password"], textarea', onChange);
+  $(htmlapi._reqModal).on('change','input[type="text"], input[type="number"], input[type="password"], textarea', onChange);
 
   $('.tip').tooltip({placement: 'right'});
 
