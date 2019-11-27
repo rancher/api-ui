@@ -43,6 +43,17 @@ Handlebars.registerHelper('ifInList', function(a, b, options) {
   }
 });
 
+Handlebars.registerHelper('ifInMap', function(a, b, options) {
+  if ( Object.keys(b||{}).indexOf(a) >= 0 )
+  {
+    return options.fn(this);
+  }
+  else
+  {
+    return options.inverse(this);
+  }
+});
+
 Handlebars.registerHelper('displayName', function(context, options) {
   return context.displayName || context.name || context.id || '';
 });

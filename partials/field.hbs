@@ -78,6 +78,10 @@
       {{#eachProperty field.options}}
         <option value="{{key}}" {{#ifEqual key ../value}} SELECTED{{/ifEqual}}>{{value}}</option>
       {{/eachProperty}}
+      {{#ifInMap value field.options}}
+      {{else}}
+        <option value="{{value}}" SELECTED>{{value}}</option>
+      {{/ifInMap}}
     </select>
   {{else}}
     <input type="text" class="form-control" name="{{formFieldName}}" value="{{value}}">

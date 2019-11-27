@@ -1027,7 +1027,6 @@ HTMLApi.prototype.request = function(method,body,opt,really)
   {
     var json = JSON.stringify(body);
     var formatted = this._formatter.valueToHTML(body);
-    tpl.body = json.replace(/,/g,", ");
     tpl.prettyBody = formatted;
     tpl.contentLength = json.length;
     tpl.contentType = 'application/json';
