@@ -102,15 +102,16 @@ gulp.task('bootstrap', function() {
     .pipe(gulp.dest(VERSION_DIST));
 });
 
-gulp.task('livereload', function() {
-  gulp.watch('./gulpfile.js', ['server:reload']);
-  gulp.watch('styles/**', ['css']);
-  gulp.watch('src/**', ['js']);
-  gulp.watch('templates/**', ['js']);
-  gulp.watch('partials/**', ['js']);
+gulp.task('livereload', function(cb) {
+  gulp.watch('./gulpfile.js', gulp.series('server:reload'));
+  gulp.watch('styles/**', gulp.series('css'));
+  gulp.watch('src/**', gulp.series('js'));
+  gulp.watch('templates/**', gulp.series('js'));
+  gulp.watch('partials/**', gulp.series('js'));
+  cb();
 })
 
-gulp.task('src', gulp.series('js','minjs','css','mincss','bootstrap'));
+gulp.task('src', gulp.series('minjs','mincss','bootstrap'));
 
 gulp.task('tarball', gulp.series('src', function() {
   return gulp.src([VERSION_DIST+'/**'], {base: DIST})
@@ -119,10 +120,10 @@ gulp.task('tarball', gulp.series('src', function() {
     .pipe(gulp.dest(DIST));
 }));
 
-gulp.task('build', gulp.series('src', 'tarball'), () => {});
+gulp.task('build', gulp.series('tarball'), () => {});
 gulp.task('default', gulp.series('build'));
 
-gulp.task('server', gulp.series('build','livereload', function() {
+gulp.task('server', gulp.series('build', 'livereload', function() {
   var cors = function(req, res, next) {
     res.setHeader('Access-Control-Allow-Origin', '*');
     next();

@@ -13,6 +13,9 @@
     "type": "git",
     "url": "https://github.com/rancherio/api-ui.git"
   },
+  "engine": {
+    "node": ">= 14.14"
+  },  
   "scripts": {
     "start": "./node_modules/.bin/gulp server",
     "clean": "./node_modules/.bin/gulp clean",
