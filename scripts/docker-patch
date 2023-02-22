@@ -1,0 +1,28 @@
+#!/bin/bash
+
+# Use this script to patch the api-ui in a running container
+
+CONTAINER=$1
+
+if [ -z "$1" ]; then
+  echo "Need container ID"
+  exit 1
+fi
+
+if [ ! -d ./dist ]; then
+  echo "You need to build first with 'yarn build'"
+  exit 1
+fi
+
+echo "Patching running container with latest api-ui"
+
+docker exec -it ${CONTAINER} bash -c "rm -rf /usr/share/rancher/ui/api-ui/*"
+
+# Copy in the built code
+
+VERSION=$(node -e "(function () { console.log(require('./package.json').version) })()")
+
+docker cp ./dist/${VERSION}/ ${CONTAINER}:/usr/share/rancher
+
+docker exec -it ${CONTAINER} bash -c "cp -R /usr/share/rancher/${VERSION}/* /usr/share/rancher/ui/api-ui/"
+docker exec -it ${CONTAINER} bash -c "rm -rf /usr/share/rancher/${VERSION}"
