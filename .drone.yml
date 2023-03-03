@@ -1,6 +1,6 @@
 ---
 kind: pipeline
-name: uploaded-release
+name: upload-release
 
 platform:
   os: linux
@@ -21,3 +21,15 @@ steps:
     VERSION: ${DRONE_TAG##v}
   commands:
   - ./scripts/build
+
+- name: upload
+  pull: default
+  image: plugins/gcs
+  settings:
+    acl:
+    - allUsers:READER
+    cache_control: "no-cache,must-revalidate"
+    source: dist/${DRONE_TAG##v}.tar.gz
+    target: releases.rancher.com/api-ui/${DRONE_TAG##v}.tar.gz
+    token:
+      from_secret: google_auth_key
