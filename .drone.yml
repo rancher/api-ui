@@ -1,0 +1,23 @@
+---
+kind: pipeline
+name: uploaded-release
+
+platform:
+  os: linux
+  arch: amd64
+
+# Build and upload release when repository is tagged with a v1.* tag
+trigger:
+  ref:
+  - "refs/tags/v1.*"
+  event:
+  - tag
+
+steps:
+- name: build
+  pull: default
+  image: node:14
+  environment:
+    VERSION: ${DRONE_TAG##v}
+  commands:
+  - ./scripts/build

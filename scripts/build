@@ -1,0 +1,13 @@
+#!/bin/bash
+set -e
+
+echo "Building api-ui"
+
+echo $VERSION
+
+npm install
+npm run build
+
+ls -al dist
+
+echo "Built"
