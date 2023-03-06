@@ -26,6 +26,9 @@ steps:
   pull: default
   image: plugins/gcs
   settings:
+  when:
+    instance:
+      - drone-publish.rancher.io  
     acl:
     - allUsers:READER
     cache_control: "no-cache,must-revalidate"
