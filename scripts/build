@@ -3,11 +3,89 @@ set -e
 
 echo "Building api-ui"
 
-echo $VERSION
+rm -rf ./dist
+rm -rf ./tmp
 
-npm install
-npm run build
+mkdir -p tmp/tpl
 
-ls -al dist
+HB_EXEC=./node_modules/.bin/handlebars
 
-echo "Built"
+VERSION=$(npm pkg get version | tr -d '"')
+echo "Version: ${VERSION}"
+echo ""
+
+DIST=./dist/${VERSION}
+mkdir -p ${DIST}
+
+echo "Compiling templates ..."
+
+# Compile templates
+for FILE in ./templates/*;
+do
+  NAME=$(basename $FILE)
+  ${HB_EXEC} $FILE -f ./tmp/tpl/${NAME}.js
+done
+
+# Compile partials
+for FILE in ./partials/*;
+do
+  NAME=$(basename $FILE)
+  ${HB_EXEC} --partial $FILE -f ./tmp/tpl/${NAME}.js
+done
+
+echo "Building ..."
+
+JS_FILES=(node_modules/jquery/dist/jquery.js \
+  vendor/jquery.scrollintoview.js \
+  node_modules/bootstrap/dist/js/bootstrap.js \
+  vendor/async.js \
+  vendor/json2.js \
+  vendor/polyfill.js \
+  vendor/JSONFormatter.js \
+  src/URLParse.js \
+  src/Cookie.js \
+  node_modules/handlebars/dist/handlebars.runtime.js \
+  src/template.js \
+  tmp/tpl/** \
+  src/HTMLApi.js \
+  src/Explorer.js \
+  src/init.js)
+
+# Combine all javascript files together
+# Need to add a semicolon between each file
+for str in ${JS_FILES[@]}; do
+  cat $str >> ${DIST}/ui.js
+  echo ";" >> ${DIST}/ui.js
+done
+
+# Copy bootstrap files
+cp -R node_modules/bootstrap/dist/** ${DIST}
+
+# Patch bootstrap.css to remove source mapping URL comment
+sed -i.bak -e "s@/\*# sourceMappingURL=bootstrap\.css\.map.*@@g" ${DIST}/css/bootstrap.css
+
+# Generate css
+cat ./node_modules/bootstrap/dist/css/bootstrap.css \
+  styles/main.scss \
+  styles/explorer.scss \
+  > ./tmp/ui.scss
+
+# Compile sass
+./node_modules/.bin/sass ./tmp/ui.scss ${DIST}/ui.css
+
+# Minimise javascript
+./node_modules/.bin/uglifyjs -c --source-map -o ${DIST}/ui.min.js ${DIST}/ui.js 
+
+# Minimise css
+./node_modules/.bin/cleancss ${DIST}/ui.css -o ${DIST}/ui.min.css
+
+# tar
+echo "Creating tar file ..."
+tar -cvzf ./dist/${VERSION}.tar.gz -C ${DIST} .
+
+# Copy index.html for testing
+sed -e "s/VERSION/"${VERSION}"/g" ./index.html.tmpl > ./dist/index.html
+
+echo ""
+echo "All done"
+echo ""
