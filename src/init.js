@@ -36,10 +36,10 @@ var explorer;
     if ( window.autoInit === false )
       return;
 
-    boostrapReady();
+    bootstrapReady();
   }
 
-  function boostrapReady()
+  function bootstrapReady()
   {
     document.body.innerHTML = '<div class="loading"><i class="fa fa-2x fa-spinner fa-spin"></i></div>';
     try {

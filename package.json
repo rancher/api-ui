@@ -24,7 +24,7 @@
     "uglify-js": "3.17.4"
   },
   "dependencies": {
-    "bootstrap": "3.4.1",
+    "bootstrap": "^5.2.3",
     "handlebars": "4.7.7",
     "jquery": "3.6.3"
   }
