@@ -12,7 +12,7 @@ Install
 ```bash
 git clone https://github.com/rancherio/api-ui
 cd api-ui
-npm install
+yarn install
 ```
 
 Usage
@@ -23,14 +23,6 @@ This will write files to `./dist/{version}/`, suitable for publishing to a CDN.
 
 ```bash
   ./scripts/build
-```
-
-### Running as a standalone server
-This will start a server on the given port number (default: 3000) that serves up the assets directly.
-This mode is mostly suitable for development of this library itself.
-
-```bash
-  ./scripts/serve
 ```
 
 Integrating with an API
@@ -77,6 +69,6 @@ var bootstrap = "http://url/to/bootstrap/version";
 ```
 
 ### Bugs & Issues
-Please submit bugs and issues to [rancher/rancher](//github.com/rancher/rancher/issues) with a title starting with `[API UI] `.
+Please submit bugs and issues to [rancher/dashboard](//github.com/rancher/dashboard/issues) with a title starting with `[API UI] `.
 
-Or just [click here](//github.com/rancher/rancher/issues/new?title=%5BAPI%20UI%5D%20) to create a new issue.
+Or just [click here](//github.com/rancher/dashboard/issues/new?title=%5BAPI%20UI%5D%20) to create a new issue.

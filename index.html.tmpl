@@ -1,0 +1,13 @@
+
+<!DOCTYPE html>
+<!-- If you are reading this, there is a good chance you would prefer sending an
+"Accept: application/json" header and receiving actual JSON responses. -->
+<link rel="stylesheet" type="text/css" href="./VERSION/ui.min.css" />
+<script src="./VERSION/ui.min.js"></script>
+<script>
+var user = "admin";
+var curlUser='${CATTLE_ACCESS_KEY}:${CATTLE_SECRET_KEY}';
+var schemas="https://rancher-server/v1/schemas";
+var data =
+{"id":"default/test","type":"event","links":{"remove":"https://rancher-server/v1/events/default/test-resource","self":"https://rancher-server/v1/events/default/test-resource","update":"https://rancher-server/v1/events/default/test-resource","view":"https://rancher-server/api/v1/namespaces/default/events/test-resource"},"_type":"Normal","apiVersion":"v1","count":38866,"eventTime":null,"firstTimestamp":"2023-02-28T21:18:59Z","involvedObject":{"apiVersion":"v1","fieldPath":"spec.containers{busybox}","kind":"Pod","name":"test-pod","namespace":"default","resourceVersion":"2539317","uid":"88f9e0a4-854a-4a3a-a0fb-dccf3753ed42"},"kind":"Event","lastTimestamp":"2023-03-06T17:34:09Z","message":"Container image \"busybox\" already present on machine","metadata":{"creationTimestamp":"2023-02-28T21:18:59Z","managedFields":[{"apiVersion":"v1","fieldsType":"FieldsV1","fieldsV1":{"f:count":{},"f:firstTimestamp":{},"f:involvedObject":{},"f:lastTimestamp":{},"f:message":{},"f:reason":{},"f:source":{"f:component":{},"f:host":{}},"f:type":{}},"manager":"k3s","operation":"Update","time":"2023-03-06T17:34:09Z"}],"name":"test-resource","namespace":"default","relationships":null,"resourceVersion":"6406346","state":{"error":false,"message":"Resource is current","name":"active","transitioning":false},"uid":"1018c9dd-794a-4957-ac5a-9fb5e4f2312f"},"reason":"Pulled","reportingComponent":"","reportingInstance":"","source":{"component":"kubelet","host":"local-node"}}
+</script>
