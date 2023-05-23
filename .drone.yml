@@ -16,7 +16,7 @@ trigger:
 steps:
 - name: build
   pull: default
-  image: node:14
+  image: node:16
   environment:
     VERSION: ${DRONE_TAG##v}
   commands:
