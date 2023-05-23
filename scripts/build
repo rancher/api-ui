@@ -15,7 +15,7 @@ echo "Version: ${VERSION}"
 echo ""
 
 echo "Installing NPM dependencies"
-npm ci
+npm install
 
 DIST=./dist/${VERSION}
 mkdir -p ${DIST}
