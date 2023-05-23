@@ -26,9 +26,6 @@ steps:
   pull: default
   image: plugins/gcs
   settings:
-  when:
-    instance:
-      - drone-publish.rancher.io  
     acl:
     - allUsers:READER
     cache_control: "no-cache,must-revalidate"
@@ -36,3 +33,6 @@ steps:
     target: releases.rancher.com/api-ui/${DRONE_TAG##v}.tar.gz
     token:
       from_secret: google_auth_key
+  when:
+    instance:
+      - drone-publish.rancher.io  
