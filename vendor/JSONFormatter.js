@@ -98,7 +98,7 @@ JSONFormatter.prototype = {
           dispValue = value.substr(this.options.baseUrl.length);
         }
 
-        output += '<a class="valuelink" href="' + value + '"><span class="string">&quot;' + prefix + this.jsString(dispValue) + '&quot;</span></a>';
+        output += '<a class="valuelink" href="' + this.htmlEncode(value) + '"><span class="string">&quot;' + prefix + this.jsString(dispValue) + '&quot;</span></a>';
       } else {
         output += '<span class="string">&quot;' + this.jsString(value) + '&quot;</span>';
       }
