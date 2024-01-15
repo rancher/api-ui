@@ -1,5 +1,4 @@
-api-ui
-========
+# api-ui
 
 An embedded UI for any service that implements the Rancher API spec.
 
@@ -7,16 +6,15 @@ Integrating with your API
 -------
 See [HTML UI](https://github.com/rancherio/api-spec/blob/master/specification.md#html-ui) in the API specification.  This also includes a link to the latest version hosted on our CDN.
 
-Install
---------
+## Install
+
 ```bash
 git clone https://github.com/rancherio/api-ui
 cd api-ui
 yarn install
 ```
 
-Usage
---------
+## Usage
 
 ### Compiling into stand-alone CSS and JavaScript files
 This will write files to `./dist/{version}/`, suitable for publishing to a CDN.
@@ -25,8 +23,8 @@ This will write files to `./dist/{version}/`, suitable for publishing to a CDN.
   ./scripts/build
 ```
 
-Integrating with an API
---------
+### Integrating with an API
+
 Wrap JSON responses with a bit of HTML (and return `Content-Type: text/html`):
 ```html
 <!DOCTYPE html>
@@ -43,8 +41,8 @@ var data = {
 </script>
 ```
 
-Options
-------
+### Options
+
 Several options can be configured through additional globals:
 
 ```javascript
@@ -68,7 +66,23 @@ var curlUser = "some:thing";
 var bootstrap = "http://url/to/bootstrap/version";
 ```
 
-### Bugs & Issues
+## Bugs & Issues
 Please submit bugs and issues to [rancher/dashboard](//github.com/rancher/dashboard/issues) with a title starting with `[API UI] `.
 
 Or just [click here](//github.com/rancher/dashboard/issues/new?title=%5BAPI%20UI%5D%20) to create a new issue.
+
+## License
+
+Copyright (c) 2014-2024 [Rancher Labs, Inc.](http://rancher.com)
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+[http://www.apache.org/licenses/LICENSE-2.0](http://www.apache.org/licenses/LICENSE-2.0)
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
