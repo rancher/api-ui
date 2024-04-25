@@ -10,7 +10,9 @@ mkdir -p tmp/tpl
 
 HB_EXEC=./node_modules/.bin/handlebars
 
-VERSION=$(npm pkg get version | tr -d '"')
+VERSION=richard-drone-api-ui
+# TODO RC
+# VERSION=$(npm pkg get version | tr -d '"')
 echo "Version: ${VERSION}"
 echo ""
 
@@ -95,6 +97,8 @@ COMMIT=$(git rev-parse --short HEAD)
 sed -e "s/VERSION/"${VERSION}"/g" ./version.json.tmpl > ${DIST}/version.json
 sed -i.bak -e "s/COMMIT/"${COMMIT}"/g" ${DIST}/version.json
 rm -f ${DIST}/version.json.bak
+
+echo "VERSION=${VERSION}" >> "$GITHUB_OUTPUT"
 
 echo ""
 echo "All done"

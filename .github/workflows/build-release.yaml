@@ -1,0 +1,60 @@
+name: Build api-ui (Release)
+on:
+  push:
+    tags:
+      - v*
+
+env:
+  CI_BUILD_TAG: ${{github.ref_name}}
+  REPO: ${{github.event.repository.name || ''}}
+
+jobs:
+  build-and-upload-release:
+    name: Build & Upload Release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 1
+
+      - id: build
+        name: Build
+        run: ./scripts/build
+
+      - name: Get gcs auth
+        uses: rancher-eio/read-vault-secrets@main
+        with:
+          secrets: |
+            secret/data/github/repo/${{ github.repository }}/google-auth/rancher/credentials token | GOOGLE_AUTH
+
+      - name: Apply gcs auth
+        # https://github.com/google-github-actions/auth
+        uses: 'google-github-actions/auth@v2'
+        with:
+          credentials_json: "${{ env.GOOGLE_AUTH }}"
+
+      - name: Upload build
+        uses: 'google-github-actions/upload-cloud-storage@v2'
+        with:
+          path: dist/${{steps.build.outputs.VERSION}}
+          # Example - https://releases.rancher.com/ui/2.8.0.tar.gz
+          destination: releases.rancher.com/${{ env.REPO }}/${{steps.build.outputs.VERSION}}
+          parent: false
+          headers: |-
+            cache-control: no-cache,must-revalidate
+          process_gcloudignore: false
+
+      - name: Upload tar
+        uses: 'google-github-actions/upload-cloud-storage@v2'
+        # https://github.com/google-github-actions/upload-cloud-storage
+        with:
+          path: dist/${{steps.build.outputs.VERSION}}.tar.gz
+          # Example - https://releases.rancher.com/ui/2.8.0/...
+          destination: releases.rancher.com/${{ env.REPO }}
+          parent: false
+          headers: |-
+            cache-control: no-cache,must-revalidate
+          process_gcloudignore: false
