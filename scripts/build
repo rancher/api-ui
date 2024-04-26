@@ -96,7 +96,8 @@ sed -e "s/VERSION/"${VERSION}"/g" ./version.json.tmpl > ${DIST}/version.json
 sed -i.bak -e "s/COMMIT/"${COMMIT}"/g" ${DIST}/version.json
 rm -f ${DIST}/version.json.bak
 
-echo "VERSION=${VERSION}" >> "$GITHUB_OUTPUT"
+ENV_OUTPUT="${GITHUB_OUTPUT:-"temp-env"}"
+echo "VERSION=${VERSION}" >> "$ENV_OUTPUT"
 
 echo ""
 echo "All done"
