@@ -5,12 +5,12 @@
     <div id="operations">
         <button type="button" class="btn btn-primary btn-sm" onclick="htmlapi.up()" {{#unless operations.up}}disabled="disabled"{{/unless}}><span class="glyphicon glyphicon-arrow-up"></span> Up</button>
         <button type="button" class="btn btn-primary btn-sm" onclick="htmlapi.reload()"><span class="glyphicon glyphicon-refresh"></span> Reload</button>
-      {{#if operations.post}}
+      {{!-- {{#if operations.post}}
         <button type="button" class="btn btn-primary btn-sm" onclick="htmlapi.create()"><span class="glyphicon glyphicon-plus"></span> Create</button>
       {{/if}}
       {{#if operations.put}}
         <button type="button" class="btn btn-primary btn-sm" onclick="htmlapi.update()"><span class="glyphicon glyphicon-edit"></span> Edit</button>
-      {{/if}}
+      {{/if}} --}}
       {{#if operations.delete}}
         <button type="button" class="btn btn-primary btn-sm" onclick="htmlapi.remove()"><span class="glyphicon glyphicon-trash"></span> Delete</button>
       {{/if}}
