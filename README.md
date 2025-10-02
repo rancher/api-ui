@@ -73,7 +73,7 @@ Or just [click here](//github.com/rancher/dashboard/issues/new?title=%5BAPI%20UI
 
 ## License
 
-Copyright (c) 2014-2024 [Rancher Labs, Inc.](http://rancher.com)
+Copyright (c) 2014-2025 [SUSE](https://www.suse.com)
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
