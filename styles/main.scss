@@ -1,16 +1,17 @@
-@font-face {
-  font-family: 'Glyphicons Halflings';
-  src: url("fonts/glyphicons-halflings-regular.eot");
-  src: url("fonts/glyphicons-halflings-regular.eot?#iefix") format("embedded-opentype"),
-        url("fonts/glyphicons-halflings-regular.woff2") format("woff2"),
-        url("fonts/glyphicons-halflings-regular.woff") format("woff"),
-        url("fonts/glyphicons-halflings-regular.ttf") format("truetype"),
-        url("fonts/glyphicons-halflings-regular.svg#glyphicons_halflingsregular") format("svg");
-}
-
 .modal {
   overflow: auto;
   position: absolute;
+}
+
+// Bootstrap 3 → 4 compatibility shim for .well (removed in v4)
+.well {
+  min-height: 20px;
+  padding: 19px;
+  margin-bottom: 20px;
+  background-color: #f5f5f5;
+  border: 1px solid #e3e3e3;
+  border-radius: 4px;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
 }
 
 SELECT {
@@ -195,7 +196,13 @@ LI {
   padding: 0;
 }
 
-.json LI .glyphicon {
+.icon {
+  display: inline-block;
+  line-height: 1;
+  vertical-align: -0.125em;
+}
+
+.json LI .icon {
   position: relative;
   left: -15px;
   margin-right: -15px;

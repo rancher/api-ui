@@ -15,7 +15,7 @@ echo "Version: ${VERSION}"
 echo ""
 
 echo "Installing NPM dependencies"
-npm install
+npm install --no-fund
 
 DIST=./dist/${VERSION}
 mkdir -p ${DIST}
@@ -40,7 +40,7 @@ echo "Building ..."
 
 JS_FILES=(node_modules/jquery/dist/jquery.js \
   vendor/jquery.scrollintoview.js \
-  node_modules/bootstrap/dist/js/bootstrap.js \
+  node_modules/bootstrap/dist/js/bootstrap.bundle.js \
   vendor/async.js \
   vendor/json2.js \
   vendor/polyfill.js \
@@ -68,8 +68,23 @@ cp -R node_modules/bootstrap/dist/** ${DIST}
 sed -i.bak -e "s@/\*# sourceMappingURL=bootstrap\.css\.map.*@@g" ${DIST}/css/bootstrap.css
 rm -f ${DIST}/css/bootstrap.css.bak
 
+# Copy @rancher/icons font files. Its style.css references `fonts/icons.*`
+# (no leading `./`), which resolves next to ui.css in the dist output.
+mkdir -p ${DIST}/fonts
+cp node_modules/@rancher/icons/fonts/icons.ttf \
+   node_modules/@rancher/icons/fonts/icons.woff \
+   node_modules/@rancher/icons/fonts/icons.svg \
+   ${DIST}/fonts/
+
+# Patch @rancher/icons style.css: drop `font-display: block` so that if the
+# font file fails to load we get a visible fallback glyph (rectangle) instead
+# of the block-period hiding the pseudo-element entirely.
+sed -e 's@font-display:[[:space:]]*block;@@g' \
+    node_modules/@rancher/icons/style.css > ./tmp/rancher-icons.css
+
 # Generate css
 cat ./node_modules/bootstrap/dist/css/bootstrap.css \
+  ./tmp/rancher-icons.css \
   styles/main.scss \
   styles/explorer.scss \
   > ./tmp/ui.scss
