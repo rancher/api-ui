@@ -223,12 +223,72 @@ H1 {
   z-index: 1;
 }
 
+#header LABEL {
+  font-weight: bold;
+}
+
 #header .btn {
   margin-bottom: 3px;
 }
 
 #header .input-group .btn {
   margin-bottom: 0;
+}
+
+// Restore Bootstrap 3-era button sizing and color palette so the app looks
+// like its pre-upgrade self. Bootstrap 4 sets .btn to font-size:1rem/padding
+// larger than v3, and picks a brighter primary blue (#007bff) and green
+// (#28a745). These overrides put both back.
+.btn {
+  font-size: 14px;
+  line-height: 1.42857143;
+  padding: 6px 12px;
+  border-radius: 4px;
+}
+
+.btn-sm {
+  font-size: 12px;
+  line-height: 1.5;
+  padding: 5px 10px;
+  border-radius: 3px;
+}
+
+.btn-primary {
+  background-color: #337ab7;
+  border-color: #2e6da4;
+
+  &:hover, &:focus, &:active, &.active,
+  &:not(:disabled):not(.disabled):active,
+  &:not(:disabled):not(.disabled).active {
+    background-color: #286090;
+    border-color: #204d74;
+  }
+}
+
+.btn-success {
+  background-color: #5cb85c;
+  border-color: #4cae4c;
+
+  &:hover, &:focus, &:active, &.active,
+  &:not(:disabled):not(.disabled):active,
+  &:not(:disabled):not(.disabled).active {
+    background-color: #449d44;
+    border-color: #398439;
+  }
+}
+
+.btn-secondary {
+  color: #333;
+  background-color: #fff;
+  border-color: #ccc;
+
+  &:hover, &:focus, &:active, &.active,
+  &:not(:disabled):not(.disabled):active,
+  &:not(:disabled):not(.disabled).active {
+    color: #333;
+    background-color: #e6e6e6;
+    border-color: #adadad;
+  }
 }
 
 TH {
