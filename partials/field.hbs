@@ -1,7 +1,7 @@
 {{#ifInList type 'array,map'}}
   {{#each children}}
     <div class="dualValue">
-      <a class="btn btn-default btn-xs btn-inline" tabindex="-1" onclick="htmlapi.subRemove(this);"><i class="glyphicon glyphicon-minus"></i></a>
+      <a class="btn btn-secondary btn-sm btn-inline" tabindex="-1" onclick="htmlapi.subRemove(this);"><i class="icon icon-minus"></i></a>
       {{>field.hbs}}
     </div>
   {{/each}}
@@ -102,7 +102,7 @@
 {{/if}}
 
 {{#if enlargeable}}
-  <a class="btn btn-default btn-xs btn-inline" onclick="htmlapi.switchToTextarea(this);" tabindex="-1" title="Enlarge"><i class="glyphicon glyphicon-resize-full"></i></a>
+  <a class="btn btn-secondary btn-sm btn-inline" onclick="htmlapi.switchToTextarea(this);" tabindex="-1" title="Enlarge"><i class="icon icon-sort"></i></a>
 {{/if}}
 
 {{#if nullCheck}}
@@ -115,7 +115,7 @@
 
 {{#unless addingField}}
   {{#ifInList type 'array,map'}}
-      <a class="btn btn-default btn-xs btn-inline" tabindex="-1" onclick="htmlapi.subAdd(this,'{{name}}');"><i class="glyphicon glyphicon-plus"></i></a>
+      <a class="btn btn-secondary btn-sm btn-inline" tabindex="-1" onclick="htmlapi.subAdd(this,'{{name}}');"><i class="icon icon-plus"></i></a>
     </div>
   {{/ifInList}}
 {{/unless}}

@@ -271,8 +271,8 @@ JSONFormatter.prototype = {
       var ellipsis = target.parentNode.getElementsByClassName('ellipsis')[0];
       target.parentNode.removeChild(ellipsis);
       target.style.display = '';
-      $(collapser).removeClass('glyphicon-plus');
-      $(collapser).addClass('glyphicon-minus');
+      $(collapser).removeClass('icon-plus');
+      $(collapser).addClass('icon-minus');
     } else {
       target.style.display = 'none';
 
@@ -280,8 +280,8 @@ JSONFormatter.prototype = {
       ellipsis.className = 'ellipsis';
       ellipsis.innerHTML = ' &hellip; ';
       target.parentNode.insertBefore(ellipsis, target);
-      $(collapser).removeClass('glyphicon-minus');
-      $(collapser).addClass('glyphicon-plus');
+      $(collapser).removeClass('icon-minus');
+      $(collapser).addClass('icon-plus');
     }
   }
   

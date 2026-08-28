@@ -1,6 +1,6 @@
 {
   "name": "api-ui",
-  "version": "1.1.11",
+  "version": "1.2.0",
   "description": "Embedded UI for any service that implements the Rancher API spec",
   "author": "SUSE",
   "license": "Apache-2.0",
@@ -19,13 +19,14 @@
     "upload": "./scripts/upload"
   },
   "devDependencies": {
-    "clean-css-cli": "^5.6.2",
+    "clean-css-cli": "5.6.3",
     "sass": "1.58.3",
-    "uglify-js": "3.17.4"
+    "uglify-js": "3.19.3"
   },
   "dependencies": {
-    "bootstrap": "3.4.1",
+    "@rancher/icons": "2.0.63",
+    "bootstrap": "4.6.2",
     "handlebars": "4.7.9",
-    "jquery": "3.6.3"
+    "jquery": "3.7.1"
   }
 }
