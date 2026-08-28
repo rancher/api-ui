@@ -128,7 +128,7 @@ HTMLApi.prototype.showModal = function(body,opt,cb)
   var modalHtml = Handlebars.templates['modal.hbs'](opt);
   var modal = $(modalHtml);
   this._reqModal = modal;
-  $('.modal-dialog',modal).css('width',opt.width||'750px');
+  $('.modal-dialog',modal).css({width: opt.width||'750px', maxWidth: opt.width||'750px'});
   this.setModalActions(opt.actions);
   modal.bind('keydown', this.onKeys);
   modal.modal({backdrop: 'static', keyboard: false});
@@ -185,7 +185,7 @@ HTMLApi.prototype.setModalActions = function(actions)
   var html = '';
 
   actions.forEach(function(action) {
-    var color = 'btn-default';
+    var color = 'btn-secondary';
     var btnType = 'button'
     if ( action.primary ) {
       color = 'btn-primary';
@@ -194,7 +194,7 @@ HTMLApi.prototype.setModalActions = function(actions)
       color = 'btn-link';
     }
 
-    html += '<button type="'+btnType+'" class="btn '+color+'" onclick="htmlapi.modalAction(\''+ action.id +'\');">'+ action.text + '</button>';
+    html += '<button type="'+btnType+'" class="btn btn-sm '+color+'" onclick="htmlapi.modalAction(\''+ action.id +'\');">'+ action.text + '</button>';
   });
 
   $('.modal-footer', this._reqModal).html(html);
@@ -431,7 +431,7 @@ HTMLApi.prototype._addCollapser = function(item)
     return;
 
   var collapser = $('<i/>', {
-    "class": "glyphicon glyphicon-minus",
+    "class": "icon icon-minus",
     click: JSONFormatter.prototype.collapse
   });
 

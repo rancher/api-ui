@@ -3,16 +3,16 @@
   <div iv="header-body">
     <label>Operations</label>
     <div id="operations">
-        <button type="button" class="btn btn-primary btn-sm" onclick="htmlapi.up()" {{#unless operations.up}}disabled="disabled"{{/unless}}><span class="glyphicon glyphicon-arrow-up"></span> Up</button>
-        <button type="button" class="btn btn-primary btn-sm" onclick="htmlapi.reload()"><span class="glyphicon glyphicon-refresh"></span> Reload</button>
+        <button type="button" class="btn btn-primary btn-sm" onclick="htmlapi.up()" {{#unless operations.up}}disabled="disabled"{{/unless}}><span class="icon icon-chevron-up"></span> Up</button>
+        <button type="button" class="btn btn-primary btn-sm" onclick="htmlapi.reload()"><span class="icon icon-refresh"></span> Reload</button>
       {{!-- {{#if operations.post}}
-        <button type="button" class="btn btn-primary btn-sm" onclick="htmlapi.create()"><span class="glyphicon glyphicon-plus"></span> Create</button>
+        <button type="button" class="btn btn-primary btn-sm" onclick="htmlapi.create()"><span class="icon icon-plus"></span> Create</button>
       {{/if}}
       {{#if operations.put}}
-        <button type="button" class="btn btn-primary btn-sm" onclick="htmlapi.update()"><span class="glyphicon glyphicon-edit"></span> Edit</button>
+        <button type="button" class="btn btn-primary btn-sm" onclick="htmlapi.update()"><span class="icon icon-edit"></span> Edit</button>
       {{/if}} --}}
       {{#if operations.delete}}
-        <button type="button" class="btn btn-primary btn-sm" onclick="htmlapi.remove()"><span class="glyphicon glyphicon-trash"></span> Delete</button>
+        <button type="button" class="btn btn-primary btn-sm" onclick="htmlapi.remove()"><span class="icon icon-trash"></span> Delete</button>
       {{/if}}
     </div>
     <br/>
@@ -36,7 +36,7 @@
     {{#if data.sortLinks }}
       <form>
         <div class="row">
-          <div class="col-xs-7">
+          <div class="col-7">
             <label>Sort By</label>
             <select id="sortBy" class="form-control" onchange="htmlapi.sortChange(this)">
                 {{#unless data.sort.name}}<option value="">(Not Sorted)</option>{{/unless}}
@@ -45,16 +45,16 @@
                 {{/eachProperty}}
             </select>
           </div>
-          <div class="col-xs-5">
+          <div class="col-5">
             {{#if data.sort.name }}
               <label>Direction</label>
               <div class="btn-group btn-group-sm">
                 {{#ifEqual data.sort.order "desc"}}
-                  <button type="button" class="btn btn-default btn-sm" onclick="htmlapi.sortOrderChange();"><span class="glyphicon glyphicon-sort-by-attributes"></span></button>
-                  <button type="button" class="btn btn-default btn-sm active"><span class="glyphicon glyphicon-sort-by-attributes-alt"></span></button>
+                  <button type="button" class="btn btn-secondary btn-sm" onclick="htmlapi.sortOrderChange();"><span class="icon icon-sort-down"></span></button>
+                  <button type="button" class="btn btn-secondary btn-sm active"><span class="icon icon-sort-up"></span></button>
                 {{else}}
-                  <button type="button" class="btn btn-default btn-sm active"><span class="glyphicon glyphicon-sort-by-attributes"></span></button>
-                  <button type="button" class="btn btn-default btn-sm" onclick="htmlapi.sortOrderChange();"><span class="glyphicon glyphicon-sort-by-attributes-alt"></span></button>
+                  <button type="button" class="btn btn-secondary btn-sm active"><span class="icon icon-sort-down"></span></button>
+                  <button type="button" class="btn btn-secondary btn-sm" onclick="htmlapi.sortOrderChange();"><span class="icon icon-sort-up"></span></button>
                 {{/ifEqual}}
               </div>
             {{/if}}
@@ -73,40 +73,42 @@
         {{#if data.pagination.partial}}
           {{#if data.pagination.first}}
             {{#ifEqual data.links.self data.pagination.first}}
-              <button type="button" class="btn btn-success btn-sm" disabled="disabled"><span class="glyphicon glyphicon-step-backward"></span></button>
+              <button type="button" class="btn btn-success btn-sm" disabled="disabled"><span class="icon icon-chevron-beginning"></span></button>
             {{else}}
-              <a class="btn btn-success btn-sm" href="{{data.pagination.first}}"><span class="glyphicon glyphicon-step-backward"></span></a>
+              <a class="btn btn-success btn-sm" href="{{data.pagination.first}}"><span class="icon icon-chevron-beginning"></span></a>
             {{/ifEqual}}
           {{else}}
-              <button type="button" class="btn btn-success btn-sm" disabled="disabled"><span class="glyphicon glyphicon-step-backward"></span></button>
+              <button type="button" class="btn btn-success btn-sm" disabled="disabled"><span class="icon icon-chevron-beginning"></span></button>
           {{/if}}
           {{#if data.pagination.prev}}
-            <a class="btn btn-success btn-sm" href="{{data.pagination.prev}}"><span class="glyphicon glyphicon-chevron-left"></span></a>
+            <a class="btn btn-success btn-sm" href="{{data.pagination.prev}}"><span class="icon icon-chevron-left"></span></a>
           {{else}}
-              <button type="button" class="btn btn-success btn-sm" disabled="disabled"><span class="glyphicon glyphicon-chevron-left"></span></button>
+              <button type="button" class="btn btn-success btn-sm" disabled="disabled"><span class="icon icon-chevron-left"></span></button>
           {{/if}}
           {{#if data.pagination.next}}
-            <a class="btn btn-success btn-sm" href="{{data.pagination.next}}"><span class="glyphicon glyphicon-chevron-right"></span></a>
+            <a class="btn btn-success btn-sm" href="{{data.pagination.next}}"><span class="icon icon-chevron-right"></span></a>
           {{else}}
-              <button type="button" class="btn btn-success btn-sm" disabled="disabled"><span class="glyphicon glyphicon-chevron-right"></span></button>
+              <button type="button" class="btn btn-success btn-sm" disabled="disabled"><span class="icon icon-chevron-right"></span></button>
           {{/if}}
           {{#if data.pagination.last}}
-            <a class="btn btn-success btn-sm" href="{{data.pagination.last}}"><span class="glyphicon glyphicon-step-forward"></span></a>
+            <a class="btn btn-success btn-sm" href="{{data.pagination.last}}"><span class="icon icon-chevron-end"></span></a>
           {{else}}
-              <button type="button" class="btn btn-success btn-sm" disabled="disabled"><span class="glyphicon glyphicon-step-forward"></span></button>
+              <button type="button" class="btn btn-success btn-sm" disabled="disabled"><span class="icon icon-chevron-end"></span></button>
           {{/if}}
         {{else}}
           <p class="inactive">Full result</p>
         {{/if}}
       </div>
       <div>
-        <form class="form-horizontal">
+        <form>
         <div class="input-group input-group-sm">
-          <span class="input-group-addon">Limit:</span>
+          <div class="input-group-prepend">
+            <span class="input-group-text">Limit:</span>
+          </div>
           <input class="form-control" type="number" min="0" step="100" id="limit" name="limit" value="{{data.pagination.limit}}"/>
-          <span class="input-group-btn">
-            <button type="submit" class="btn btn-primary btn-sm" onclick="htmlapi.setLimit($('limit').val())"><span class="glyphicon glyphicon-signal"></span> Set</button>
-          </span>
+          <div class="input-group-append">
+            <button type="submit" class="btn btn-primary btn-sm" onclick="htmlapi.setLimit($('limit').val())"><span class="icon icon-checkmark"></span> Set</button>
+          </div>
         </div>
         </form>
       </div>
@@ -122,9 +124,6 @@
     {{/if}}
     {{#if docsPage}}
       <a href="{{docsPage}}" target="apidocs">Documentation</a><br/>
-    {{/if}}
-    {{#if logout}}
-      <a href="#" onclick="htmlapi.logout(); return false">Log Out</a>
     {{/if}}
   </div>
 </div>

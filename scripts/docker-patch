@@ -16,7 +16,7 @@ fi
 
 echo "Patching running container with latest api-ui"
 
-docker exec -it ${CONTAINER} bash -c "rm -rf /usr/share/rancher/ui/api-ui/*"
+docker exec -it ${CONTAINER} bash -c "rm -rf /usr/share/rancher/ui-dashboard/api-ui/*"
 
 # Copy in the built code
 
@@ -24,5 +24,5 @@ VERSION=$(node -e "(function () { console.log(require('./package.json').version)
 
 docker cp ./dist/${VERSION}/ ${CONTAINER}:/usr/share/rancher
 
-docker exec -it ${CONTAINER} bash -c "cp -R /usr/share/rancher/${VERSION}/* /usr/share/rancher/ui/api-ui/"
+docker exec -it ${CONTAINER} bash -c "cp -R /usr/share/rancher/${VERSION}/* /usr/share/rancher/ui-dashboard/api-ui/"
 docker exec -it ${CONTAINER} bash -c "rm -rf /usr/share/rancher/${VERSION}"
