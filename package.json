@@ -20,7 +20,7 @@
   },
   "devDependencies": {
     "clean-css-cli": "5.6.3",
-    "sass": "1.58.3",
+    "sass": "1.105.1",
     "uglify-js": "3.19.3"
   },
   "dependencies": {
