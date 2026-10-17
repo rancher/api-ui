@@ -26,7 +26,7 @@
   "dependencies": {
     "@rancher/icons": "2.0.63",
     "bootstrap": "4.6.2",
-    "handlebars": "4.7.9",
+    "handlebars": "4.7.10",
     "jquery": "3.7.1"
   }
 }
